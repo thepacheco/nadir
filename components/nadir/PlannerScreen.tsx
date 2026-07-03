@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { TAG_COLORS } from "@/lib/constants";
 import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
 export default function PlannerScreen() {
-  const { co } = useNadir();
+  const { co, people } = useNadir();
   const { plan } = co;
+  const [assigned, setAssigned] = useState<Record<string, string>>({});
 
   return (
     <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
@@ -27,9 +29,31 @@ export default function PlannerScreen() {
                 <div key={p.t} className={styles.planItem} style={{ padding: "13px 14px", background: "#FCFBF9", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 9 }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, lineHeight: 1.45, marginBottom: 6 }}>{p.t}</div>
                   <div style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5a646e", marginBottom: 9 }}>{p.d}</div>
-                  <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.08em", color: TAG_COLORS[p.tag] || "#5a646e", background: "rgba(20,24,28,0.05)", padding: "3px 8px", borderRadius: 4 }}>
-                    {p.tag}
-                  </span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.08em", color: TAG_COLORS[p.tag] || "#5a646e", background: "rgba(20,24,28,0.05)", padding: "3px 8px", borderRadius: 4 }}>
+                      {p.tag}
+                    </span>
+                    {assigned[`${co.id}|${p.t}`] ? (
+                      <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 5, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: "#0E7C8A" }}>
+                        <span style={{ width: 18, height: 18, borderRadius: "50%", background: "rgba(14,124,138,0.14)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8.5, fontWeight: 700 }}>
+                          {people.find((pp) => pp.name === assigned[`${co.id}|${p.t}`])?.initials}
+                        </span>
+                        ASSIGNED
+                      </span>
+                    ) : (
+                      <select
+                        value=""
+                        onChange={(e) => setAssigned((prev) => ({ ...prev, [`${co.id}|${p.t}`]: e.target.value }))}
+                        title="Assign this task"
+                        style={{ marginLeft: "auto", fontFamily: "inherit", fontSize: 10.5, color: "#7a848e", background: "transparent", border: "1px solid rgba(20,24,28,0.16)", borderRadius: 5, padding: "2px 4px", cursor: "pointer" }}
+                      >
+                        <option value="" disabled>assign…</option>
+                        {people.map((pp) => (
+                          <option key={pp.name} value={pp.name}>{pp.name}</option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

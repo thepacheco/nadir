@@ -15,6 +15,7 @@ export default function GraphScreen() {
   return (
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
       <div style={{ flex: 1, minWidth: 0, position: "relative", overflow: "hidden", background: "#F6F4EF", cursor: RETICLE_CURSOR }}>
+        <div style={{ position: "absolute", inset: 0, transform: child ? `scale(1.8)` : "none", transformOrigin: child ? `${child.x}% ${child.y}%` : "50% 50%", transition: "transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)" }}>
         <div style={{ position: "absolute", top: 18, left: 24, zIndex: 3 }}>
           <div style={{ fontSize: 16, fontWeight: 700 }}>
             Fusion graph <span style={{ fontWeight: 400, color: "#9aa2ab", fontSize: 13 }}>· live model</span>
@@ -84,6 +85,15 @@ export default function GraphScreen() {
             {c.label}
           </button>
         ))}
+        </div>
+        {child && (
+          <button
+            onClick={() => setSelChild(null)}
+            style={{ position: "absolute", top: 18, right: 20, zIndex: 5, fontFamily: "inherit", fontSize: 12.5, fontWeight: 700, padding: "9px 16px", background: "#14181C", color: "#fff", border: "none", borderRadius: 8, cursor: "pointer", boxShadow: "0 10px 26px -10px rgba(20,30,40,0.5)" }}
+          >
+            ← Zoom out
+          </button>
+        )}
       </div>
       <div style={{ width: 320, flex: "none", borderLeft: "1px solid rgba(20,24,28,0.1)", padding: "22px 20px", overflowY: "auto", background: "#FCFBF9" }}>
         <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 14 }}>NODE DETAIL</div>

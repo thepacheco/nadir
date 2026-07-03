@@ -40,6 +40,7 @@ export default function MapScreen() {
               </div>
               <div style={{ fontSize: 13.5, fontWeight: 600, lineHeight: 1.45, marginBottom: 6 }}>{al.title}</div>
               <div style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5a646e", marginBottom: 8 }}>{al.detail}</div>
+              {al.plain && <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "#0E7C8A", fontStyle: "italic", marginBottom: 8 }}>In plain terms: {al.plain}</div>}
               <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, color: "#9aa2ab" }}>{al.loc}</div>
               <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
                 <button

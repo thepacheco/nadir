@@ -1,7 +1,7 @@
 "use client";
 
 import { AV_PALETTE, STATUS_COLORS } from "@/lib/constants";
-import { FORMAT_LIBRARY, PER_USER_USAGE, SYSTEM_USAGE, USAGE_ROWS, USAGE_TOTAL } from "@/lib/phase3";
+import { FORMAT_LIBRARY, PER_USER_USAGE, SYSTEM_USAGE, USAGE_ROWS, USAGE_TOTAL, WIRES } from "@/lib/phase3";
 import { useNadir } from "./context";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -38,6 +38,7 @@ export default function SettingsScreen() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 18, maxWidth: 1180, alignItems: "start" }}>
+        <div>
         <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, overflow: "hidden" }}>
           <div style={{ padding: "14px 18px", fontFamily: MONO, fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", borderBottom: "1px solid rgba(20,24,28,0.08)" }}>USERS & ACCESS</div>
           {co.people.map((p, i) => {
@@ -68,6 +69,31 @@ export default function SettingsScreen() {
               <div style={{ fontSize: 11.5, color: "#7a848e" }}>{approver.name.split(" · ")[1]} · receives briefings for approval</div>
             </div>
             <span style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "0.06em", color: "#8a5a10", background: "rgba(180,118,20,0.1)", border: "1px solid rgba(180,118,20,0.35)", padding: "3px 9px", borderRadius: 5, flex: "none" }}>APPROVER</span>
+          </div>
+        </div>
+
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, overflow: "hidden", marginTop: 18 }}>
+            <div style={{ padding: "14px 18px", fontFamily: MONO, fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", borderBottom: "1px solid rgba(20,24,28,0.08)" }}>
+              KNOWLEDGE BASE · WHAT NADIR HAS LEARNED ABOUT {co.name.toUpperCase()}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "rgba(20,24,28,0.07)" }}>
+              {[
+                { label: "OBJECTS", val: String(co.obMappings.length) },
+                { label: "RELATIONSHIPS", val: String(co.graph.edges.length + WIRES[co.id].length) },
+                { label: "INCIDENT MEMORIES", val: "3" },
+                { label: "YOUR CORRECTIONS", val: "2" },
+              ].map((k) => (
+                <div key={k.label} style={{ background: "#FCFBF9", padding: "12px 14px" }}>
+                  <div style={{ fontFamily: MONO, fontSize: 9.5, letterSpacing: "0.08em", color: "#9aa2ab", marginBottom: 4 }}>{k.label}</div>
+                  <div style={{ fontSize: 18, fontWeight: 600 }}>{k.val}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ padding: "13px 18px", fontSize: 12, lineHeight: 1.6, color: "#5a646e" }}>
+              This is the compounding asset: the ontology, the join map, past incidents and their fixes, your corrections, and accepted formats.
+              It lives in your tenant, grows with every source and answer, and dies with your contract if you leave.
+              <span style={{ color: "#0E7C8A" }}> Per question, only the relevant slice is loaded — the knowledge base is the moat; the context window stays small and cheap.</span>
+            </div>
           </div>
         </div>
 

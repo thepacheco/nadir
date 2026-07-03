@@ -9,7 +9,7 @@ export default function Toast() {
   return (
     <div
       style={{
-        position: "absolute", right: 22, bottom: 22, width: 372, zIndex: 40, background: "#FFFFFF",
+        position: "absolute", left: 22, bottom: 22, width: 372, zIndex: 40, background: "#FFFFFF",
         border: "1px solid rgba(20,24,28,0.14)", borderLeft: `4px solid ${toast.color}`, borderRadius: 12,
         boxShadow: "0 24px 60px -20px rgba(20,30,40,0.4)", padding: "16px 18px", animation: "nadirToastIn 0.35s ease",
       }}
@@ -22,7 +22,8 @@ export default function Toast() {
         </button>
       </div>
       <div style={{ fontSize: 14, fontWeight: 700, lineHeight: 1.4, marginBottom: 5 }}>{toast.title}</div>
-      <div style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5a646e", marginBottom: 13 }}>{toast.detail}</div>
+      <div style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5a646e", marginBottom: toast.plain ? 7 : 13 }}>{toast.detail}</div>
+      {toast.plain && <div style={{ fontSize: 12, lineHeight: 1.5, color: "#0E7C8A", fontStyle: "italic", marginBottom: 13 }}>In plain terms: {toast.plain}</div>}
       <div style={{ display: "flex", gap: 8 }}>
         <button onClick={toastToMap} style={{ fontFamily: "inherit", fontSize: 12.5, fontWeight: 700, padding: "9px 14px", background: "#14181C", color: "#fff", border: "none", borderRadius: 7, cursor: "pointer" }}>
           View on ops map

@@ -1,7 +1,7 @@
 import type { NodeType } from "./types";
 
 export const RETICLE_CURSOR =
-  "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30\" height=\"30\" viewBox=\"0 0 30 30\"><circle cx=\"15\" cy=\"15\" r=\"9\" fill=\"none\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><circle cx=\"15\" cy=\"15\" r=\"1.6\" fill=\"%230E7C8A\"/><line x1=\"15\" y1=\"1\" x2=\"15\" y2=\"6\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><line x1=\"15\" y1=\"24\" x2=\"15\" y2=\"29\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><line x1=\"1\" y1=\"15\" x2=\"6\" y2=\"15\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><line x1=\"24\" y1=\"15\" x2=\"29\" y2=\"15\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/></svg>') 15 15, crosshair";
+  "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"26\" height=\"26\" viewBox=\"0 0 26 26\"><path d=\"M5 2l16 9.5-7.2 1.4L18.5 22l-3.4 1.6-4.6-8.7L5 20z\" fill=\"%23FAF9F7\" stroke=\"%230E7C8A\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/></svg>') 5 2, default";
 
 export const SCREENS = [
   { id: "chat", label: "Ask Nadir" },

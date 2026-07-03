@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
 export default function ChatScreen() {
   const { co, messages, typing, draft, setDraft, onSend, chatScrollRef, alertsSide, actionTitle, actionDesc, onSendSnapshot, onOpenSource, onAttach, approval, approver } = useNadir();
 
+  const [briefOpen, setBriefOpen] = useState(false);
   const snapshotStyles = {
     none: { label: "Send for approval →", bg: "#0E7C8A", fg: "#FFFFFF", bd: "none" },
     pending: { label: `Sent to ${approver.name.split(" · ")[0]} — awaiting approval…`, bg: "rgba(180,118,20,0.12)", fg: "#8a5a10", bd: "1px solid rgba(180,118,20,0.4)" },
@@ -126,6 +128,7 @@ export default function ChatScreen() {
                 <div>
                   <div style={{ fontSize: 12.5, fontWeight: 600, lineHeight: 1.4 }}>{al.title}</div>
                   <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, color: "#9aa2ab", marginTop: 3 }}>{al.subLabel}</div>
+                  {al.plain && <div style={{ fontSize: 11, lineHeight: 1.45, color: "#0E7C8A", fontStyle: "italic", marginTop: 4 }}>{al.plain}</div>}
                 </div>
               </button>
             ))}
@@ -137,10 +140,10 @@ export default function ChatScreen() {
             <div style={{ fontSize: 13.5, fontWeight: 600, marginBottom: 6 }}>{actionTitle}</div>
             <div style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5a646e", marginBottom: 12 }}>{actionDesc}</div>
             <button
-              onClick={onSendSnapshot}
+              onClick={() => (approval === "none" ? onSendSnapshot() : setBriefOpen(true))}
               style={{
                 fontFamily: "inherit", fontSize: 12.5, fontWeight: 700, width: "100%", padding: 9, borderRadius: 7,
-                cursor: approval === "none" ? "pointer" : "default",
+                cursor: "pointer",
                 background: snapshotStyles.bg, color: snapshotStyles.fg, border: snapshotStyles.bd,
               }}
             >
@@ -151,9 +154,58 @@ export default function ChatScreen() {
                 “{approver.reply}”
               </div>
             )}
+            {approval !== "none" && (
+              <div style={{ fontSize: 10.5, color: "#9aa2ab", marginTop: 6, textAlign: "center" }}>click to open the briefing</div>
+            )}
           </div>
         </div>
       </div>
+
+      {briefOpen && (
+        <>
+          <div style={{ position: "fixed", inset: 0, zIndex: 58, background: "rgba(20,24,28,0.35)" }} onClick={() => setBriefOpen(false)} />
+          <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", zIndex: 59, width: 620, maxHeight: "82vh", overflowY: "auto", background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.14)", borderRadius: 14, boxShadow: "0 40px 90px -30px rgba(20,30,40,0.5)", padding: "26px 30px", animation: "nadirFadeUp 0.25s ease" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+              <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, letterSpacing: "0.12em", color: "#0E7C8A" }}>ONE-PAGE BRIEFING · DRAFTED BY NADIR</div>
+              <button onClick={() => setBriefOpen(false)} style={{ marginLeft: "auto", fontFamily: "inherit", background: "transparent", border: "none", color: "#9aa2ab", fontSize: 20, cursor: "pointer", lineHeight: 1 }}>×</button>
+            </div>
+            <div style={{ fontFamily: "var(--font-newsreader), serif", fontSize: 25, lineHeight: 1.2, marginBottom: 4 }}>{actionTitle}</div>
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, color: "#9aa2ab", marginBottom: 20 }}>To: {approver.name} · From: Nadir, on your behalf · {co.name}</div>
+
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, letterSpacing: "0.1em", color: "#7a848e", marginBottom: 8 }}>THE SITUATION</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7, marginBottom: 18 }}>
+              {co.alerts.map((a) => (
+                <div key={a.title} style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: a.color, flex: "none", marginTop: 5 }} />
+                  <div style={{ fontSize: 13, lineHeight: 1.55, color: "#2a333c" }}>
+                    <strong>{a.title}.</strong> {a.plain || a.detail}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, letterSpacing: "0.1em", color: "#7a848e", marginBottom: 8 }}>PROPOSED FIX</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 7, marginBottom: 18 }}>
+              {co.plan.cols[0].items.concat(co.plan.cols[1].items).map((it) => (
+                <div key={it.t} style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
+                  <span style={{ color: "#0E7C8A", fontWeight: 700, flex: "none" }}>→</span>
+                  <div style={{ fontSize: 13, lineHeight: 1.55, color: "#2a333c" }}><strong>{it.t}.</strong> {it.d}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, letterSpacing: "0.1em", color: "#7a848e", marginBottom: 8 }}>IF WE DO THIS</div>
+            <div style={{ fontSize: 13, lineHeight: 1.6, color: "#2a333c", marginBottom: 18, padding: "12px 14px", background: "rgba(21,133,79,0.06)", border: "1px solid rgba(21,133,79,0.3)", borderRadius: 9 }}>{co.plan.why}</div>
+
+            <div style={{ borderTop: "1px solid rgba(20,24,28,0.1)", paddingTop: 14, display: "flex", gap: 10, alignItems: "center" }}>
+              <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.08em", color: approval === "approved" ? "#15854F" : "#B47614", background: approval === "approved" ? "rgba(21,133,79,0.1)" : "rgba(180,118,20,0.1)", border: `1px solid ${approval === "approved" ? "rgba(21,133,79,0.4)" : "rgba(180,118,20,0.4)"}`, padding: "4px 10px", borderRadius: 5 }}>
+                {approval === "approved" ? "✓ APPROVED" : "AWAITING APPROVAL"}
+              </span>
+              {approval === "approved" && <span style={{ fontSize: 12.5, fontStyle: "italic", color: "#5a646e" }}>“{approver.reply}”</span>}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

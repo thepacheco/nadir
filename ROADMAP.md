@@ -97,3 +97,39 @@ something, something happens) and **Bloomberg Terminal** (dense, connected, dril
 
 *Order of operations: Phase 1 makes the pitch look enterprise. Phase 2 makes the demo
 feel alive in an investor meeting. Phase 3 is what makes customer #1 renew.*
+
+## Phase 4 — Founder review round (from the full walkthrough)
+
+Shipped in this round:
+- [x] Plain-language layer: every alert carries an "in plain terms" line (toast,
+  sidebar, ops-map cards, evidence drawer) so TI-88/V-221/MSA never stand alone.
+- [x] Critical-alert popups moved to the LEFT side.
+- [x] Cursor reworked from crosshair-target to a proper pointer-style cursor.
+- [x] Fusion graph: re-click a "+" node to fold it; click a component (e.g. Midtown)
+  to ZOOM into it, with a Zoom-out button.
+- [x] Briefings are openable: click a sent/approved briefing to see the one-pager —
+  situation (in plain terms), proposed fix, expected outcome, approval status.
+- [x] Org tree in Team & inbox: who is tied to what, including tracked people who
+  hold no seat (the chain still routes through them).
+- [x] Knowledge-base panel (Settings): what Nadir has learned and stores — objects,
+  relationships, incident memories, corrections — with the context-window rule:
+  per question only the relevant slice loads; the knowledge base is the moat.
+- [x] Task assignment on guidance-plan items.
+- [x] SIMULATED DATA watermark in the workspace top bar.
+
+Specced, next up:
+- [ ] **Ops map building click-through**: raycast click on a building → KPI row swaps
+  to that building's numbers → cinematic zoom/overlay expand (the "Avengers map" open).
+- [ ] **SQL-style visual mapper**: the rename pencil opens a two-panel drag-and-drop
+  column↔object matcher (like a SQL join designer), with mismatch warnings.
+- [ ] **Per-industry ops visuals**: staffing shouldn't be buildings — pipeline/flow
+  view for services businesses; buildings only where floors exist.
+- [ ] **Progressive onboarding**: features unlock as data arrives (empty states that
+  say what to do next), so nothing is jammed down a new user's throat.
+- [ ] **Custom blueprints + multi-site rollup**; **mobile pass**; **scenario replay**;
+  **deploy to a live URL** (Vercel-ready; needs a deploy account).
+- [ ] **Live-data pilot architecture** (the real Phase 3 engine): terabyte-safe
+  sampling (instances, never the table), map-in-our-tenant transfer model, geocode
+  locations → Mapbox for real ops maps, business-type playbooks (middleman setup,
+  auto-shop retention nudges, solo-operator growth guide) generated as dependency
+  trees with ETAs.

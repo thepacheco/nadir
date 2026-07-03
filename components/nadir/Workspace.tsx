@@ -83,6 +83,7 @@ export default function Workspace() {
   const [notifSeen, setNotifSeen] = useState(0);
   const [runtimeAudit, setRuntimeAudit] = useState<Record<string, { time: string; text: string }[]>>({});
   const [selChild, setSelChild] = useState<number | null>(null);
+  const [graphExpanded, setGraphExpanded] = useState(true);
   const [notifPrefs, setNotifPrefs] = useState<Record<string, boolean>>({ critical: true, digest: true, approvals: true, quality: true });
   const approvalTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (approvalTimer.current) clearTimeout(approvalTimer.current); }, []);
@@ -297,6 +298,17 @@ export default function Workspace() {
   const activeCount = co.alerts.filter((a) => a.at <= clock).length;
 
   // ---- fusion graph ----
+  function selectNode(i: number) {
+    if (i === selNode && p2.children[i]?.length) {
+      setGraphExpanded((e) => !e); // re-click a "+" node to fold it back up
+      setSelChild(null);
+      return;
+    }
+    setSelNode(i);
+    setSelChild(null);
+    setGraphExpanded(true);
+    if (p2.children[i]?.length) setGuideFlags((prev) => ({ ...prev, expand: true }));
+  }
   const gnodes = co.graph.nodes.map((n, i) => {
     const tm = GRAPH_TYPE_STYLE[n.type];
     return {
@@ -305,7 +317,7 @@ export default function Workspace() {
       anim: `nadirFloat ${5 + (i % 4)}s ease-in-out ${i * 0.4}s infinite`,
       bd: i === selNode ? "#0E7C8A" : tm.bd,
       shadow: i === selNode ? "0 6px 20px -6px rgba(14,124,138,0.5)" : "0 2px 8px -3px rgba(20,30,40,0.2)",
-      onClick: () => setSelNode(i),
+      onClick: () => selectNode(i),
     };
   });
   const edges = co.graph.edges.map(([ai, bi]) => {
@@ -329,7 +341,7 @@ export default function Workspace() {
     { dx: 13, dy: 10 },
     { dx: 9, dy: 18 },
   ];
-  const rawChildren = p2.children[selIdx] || [];
+  const rawChildren = graphExpanded ? p2.children[selIdx] || [] : [];
   const childNodes = rawChildren.map((c, i) => ({
     ...c,
     x: Math.min(seln.x + childFan[i % childFan.length].dx, 88),
@@ -467,11 +479,7 @@ export default function Workspace() {
     gnodes,
     edges,
     selNode,
-    setSelNode: (i: number) => {
-      setSelNode(i);
-      setSelChild(null);
-      if (p2.children[i]?.length) setGuideFlags((prev) => ({ ...prev, expand: true }));
-    },
+    setSelNode: selectNode,
     selNodeView,
     childNodes,
     selChild,

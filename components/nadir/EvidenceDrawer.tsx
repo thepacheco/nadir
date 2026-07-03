@@ -27,6 +27,7 @@ export default function EvidenceDrawer() {
           </div>
           <div style={{ fontSize: 15.5, fontWeight: 700, lineHeight: 1.4, marginBottom: 4 }}>{alert.title}</div>
           <div style={{ fontFamily: MONO, fontSize: 10.5, color: "#9aa2ab" }}>{alert.loc}</div>
+          {alert.plain && <div style={{ fontSize: 12, lineHeight: 1.5, color: "#0E7C8A", fontStyle: "italic", marginTop: 6 }}>In plain terms: {alert.plain}</div>}
         </div>
 
         <div style={{ flex: 1, overflowY: "auto", padding: "18px 22px", display: "flex", flexDirection: "column", gap: 20 }}>

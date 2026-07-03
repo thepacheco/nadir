@@ -208,6 +208,9 @@ export default function AppShell() {
         <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, letterSpacing: "0.08em", color: "#9aa2ab" }}>
           {companies.length} DEMO COMPANIES
         </div>
+        <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 9.5, letterSpacing: "0.1em", color: "#8a5a10", border: "1px solid rgba(180,118,20,0.4)", background: "rgba(180,118,20,0.07)", padding: "3px 9px", borderRadius: 100 }}>
+          SIMULATED DATA
+        </div>
 
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 12px 5px 10px", border: "1px solid rgba(20,24,28,0.12)", borderRadius: 100, background: "#FCFBF9" }}>

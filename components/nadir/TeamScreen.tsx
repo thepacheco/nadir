@@ -4,7 +4,8 @@ import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
 export default function TeamScreen() {
-  const { people, selPersonView, thread, msgSent, onSendMsg, personEscalated, escalatePerson } = useNadir();
+  const { people, selPersonView, thread, msgSent, onSendMsg, personEscalated, escalatePerson, approver } = useNadir();
+  const managers = Array.from(new Set(people.map((p) => p.manager).filter(Boolean))) as string[];
 
   return (
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
@@ -42,6 +43,35 @@ export default function TeamScreen() {
               )}
             </button>
           ))}
+        </div>
+        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid rgba(20,24,28,0.1)" }}>
+          <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 4 }}>ORG TREE · WHO IS TIED TO WHAT</div>
+          <div style={{ fontSize: 11, color: "#9aa2ab", marginBottom: 10, lineHeight: 1.5 }}>Grayed people are tracked from your data but hold no seat — the chain still routes through them.</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11.5 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "3px 0" }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#B47614", flex: "none" }} />
+              <span style={{ color: "#14181C", fontWeight: 600 }}>{approver.name}</span>
+              <span style={{ fontSize: 9, color: "#8a5a10" }}>APPROVER</span>
+            </div>
+            {managers.map((m) => (
+              <div key={m}>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "3px 0 3px 14px" }}>
+                  <span style={{ color: "#b7bec5" }}>└─</span>
+                  <span style={{ color: "#7a848e" }}>{m}</span>
+                  {!people.some((pp) => pp.name === m.split(" · ")[0]) && <span style={{ fontSize: 9, color: "#b7bec5" }}>NO SEAT · TRACKED</span>}
+                </div>
+                {people.filter((pp) => pp.manager === m).map((pp) => (
+                  <div key={pp.name} style={{ display: "flex", alignItems: "center", gap: 7, padding: "2px 0 2px 34px" }}>
+                    <span style={{ color: "#b7bec5" }}>└─</span>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: pp.statusColor, flex: "none" }} />
+                    <button onClick={pp.onSelect} style={{ fontFamily: "inherit", fontSize: 11.5, color: "#0E7C8A", fontWeight: 600, background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>{pp.name}</button>
+                    <span style={{ color: "#b7bec5", fontSize: 10 }}>{pp.dept}</span>
+                    {pp.pto && <span style={{ fontSize: 9, color: "#B47614" }}>PTO</span>}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", minHeight: 0 }}>

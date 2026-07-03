@@ -40,6 +40,7 @@ export interface Alert {
   detail: string;
   loc: string;
   q: string;
+  plain?: string;
 }
 
 export interface ChatReply {
