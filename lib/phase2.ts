@@ -265,4 +265,22 @@ export const PHASE2: Record<CompanyId, Phase2Data> = {
       { name: "Test Operations", head: "R. Chandra", status: "green", oversight: "OVERSEEN BY PROPULSION", kpis: [{ label: "CAMPAIGNS LIVE", val: "3", color: "#14181C" }, { label: "STAND UPTIME", val: "97%", color: "#15854F" }, { label: "CAL OVERDUE", val: "2", color: "#B47614" }], note: "Stand 2 open 19:00–02:00 tonight — the V-221 retest window is protected." },
     ],
   },
+  solo: {
+    approver: { name: "Self", reply: "" },
+    alerts: [],
+    children: {},
+    departments: []
+  },
+  paper: {
+    approver: { name: "Manager", reply: "" },
+    alerts: [],
+    children: {},
+    departments: []
+  },
+  defense: {
+    approver: { name: "Commander", reply: "" },
+    alerts: [],
+    children: {},
+    departments: []
+  }
 };
