@@ -122,10 +122,31 @@ export default function SiteNav() {
             <div 
               key={item.id} 
               onMouseEnter={() => setActiveMenu(item.id)}
-              style={{ padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 14.5, fontWeight: 500, color: activeMenu === item.id ? "#14181C" : "#5a646e", transition: "color 0.2s" }}
+              style={{ position: "relative" }}
             >
-              {item.label}
-              <ChevronDown size={14} style={{ transition: "transform 0.2s", transform: activeMenu === item.id ? "rotate(180deg)" : "rotate(0)" }} />
+              <div style={{ padding: "10px 16px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 14.5, fontWeight: 500, color: activeMenu === item.id ? "#14181C" : "#5a646e", transition: "color 0.2s" }}>
+                {item.label}
+                <ChevronDown size={14} style={{ transition: "transform 0.2s", transform: activeMenu === item.id ? "rotate(180deg)" : "rotate(0)" }} />
+              </div>
+              
+              <AnimatePresence>
+                {activeMenu === item.id && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, x: "-50%", rotateX: -15 }}
+                    animate={{ opacity: 1, y: 0, x: "-50%", rotateX: 0 }}
+                    exit={{ opacity: 0, y: 10, x: "-50%", rotateX: -15 }}
+                    transition={{ type: "spring", stiffness: 350, damping: 25, mass: 0.8 }}
+                    style={{
+                      position: "absolute", top: "100%", left: "50%",
+                      background: "#FFFFFF", borderRadius: 12, boxShadow: "0 24px 60px rgba(0,0,0,0.15)",
+                      border: "1px solid rgba(20,24,28,0.1)", overflow: "hidden", transformOrigin: "top center",
+                      marginTop: 8
+                    }}
+                  >
+                    {item.content}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           ))}
         </div>
@@ -141,26 +162,6 @@ export default function SiteNav() {
             Live Demo
           </Link>
         </div>
-
-        {/* DROPDOWN PANELS */}
-        <AnimatePresence>
-          {activeMenu && (
-            <motion.div
-              initial={{ opacity: 0, y: 10, rotateX: -15 }}
-              animate={{ opacity: 1, y: 0, rotateX: 0 }}
-              exit={{ opacity: 0, y: 10, rotateX: -15 }}
-              transition={{ type: "spring", stiffness: 350, damping: 25, mass: 0.8 }}
-              style={{
-                position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)",
-                background: "#FFFFFF", borderRadius: 12, boxShadow: "0 24px 60px rgba(0,0,0,0.15)",
-                border: "1px solid rgba(20,24,28,0.1)", overflow: "hidden", transformOrigin: "top center",
-                marginTop: 8
-              }}
-            >
-              {MENU_ITEMS.find((m) => m.id === activeMenu)?.content}
-            </motion.div>
-          )}
-        </AnimatePresence>
 
       </div>
     </div>
