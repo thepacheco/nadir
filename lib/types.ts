@@ -116,7 +116,7 @@ export interface ObMapping {
   conf: string;
 }
 
-export type CompanyId = "utility" | "manufacturing" | "staffing" | "restaurant" | "aerospace";
+export type CompanyId = "utility" | "manufacturing" | "staffing" | "restaurant" | "aerospace" | "solo" | "paper" | "defense";
 
 export interface Company {
   id: CompanyId;

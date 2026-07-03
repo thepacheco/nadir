@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { RETICLE_CURSOR } from "@/lib/constants";
 import { useNadir } from "./context";
@@ -9,9 +10,17 @@ const Nadir3D = dynamic(() => import("../Nadir3D"), { ssr: false });
 
 export default function MapScreen() {
   const { co, alertsFull, activeCount, clockLabel } = useNadir();
+  const [clickedBuilding, setClickedBuilding] = useState<number | null>(null);
+
+  // If a building is clicked, we filter the alerts to simulate focus
+  const filteredAlerts = clickedBuilding !== null 
+    ? alertsFull.slice(0, 1) // Just mock filtering to 1 alert for the demo
+    : alertsFull;
+
+  const filteredCount = clickedBuilding !== null ? filteredAlerts.length : activeCount;
 
   return (
-    <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+    <div className={styles.mobileStack} style={{ display: "flex", flex: 1, minHeight: 0 }}>
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", minHeight: 0, position: "relative" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "rgba(20,24,28,0.08)", borderBottom: "1px solid rgba(20,24,28,0.08)", flex: "none" }}>
           {co.kpis.map((k) => (
@@ -22,16 +31,18 @@ export default function MapScreen() {
           ))}
         </div>
         <div style={{ flex: 1, minHeight: 0, position: "relative", background: "#F3F1EC", cursor: RETICLE_CURSOR }}>
-          <Nadir3D variant={co.id} />
+          <Nadir3D variant={co.id} onBuildingClick={setClickedBuilding} />
           <div style={{ position: "absolute", left: 16, bottom: 14, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", pointerEvents: "none" }}>
             drag to rotate · live from {co.sources.length} systems · as of {clockLabel}
           </div>
         </div>
       </div>
-      <div style={{ width: 344, flex: "none", borderLeft: "1px solid rgba(20,24,28,0.1)", overflowY: "auto", padding: 20, background: "#FCFBF9" }}>
-        <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 14 }}>ACTIVE SIGNALS · {activeCount}</div>
+      <div className={styles.mobileFullWidth} style={{ width: 344, flex: "none", borderLeft: "1px solid rgba(20,24,28,0.1)", overflowY: "auto", padding: 20, background: "#FCFBF9" }}>
+        <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 14 }}>
+          {clickedBuilding !== null ? `BUILDING SIGNALS · ${filteredCount}` : `ACTIVE SIGNALS · ${activeCount}`}
+        </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {alertsFull.map((al) => (
+          {filteredAlerts.map((al) => (
             <div key={al.title} style={{ padding: 14, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderLeft: `3px solid ${al.borderColor}`, borderRadius: 8, opacity: al.opacity }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: al.color, animation: al.anim }} />

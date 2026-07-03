@@ -1,6 +1,7 @@
 "use client";
 
 import { useNadir } from "./context";
+import ChecklistForm from "./ChecklistForm";
 import styles from "./nadir.module.css";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -68,6 +69,12 @@ export default function EvidenceDrawer() {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {co.id === "aerospace" && (
+            <div>
+              <ChecklistForm onSubmit={() => {}} />
             </div>
           )}
 

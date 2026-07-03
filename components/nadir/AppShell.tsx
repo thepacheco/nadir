@@ -249,9 +249,9 @@ export default function AppShell() {
         </div>
       </div>
 
-      <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+      <div className={styles.mobileStack} style={{ display: "flex", flex: 1, minHeight: 0 }}>
         {/* NAV */}
-        <div style={{ width: 214, flex: "none", borderRight: "1px solid rgba(20,24,28,0.1)", padding: "14px 10px", display: "flex", flexDirection: "column", gap: 3, background: "#FFFFFF" }}>
+        <div className={styles.mobileFullWidth} style={{ width: 214, flex: "none", borderRight: "1px solid rgba(20,24,28,0.1)", padding: "14px 10px", display: "flex", flexDirection: "column", gap: 3, background: "#FFFFFF" }}>
           {SCREENS.map((sc) => {
             const active = screen === sc.id;
             let badge: string | false = false;

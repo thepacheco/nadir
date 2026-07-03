@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-type Variant = "utility" | "manufacturing" | "staffing" | "restaurant" | "aerospace";
+type Variant = "utility" | "manufacturing" | "staffing" | "restaurant" | "aerospace" | "solo" | "paper" | "defense";
 
 interface Box {
   x: number;
@@ -27,6 +27,7 @@ interface Layout {
   boxes: Box[];
   labels: Label[];
   markers: Marker[];
+  isPipeline?: boolean;
 }
 
 const RED = 0xc7452f;
@@ -55,13 +56,14 @@ const LAYOUTS: Record<Variant, Layout> = {
   },
   staffing: {
     boxes: [
-      { x: -6.5, z: 0, w: 2, d: 2, h: 0.8 }, { x: -3.5, z: 0, w: 2, d: 2, h: 1.5 },
-      { x: -0.5, z: 0, w: 2, d: 2, h: 2.3 }, { x: 2.5, z: 0, w: 2, d: 2, h: 3.1 },
-      { x: 5.5, z: 0, w: 2, d: 2, h: 4 }, { x: -0.5, z: 4, w: 3, d: 2, h: 1.2 },
-      { x: -0.5, z: -4, w: 3, d: 2, h: 1.2 },
+      { x: -6.5, z: 0, w: 1.5, d: 1.5, h: 1.5 }, { x: -3.5, z: 0, w: 1.8, d: 1.8, h: 1.8 },
+      { x: -0.5, z: 0, w: 2, d: 2, h: 2.3 }, { x: 2.5, z: 0, w: 2.2, d: 2.2, h: 2.5 },
+      { x: 5.5, z: 0, w: 2.5, d: 2.5, h: 2.8 }, { x: -0.5, z: 4, w: 1.5, d: 1.5, h: 1.5 },
+      { x: -0.5, z: -4, w: 1.5, d: 1.5, h: 1.5 },
     ],
-    labels: [{ x: -0.5, z: 4, t: "BACK OFFICE" }, { x: 5.5, z: 0, t: "PLACED" }, { x: -0.5, z: -4, t: "FINANCE" }],
-    markers: [{ x: -0.5, z: 4, y: 1.7, c: RED }, { x: -0.5, z: -4, y: 1.7, c: AMBER }, { x: 5.5, z: 0, y: 4.5, c: AMBER }],
+    labels: [{ x: -0.5, z: 4, t: "SOURCING" }, { x: 5.5, z: 0, t: "PLACED" }, { x: -0.5, z: -4, t: "FINANCE" }],
+    markers: [{ x: -0.5, z: 4, y: 2, c: RED }, { x: -0.5, z: -4, y: 2, c: AMBER }, { x: 5.5, z: 0, y: 3.2, c: AMBER }],
+    isPipeline: true,
   },
   restaurant: {
     boxes: [
@@ -87,6 +89,26 @@ const LAYOUTS: Record<Variant, Layout> = {
     labels: [{ x: -0.5, z: -2.5, t: "TEST STAND 2" }, { x: 5.5, z: 2.5, t: "PAD 1" }, { x: -6, z: -2, t: "ASSEMBLY" }],
     markers: [{ x: -0.5, z: -2.5, y: 4.2, c: RED }, { x: -6, z: 3.5, y: 2.2, c: AMBER }, { x: -6, z: -2, y: 4.9, c: AMBER }],
   },
+  solo: {
+    boxes: [{ x: 0, z: 0, w: 3, d: 3, h: 2 }],
+    labels: [{ x: 0, z: 2, t: "HQ" }],
+    markers: [{ x: 0, z: 0, y: 2.2, c: RED }],
+  },
+  paper: {
+    boxes: [
+      { x: -5, z: 0, w: 4, d: 4, h: 1.5 }, { x: 0, z: 0, w: 3, d: 3, h: 3 }, { x: 5, z: 0, w: 4, d: 2, h: 2 }
+    ],
+    labels: [{ x: 0, z: 2, t: "PULPER" }, { x: -5, z: 2, t: "MILL" }],
+    markers: [{ x: 0, z: 0, y: 3.2, c: AMBER }]
+  },
+  defense: {
+    boxes: [
+      { x: -4, z: -4, w: 1, d: 1, h: 4 }, { x: 4, z: -4, w: 1, d: 1, h: 4 },
+      { x: 0, z: 0, w: 4, d: 4, h: 1 }, { x: -4, z: 4, w: 1, d: 1, h: 4 }, { x: 4, z: 4, w: 1, d: 1, h: 4 }
+    ],
+    labels: [{ x: 0, z: 3, t: "COMMAND" }, { x: -4, z: -4, t: "RADAR 1" }],
+    markers: [{ x: 0, z: 0, y: 1.5, c: RED }, { x: -4, z: -4, y: 4.5, c: AMBER }]
+  },
 };
 
 function makeLabelTexture(text: string, color: string): HTMLCanvasElement {
@@ -108,7 +130,7 @@ interface Blip {
   offset: number;
 }
 
-export default function Nadir3D({ variant }: { variant: Variant }) {
+export default function Nadir3D({ variant, onBuildingClick }: { variant: Variant, onBuildingClick?: (id: number | null) => void }) {
   const hostRef = useRef<HTMLDivElement | null>(null);
   const stateRef = useRef<{
     renderer: THREE.WebGLRenderer;
@@ -178,27 +200,54 @@ export default function Nadir3D({ variant }: { variant: Variant }) {
       targetTheta: 0.7,
       phi: 0.44,
       dist: 21,
+      targetDist: 21,
       raf: 0,
       ro: null as unknown as ResizeObserver,
     };
     stateRef.current = st;
 
     let dragging = false;
+    let dragDist = 0;
     let lastX = 0;
     const el = renderer.domElement;
     const onDown = (e: PointerEvent) => {
       dragging = true;
+      dragDist = 0;
       lastX = e.clientX;
       el.setPointerCapture(e.pointerId);
     };
     const onMove = (e: PointerEvent) => {
       if (dragging) {
-        st.targetTheta += (e.clientX - lastX) * 0.006;
+        const dx = e.clientX - lastX;
+        dragDist += Math.abs(dx);
+        st.targetTheta += dx * 0.006;
         lastX = e.clientX;
       }
     };
-    const onUp = () => {
+    const onUp = (e: PointerEvent) => {
       dragging = false;
+      if (dragDist < 5 && onBuildingClick) {
+        const rect = el.getBoundingClientRect();
+        const mouse = new THREE.Vector2(
+          ((e.clientX - rect.left) / rect.width) * 2 - 1,
+          -((e.clientY - rect.top) / rect.height) * 2 + 1
+        );
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(siteGroup.children, true);
+        const hit = intersects.find(x => x.object.userData?.isBuilding);
+        if (hit) {
+          const bId = hit.object.userData.id;
+          onBuildingClick(bId);
+          // Zoom in
+          const targetPos = hit.object.position;
+          st.targetTheta = Math.atan2(targetPos.x, targetPos.z) + Math.PI / 4;
+          st.targetDist = 12;
+        } else {
+          onBuildingClick(null);
+          st.targetDist = 21;
+        }
+      }
     };
     el.addEventListener("pointerdown", onDown);
     el.addEventListener("pointermove", onMove);
@@ -223,6 +272,7 @@ export default function Nadir3D({ variant }: { variant: Variant }) {
       const t = clock.getElapsedTime();
       if (!dragging) st.targetTheta += 0.0012;
       st.theta += (st.targetTheta - st.theta) * 0.08;
+      st.dist += (st.targetDist - st.dist) * 0.08;
       const cx = Math.sin(st.theta) * Math.cos(st.phi) * st.dist;
       const cz = Math.cos(st.theta) * Math.cos(st.phi) * st.dist;
       const cy = Math.sin(st.phi) * st.dist;
@@ -281,19 +331,40 @@ export default function Nadir3D({ variant }: { variant: Variant }) {
     const labels: THREE.Sprite[] = [];
 
     layout.boxes.forEach((b, i) => {
-      const geo = new THREE.BoxGeometry(b.w, b.h, b.d);
-      const mesh = new THREE.Mesh(
-        geo,
-        new THREE.MeshStandardMaterial({ color: BUILDING_TONES[i % 3], roughness: 0.78, metalness: 0.05 })
-      );
-      mesh.position.set(b.x, b.h / 2, b.z);
+      let mesh;
+      if (layout.isPipeline) {
+        const geo = new THREE.SphereGeometry(b.w / 1.5, 32, 32);
+        mesh = new THREE.Mesh(
+          geo,
+          new THREE.MeshStandardMaterial({ color: 0x0E7C8A, roughness: 0.2, metalness: 0.8, transparent: true, opacity: 0.8 })
+        );
+        mesh.position.set(b.x, b.h / 2, b.z);
+        
+        // Add connecting lines for pipeline
+        if (i > 0 && i < 5) {
+          const prev = layout.boxes[i - 1];
+          const lineGeo = new THREE.CylinderGeometry(0.1, 0.1, Math.abs(b.x - prev.x), 8);
+          const lineMesh = new THREE.Mesh(lineGeo, new THREE.MeshBasicMaterial({ color: 0x0E7C8A, transparent: true, opacity: 0.3 }));
+          lineMesh.rotation.z = Math.PI / 2;
+          lineMesh.position.set((b.x + prev.x) / 2, (b.h + prev.h) / 4, b.z);
+          g.add(lineMesh);
+        }
+      } else {
+        const geo = new THREE.BoxGeometry(b.w, b.h, b.d);
+        mesh = new THREE.Mesh(
+          geo,
+          new THREE.MeshStandardMaterial({ color: BUILDING_TONES[i % 3], roughness: 0.78, metalness: 0.05 })
+        );
+        mesh.position.set(b.x, b.h / 2, b.z);
+        const edges = new THREE.LineSegments(
+          new THREE.EdgesGeometry(geo),
+          new THREE.LineBasicMaterial({ color: 0x9a968d, transparent: true, opacity: 0.55 })
+        );
+        edges.position.copy(mesh.position);
+        g.add(edges);
+      }
+      mesh.userData = { isBuilding: !layout.isPipeline, id: i };
       g.add(mesh);
-      const edges = new THREE.LineSegments(
-        new THREE.EdgesGeometry(geo),
-        new THREE.LineBasicMaterial({ color: 0x9a968d, transparent: true, opacity: 0.55 })
-      );
-      edges.position.copy(mesh.position);
-      g.add(edges);
     });
 
     (layout.labels || []).forEach((lb) => {

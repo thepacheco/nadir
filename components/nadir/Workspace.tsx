@@ -280,20 +280,22 @@ export default function Workspace() {
 
   // ---- decorated alerts (chat sidebar + ops map) ----
   const decorateAlert = (a: Alert, idx = -1): DecoratedAlert => {
-    const active = a.at <= clock;
     return {
       ...a,
-      anim: active ? sevAnim(a.color) : "none",
-      opacity: active ? 1 : 0.4,
-      borderColor: active ? a.color : "rgba(20,24,28,0.15)",
-      statusTag: active ? a.sev : "SCHEDULED",
-      subLabel: active ? a.loc : "opens " + fmtClock(a.at),
+      anim: sevAnim(a.color),
+      opacity: 1,
+      borderColor: a.color,
+      statusTag: a.sev,
+      subLabel: a.loc,
       onGoMap: () => setScreen("map"),
       onAsk: () => { setScreen("chat"); send(a.q); },
       onEvidence: () => { setEvidenceIdx(idx >= 0 ? idx : co.alerts.indexOf(a)); setGuideFlags((prev) => ({ ...prev, evidence: true })); },
     };
   };
-  const alertsSide = co.alerts.map((a, i) => decorateAlert(a, i));
+  const alertsSide = co.alerts
+    .map((a, i) => ({ a, i }))
+    .filter(({ a }) => a.at <= clock)
+    .map(({ a, i }) => decorateAlert(a, i));
   const alertsFull = alertsSide;
   const activeCount = co.alerts.filter((a) => a.at <= clock).length;
 

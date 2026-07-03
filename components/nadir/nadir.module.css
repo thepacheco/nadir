@@ -68,3 +68,17 @@
 .inputWrap:focus-within {
   border-color: rgba(14, 124, 138, 0.5) !important;
 }
+
+@media (max-width: 900px) {
+  .mobileStack {
+    flex-direction: column !important;
+  }
+  .mobileHide {
+    display: none !important;
+  }
+  .mobileFullWidth {
+    width: 100% !important;
+    border-left: none !important;
+    border-top: 1px solid rgba(20,24,28,0.1) !important;
+  }
+}
