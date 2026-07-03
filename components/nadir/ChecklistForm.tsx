@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ActionModal from "./ActionModal";
 import styles from "./nadir.module.css";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -16,6 +17,7 @@ export default function ChecklistForm({ onSubmit }: { onSubmit: () => void }) {
 
   const allChecked = checks.every(Boolean);
   const [submitted, setSubmitted] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   if (submitted) {
     return (
@@ -55,10 +57,7 @@ export default function ChecklistForm({ onSubmit }: { onSubmit: () => void }) {
       </div>
       <button
         disabled={!allChecked}
-        onClick={() => {
-          setSubmitted(true);
-          onSubmit();
-        }}
+        onClick={() => setShowModal(true)}
         style={{
           fontFamily: "inherit", fontSize: 12.5, fontWeight: 700, padding: "8px 12px", width: "100%", borderRadius: 7,
           background: allChecked ? "#0E7C8A" : "rgba(20,24,28,0.06)",
@@ -69,6 +68,22 @@ export default function ChecklistForm({ onSubmit }: { onSubmit: () => void }) {
       >
         Submit Sign-off
       </button>
+
+      {showModal && (
+        <ActionModal
+          title="Submitting Compliance Sign-off"
+          steps={[
+            "Validating user session...",
+            "Committing checklist to audit trail...",
+            "Updating NCR status..."
+          ]}
+          onComplete={() => {
+            setSubmitted(true);
+            onSubmit();
+          }}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }

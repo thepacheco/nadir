@@ -15,6 +15,7 @@ import SourcesScreen from "./SourcesScreen";
 import SettingsScreen from "./SettingsScreen";
 import EvidenceDrawer from "./EvidenceDrawer";
 import Toast from "./Toast";
+import TimelineScrubber from "./TimelineScrubber";
 
 const NOTIF_COLORS = { ok: "#15854F", warn: "#B47614", info: "#0E7C8A" } as const;
 
@@ -306,6 +307,7 @@ export default function AppShell() {
 
       <EvidenceDrawer />
       <Toast />
+      <TimelineScrubber />
     </div>
   );
 }

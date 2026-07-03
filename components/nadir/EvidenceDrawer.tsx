@@ -2,12 +2,17 @@
 
 import { useNadir } from "./context";
 import ChecklistForm from "./ChecklistForm";
+import OntologyGraph from "./OntologyGraph";
+import ActionModal from "./ActionModal";
+import { useState } from "react";
 import styles from "./nadir.module.css";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
 
 export default function EvidenceDrawer() {
   const { co, alertMeta, evidenceIdx, closeEvidence, dataDecision, onDataDecision, alertEscalated, escalateAlert, onSend, setScreen } = useNadir();
+  const [showGraph, setShowGraph] = useState(false);
+  const [showEscalateModal, setShowEscalateModal] = useState(false);
   if (evidenceIdx === null) return null;
   const alert = co.alerts[evidenceIdx];
   const meta = alertMeta[evidenceIdx];
@@ -33,7 +38,15 @@ export default function EvidenceDrawer() {
 
         <div style={{ flex: 1, overflowY: "auto", padding: "18px 22px", display: "flex", flexDirection: "column", gap: 20 }}>
           <div>
-            <div style={{ fontFamily: MONO, fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 10 }}>EVIDENCE · EVERY NUMBER IS A DOOR</div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontFamily: MONO, fontSize: 11, letterSpacing: "0.12em", color: "#7a848e" }}>EVIDENCE · EVERY NUMBER IS A DOOR</div>
+              <button 
+                onClick={() => setShowGraph(true)}
+                style={{ fontFamily: "inherit", fontSize: 10, fontWeight: 700, padding: "4px 8px", background: "rgba(14,124,138,0.1)", color: "#0E7C8A", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 4, cursor: "pointer" }}
+              >
+                ⎈ View Data Lineage
+              </button>
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {meta.evidence.map((e, i) => (
                 <div key={i} style={{ padding: "11px 13px", background: "#FCFBF9", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 9 }}>
@@ -88,7 +101,7 @@ export default function EvidenceDrawer() {
               </div>
               {owner.manager && <div style={{ fontSize: 11.5, color: "#9aa2ab", marginBottom: 10 }}>↑ Reports to <span style={{ color: "#5a646e", fontWeight: 600 }}>{owner.manager}</span></div>}
               <button
-                onClick={() => escalateAlert(evidenceIdx)}
+                onClick={() => setShowEscalateModal(true)}
                 disabled={escalated}
                 style={{
                   fontFamily: "inherit", fontSize: 12, fontWeight: 700, padding: "8px 13px", borderRadius: 6, width: "100%",
@@ -120,6 +133,34 @@ export default function EvidenceDrawer() {
           </button>
         </div>
       </div>
+
+      {showGraph && (
+        <div style={{ position: "absolute", inset: 0, zIndex: 60, background: "rgba(20,24,28,0.7)", display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)" }}>
+          <div style={{ width: "90%", height: "90%", background: "#FFFFFF", borderRadius: 12, overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 24px 60px rgba(0,0,0,0.4)" }}>
+            <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(20,24,28,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#FCFBF9" }}>
+              <div style={{ fontSize: 15, fontWeight: 700 }}>Data Lineage Explorer</div>
+              <button onClick={() => setShowGraph(false)} style={{ fontFamily: "inherit", background: "transparent", border: "none", color: "#9aa2ab", fontSize: 24, cursor: "pointer", lineHeight: 1 }}>×</button>
+            </div>
+            <div style={{ flex: 1, position: "relative" }}>
+              <OntologyGraph graph={co.graph} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showEscalateModal && (
+        <ActionModal
+          title={`Escalating to ${escTarget}`}
+          steps={[
+            "Locating chain of command...",
+            "Verifying PTO schedule...",
+            "Paging leadership...",
+            "Logging escalation..."
+          ]}
+          onComplete={() => escalateAlert(evidenceIdx)}
+          onClose={() => setShowEscalateModal(false)}
+        />
+      )}
     </>
   );
 }

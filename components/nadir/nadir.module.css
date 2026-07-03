@@ -82,3 +82,17 @@
     border-top: 1px solid rgba(20,24,28,0.1) !important;
   }
 }
+
+.timelineScrubber::-webkit-slider-thumb {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #0E7C8A;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  cursor: grab;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+.timelineScrubber::-webkit-slider-thumb:active {
+  cursor: grabbing;
+}
