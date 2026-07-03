@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-type Variant = "utility" | "manufacturing" | "staffing";
+type Variant = "utility" | "manufacturing" | "staffing" | "restaurant" | "aerospace";
 
 interface Box {
   x: number;
@@ -62,6 +62,30 @@ const LAYOUTS: Record<Variant, Layout> = {
     ],
     labels: [{ x: -0.5, z: 4, t: "BACK OFFICE" }, { x: 5.5, z: 0, t: "PLACED" }, { x: -0.5, z: -4, t: "FINANCE" }],
     markers: [{ x: -0.5, z: 4, y: 1.7, c: RED }, { x: -0.5, z: -4, y: 1.7, c: AMBER }, { x: 5.5, z: 0, y: 4.5, c: AMBER }],
+  },
+  restaurant: {
+    boxes: [
+      { x: -3, z: 1.5, w: 8, d: 6, h: 1.1 },   // dining room
+      { x: 4.5, z: -1, w: 4.5, d: 3.4, h: 1.5 }, // kitchen
+      { x: 6.2, z: 2.6, w: 1.8, d: 1.8, h: 1.7 }, // walk-in
+      { x: -3, z: -3.2, w: 7, d: 1.6, h: 1.3 },  // bar
+      { x: -7.6, z: 1.5, w: 1.4, d: 6, h: 0.5 }, // patio
+      { x: 2.2, z: 4.6, w: 2.6, d: 1.4, h: 1.2 }, // host / entry
+    ],
+    labels: [{ x: 6.2, z: 2.6, t: "WALK-IN" }, { x: 4.5, z: -1, t: "KITCHEN" }, { x: -3, z: 1.5, t: "DINING" }],
+    markers: [{ x: 6.2, z: 2.6, y: 2.3, c: RED }, { x: 4.5, z: -1, y: 2.1, c: AMBER }, { x: 2.2, z: 4.6, y: 1.8, c: AMBER }],
+  },
+  aerospace: {
+    boxes: [
+      { x: -6, z: -2, w: 4, d: 4, h: 4.4 },     // assembly building
+      { x: -0.5, z: -2.5, w: 1.2, d: 1.2, h: 3.6 }, // test stand
+      { x: 5.5, z: 2.5, w: 3.2, d: 3.2, h: 0.4 },  // pad
+      { x: 6.8, z: 1.2, w: 0.7, d: 0.7, h: 3.2 },  // pad tower
+      { x: -1, z: 3.5, w: 4.6, d: 2.2, h: 1.4 },   // control
+      { x: -6, z: 3.5, w: 2.6, d: 2, h: 1.6 },     // materials / receiving
+    ],
+    labels: [{ x: -0.5, z: -2.5, t: "TEST STAND 2" }, { x: 5.5, z: 2.5, t: "PAD 1" }, { x: -6, z: -2, t: "ASSEMBLY" }],
+    markers: [{ x: -0.5, z: -2.5, y: 4.2, c: RED }, { x: -6, z: 3.5, y: 2.2, c: AMBER }, { x: -6, z: -2, y: 4.9, c: AMBER }],
   },
 };
 

@@ -4,13 +4,49 @@ import { useEffect, useRef, useState } from "react";
 import { COMPANIES } from "@/lib/data";
 import type { Alert, ChatMessage } from "@/lib/types";
 import { GRAPH_TYPE_STYLE, AV_PALETTE, STATUS_COLORS, type ScreenId } from "@/lib/constants";
+import { useRouter } from "next/navigation";
 import { alertKey, fmtClock, initialToast, sevAnim } from "@/lib/derive";
 import { NadirContext, type DecoratedAlert, type NadirCtxValue, type ThreadItemView } from "./context";
-import LandingPage from "./LandingPage";
 import AppShell from "./AppShell";
 
-export default function NadirApp() {
-  const [view, setView] = useState<"landing" | "app">("landing");
+const MONO = "var(--font-ibm-plex-mono), monospace";
+
+const BOOT_LINES = ["Connecting to live systems", "Mapping schema → objects", "Fusing operational graph", "Live"];
+
+function BootOverlay({ companyName, sourceCount, stage }: { companyName: string; sourceCount: number; stage: number }) {
+  return (
+    <div
+      style={{
+        position: "fixed", inset: 0, zIndex: 100, background: "#FAF9F7", display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center", gap: 26,
+        opacity: stage >= BOOT_LINES.length ? 0 : 1, transition: "opacity 0.45s ease",
+        pointerEvents: stage >= BOOT_LINES.length ? "none" : "auto",
+      }}
+    >
+      <div style={{ width: 52, height: 52, border: "3px solid #14181C", borderRadius: "50%", position: "relative" }}>
+        <div style={{ position: "absolute", left: "50%", bottom: 5, transform: "translateX(-50%)", width: 10, height: 10, borderRadius: "50%", background: "#0E7C8A", animation: "nadirBlink 1.2s infinite" }} />
+      </div>
+      <div style={{ fontWeight: 700, fontSize: 17, letterSpacing: "0.06em" }}>NADIR</div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, minHeight: 118 }}>
+        {BOOT_LINES.map((line, i) => {
+          if (i > stage) return <div key={line} style={{ height: 18 }} />;
+          const done = i < stage;
+          const label = i === 0 ? `Connecting to ${companyName} — ${sourceCount} systems` : line;
+          return (
+            <div key={line} style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: MONO, fontSize: 12.5, color: done ? "#9aa2ab" : "#0E7C8A", animation: "nadirFadeUp 0.35s ease both" }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: done ? "#15854F" : "#0E7C8A", animation: done ? "none" : "nadirBlink 1s infinite" }} />
+              {done ? `${label} ✓` : label}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default function Workspace() {
+  const router = useRouter();
+  const [bootStage, setBootStage] = useState(0);
   const [screen, setScreen] = useState<ScreenId>("chat");
   const [cidx, setCidx] = useState(0);
   const [chats, setChats] = useState<Record<string, ChatMessage[]>>(() =>
@@ -44,6 +80,18 @@ export default function NadirApp() {
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current); }, []);
+
+  // entry boot sequence, then the initial critical-alert toast
+  useEffect(() => {
+    const steps = [420, 840, 1260, 1680].map((ms, i) =>
+      setTimeout(() => setBootStage(i + 1), ms)
+    );
+    const done = setTimeout(() => {
+      const c = coRef.current;
+      setToast(initialToast(c, c.nowMin, toastDismissedRef.current));
+    }, 1950);
+    return () => { steps.forEach(clearTimeout); clearTimeout(done); };
+  }, []);
 
   const chatScrollRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -118,15 +166,10 @@ export default function NadirApp() {
     }, 1400);
   }
 
-  function enterApp() {
-    setView("app");
-    window.scrollTo(0, 0);
-    setToast(initialToast(co, clock, toastDismissed));
-  }
   function exitApp() {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
-    setView("landing");
     setPlaying(false);
+    router.push("/");
   }
 
   function dismissCurrentToast(t: Alert | null) {
@@ -295,10 +338,10 @@ export default function NadirApp() {
     },
   };
 
-  if (view === "landing") return <LandingPage onEnterApp={enterApp} />;
   return (
     <NadirContext.Provider value={ctx}>
       <AppShell />
+      <BootOverlay companyName={co.name} sourceCount={co.sources.length} stage={bootStage} />
     </NadirContext.Provider>
   );
 }

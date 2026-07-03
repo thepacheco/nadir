@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { SCREENS } from "@/lib/constants";
 import { useNadir } from "./context";
 import styles from "./nadir.module.css";
@@ -12,6 +13,56 @@ import ComplianceScreen from "./ComplianceScreen";
 import SourcesScreen from "./SourcesScreen";
 import Toast from "./Toast";
 
+function CompanySwitcher() {
+  const { companies, cidx, selectCompany } = useNadir();
+  const [open, setOpen] = useState(false);
+  const co = companies[cidx];
+  return (
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        style={{
+          fontFamily: "inherit", display: "flex", alignItems: "center", gap: 10, fontSize: 13, fontWeight: 600,
+          padding: "7px 12px 7px 14px", borderRadius: 7, cursor: "pointer",
+          background: "rgba(14,124,138,0.08)", color: "#14181C", border: "1px solid rgba(14,124,138,0.4)",
+        }}
+      >
+        <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#0E7C8A", flex: "none" }} />
+        {co.name}
+        <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: "#7a848e" }}>▾</span>
+      </button>
+      {open && (
+        <>
+          <div style={{ position: "fixed", inset: 0, zIndex: 49 }} onClick={() => setOpen(false)} />
+          <div style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 50, width: 300, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.14)", borderRadius: 10, boxShadow: "0 18px 44px -16px rgba(20,30,40,0.35)", padding: 6, display: "flex", flexDirection: "column", gap: 2 }}>
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.12em", color: "#9aa2ab", padding: "8px 12px 6px" }}>SWITCH DEMO COMPANY</div>
+            {companies.map((c, i) => {
+              const active = i === cidx;
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => { selectCompany(i); setOpen(false); }}
+                  style={{
+                    fontFamily: "inherit", textAlign: "left", display: "flex", alignItems: "center", gap: 10, padding: "9px 12px",
+                    borderRadius: 7, cursor: "pointer", border: "none", width: "100%",
+                    background: active ? "rgba(14,124,138,0.1)" : "transparent",
+                  }}
+                >
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: active ? "#0E7C8A" : "#b7bec5", flex: "none" }} />
+                  <span style={{ minWidth: 0 }}>
+                    <span style={{ display: "block", fontSize: 13, fontWeight: 600, color: active ? "#0E7C8A" : "#14181C" }}>{c.name}</span>
+                    <span style={{ display: "block", fontSize: 11, color: "#9aa2ab", marginTop: 1 }}>{c.industry}</span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function Logo({ size = 21, dot = 5 }: { size?: number; dot?: number }) {
   return (
     <div style={{ width: size, height: size, border: "2.5px solid #14181C", borderRadius: "50%", position: "relative" }}>
@@ -22,7 +73,7 @@ function Logo({ size = 21, dot = 5 }: { size?: number; dot?: number }) {
 
 export default function AppShell() {
   const ctx = useNadir();
-  const { co, screen, setScreen, companies, cidx, selectCompany, clock, clockLabel, onScrub, playing, togglePlay, exitApp, unreadTotal } = ctx;
+  const { co, screen, setScreen, companies, clock, clockLabel, onScrub, playing, togglePlay, exitApp, unreadTotal } = ctx;
 
   return (
     <div style={{ background: "#FAF9F7", color: "#14181C", height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden", position: "relative" }}>
@@ -33,23 +84,9 @@ export default function AppShell() {
           <div style={{ fontWeight: 700, fontSize: 15.5, letterSpacing: "0.06em" }}>NADIR</div>
         </div>
         <div style={{ width: 1, height: 24, background: "rgba(20,24,28,0.12)" }} />
-        <div style={{ display: "flex", gap: 6 }}>
-          {companies.map((c, i) => {
-            const active = i === cidx;
-            return (
-              <button
-                key={c.id}
-                onClick={() => selectCompany(i)}
-                style={{
-                  fontFamily: "inherit", fontSize: 13, fontWeight: 600, padding: "7px 14px", borderRadius: 7, cursor: "pointer",
-                  background: active ? "rgba(14,124,138,0.12)" : "transparent", color: active ? "#0E7C8A" : "#5a646e",
-                  border: `1px solid ${active ? "rgba(14,124,138,0.45)" : "rgba(20,24,28,0.12)"}`,
-                }}
-              >
-                {c.name}
-              </button>
-            );
-          })}
+        <CompanySwitcher />
+        <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, letterSpacing: "0.08em", color: "#9aa2ab" }}>
+          {companies.length} DEMO COMPANIES
         </div>
 
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 12 }}>

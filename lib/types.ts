@@ -100,6 +100,8 @@ export interface Person {
   unread: number;
   thread: ThreadMessage[];
   draft: string;
+  manager?: string;
+  pto?: boolean;
 }
 
 export interface ObTable {
@@ -113,8 +115,10 @@ export interface ObMapping {
   conf: string;
 }
 
+export type CompanyId = "utility" | "manufacturing" | "staffing" | "restaurant" | "aerospace";
+
 export interface Company {
-  id: "utility" | "manufacturing" | "staffing";
+  id: CompanyId;
   name: string;
   industry: string;
   nowMin: number;

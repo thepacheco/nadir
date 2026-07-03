@@ -61,6 +61,15 @@ body {
   100% { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes nadirFadeUp {
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes nadirBootOut {
+  to { opacity: 0; visibility: hidden; }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

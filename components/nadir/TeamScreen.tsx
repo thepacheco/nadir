@@ -31,6 +31,7 @@ export default function TeamScreen() {
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <span style={{ fontSize: 13.5, fontWeight: 700 }}>{p.name}</span>
                   <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: "#9aa2ab" }}>{p.dept}</span>
+                  {p.pto && <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 9, letterSpacing: "0.06em", color: "#B47614" }}>PTO</span>}
                 </div>
                 <div style={{ fontSize: 12, color: "#5a646e", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.issue}</div>
               </div>
@@ -49,8 +50,21 @@ export default function TeamScreen() {
             {selPersonView.initials}
           </span>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 15.5, fontWeight: 700 }}>{selPersonView.name}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 15.5, fontWeight: 700 }}>{selPersonView.name}</span>
+              {selPersonView.pto && (
+                <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.08em", color: "#B47614", background: "rgba(180,118,20,0.12)", border: "1px solid rgba(180,118,20,0.4)", padding: "2px 8px", borderRadius: 4 }}>
+                  ON PTO
+                </span>
+              )}
+            </div>
             <div style={{ fontSize: 12.5, color: "#7a848e" }}>{selPersonView.role} · {selPersonView.dept}</div>
+            {selPersonView.manager && (
+              <div style={{ fontSize: 11.5, color: "#9aa2ab", marginTop: 2 }}>
+                ↑ Reports to <span style={{ color: "#5a646e", fontWeight: 600 }}>{selPersonView.manager}</span>
+                {selPersonView.pto && <span style={{ color: "#B47614" }}> — escalations route up automatically</span>}
+              </div>
+            )}
           </div>
           <div style={{ textAlign: "right", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#9aa2ab", lineHeight: 1.6 }}>
             <div>{selPersonView.email}</div>
