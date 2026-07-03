@@ -9,16 +9,16 @@ export default function CareersPage() {
       <PageHero
         eyebrow="CAREERS"
         title="Help companies see their own floor."
-        sub="We are a small team solving exceptionally hard data problems for physical industries. Our customers feel the impact of our work within days, not years."
+        sub="We're a small team building software for physical industries. We move fast, and our customers see real results in days, not years."
       />
 
       <Section>
-        <ContentBlock n="01" title="The Engineering Culture">
+        <ContentBlock n="01" title="How we work">
           <p style={{ marginBottom: 16 }}>
-            Building Nadir requires a unique blend of extreme patience for legacy mess and aggressive ambition for cutting-edge AI. You will be writing SQL queries against Oracle databases that were installed in 1998, and in the exact same afternoon, writing prompts for state-of-the-art Large Language Models to infer the semantic relationships within those tables.
+            Building Nadir means dealing with a lot of legacy mess. You might spend the morning writing SQL queries against an Oracle database from 1998, and the afternoon writing LLM prompts to map that data into something useful.
           </p>
           <p>
-            We do not have product managers throwing Jira tickets over the wall. Engineers at Nadir talk directly to plant managers, compliance officers, and line workers. You own the problem end-to-end: from the initial database connection, to the semantic mapping, to the final interface the customer uses to solve their crisis.
+            We don't have product managers handing down strictly scoped Jira tickets. Our engineers talk directly to plant managers, compliance officers, and line workers. You own the problem from the first database connection to the final interface the customer uses to solve their crisis.
           </p>
         </ContentBlock>
 
@@ -30,7 +30,7 @@ export default function CareersPage() {
                 <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", letterSpacing: "0.06em" }}>ATLANTA · HYBRID</div>
               </div>
               <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-                You will own the data ingestion layer. Your primary responsibility is writing robust, fault-tolerant code that safely connects to legacy databases (like older SAP or bespoke on-premise ERP systems). You will build the heuristics that allow our system to automatically infer schema structures, merging ten messy databases into one clean, unified operational graph. If you enjoy untangling complex data knots and possess a deep, innate understanding of relational data, this is for you.
+                We need someone to own our data ingestion. You'll write the code that connects to messy, on-premise ERPs and turns ten disjointed databases into one clean operational graph. If you like untangling gnarly SQL schemas and building fault-tolerant systems, this is for you.
               </p>
             </div>
             
@@ -42,7 +42,7 @@ export default function CareersPage() {
                 <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", letterSpacing: "0.06em" }}>REMOTE (US) / TRAVEL</div>
               </div>
               <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-                You will be the bridge between our enterprise clients and our core product. You will travel to client sites, orchestrate the connection of their databases to the Nadir platform, and guide them through the process of confirming their operational ontology. Your mandate is to help the client uncover hidden operational risks or compliance violations within their first two weeks of deployment.
+                You'll be the bridge between our product and our enterprise clients. You'll travel to client sites, hook up their databases to Nadir, and help them find hidden risks in their operations within the first two weeks. It's a highly autonomous role for someone who likes both engineering and talking to customers.
               </p>
             </div>
 
@@ -54,7 +54,7 @@ export default function CareersPage() {
                 <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", letterSpacing: "0.06em" }}>REMOTE (US)</div>
               </div>
               <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-                You will design the interface that our customers rely on daily. Your goal is to take incredibly dense, multi-dimensional operational data and render it instantly understandable. You must balance the needs of a factory line worker checking their shift schedule on a mobile device with the needs of a CEO reviewing high-level compliance reports on a desktop. Strong React and CSS skills are mandatory.
+                You'll design the interface our customers use every day. The challenge here is taking incredibly dense operational data and making it obvious—whether a factory line worker is checking their shift schedule on a phone, or a CEO is reviewing compliance reports on a desktop. Strong React and CSS skills are required.
               </p>
             </div>
           </div>
