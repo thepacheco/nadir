@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ArrowRight, LayoutGrid, Zap, Factory, Shield, BookOpen, Terminal, Plane, FileText, Phone, Building2, Users } from "lucide-react";
+import { ChevronDown, ArrowRight, LayoutGrid, Zap, Factory, Shield, BookOpen, Terminal, Plane, FileText, Phone, Building2, Users, Database, GitMerge, Activity, Lock } from "lucide-react";
 import Logo from "./Logo";
 import styles from "../nadir/nadir.module.css";
 
@@ -12,32 +12,64 @@ const MENU_ITEMS = [
     id: "product",
     label: "Product",
     content: (
-      <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 24, padding: 24 }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.1em", color: "#7a848e", marginBottom: -4 }}>PLATFORM</div>
-          <Link href="/platform" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: 8, margin: -8, borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
-            <div style={{ width: 40, height: 40, borderRadius: 8, background: "rgba(14,124,138,0.1)", color: "#0E7C8A", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-              <LayoutGrid size={20} />
-            </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 0, minWidth: 680 }}>
+        <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.1em", color: "#7a848e", marginBottom: 8 }}>PLATFORM</div>
+          <Link href="/platform" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+            <LayoutGrid size={18} style={{ color: "#0E7C8A", flex: "none", marginTop: 2 }} />
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Ontology Engine</div>
-              <div style={{ fontSize: 13, color: "#5a646e", lineHeight: 1.4 }}>Map physical operations to digital objects.</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Overview</div>
+              <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>How the platform works end-to-end.</div>
             </div>
           </Link>
-          <Link href="/platform" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: 8, margin: -8, borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
-            <div style={{ width: 40, height: 40, borderRadius: 8, background: "rgba(21,133,79,0.1)", color: "#15854F", display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-              <Terminal size={20} />
-            </div>
+          <Link href="/platform#ontology" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+            <GitMerge size={18} style={{ color: "#0E7C8A", flex: "none", marginTop: 2 }} />
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Algorithmic Checks</div>
-              <div style={{ fontSize: 13, color: "#5a646e", lineHeight: 1.4 }}>Deterministic rules running ahead of LLMs.</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Ontology Engine</div>
+              <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>Map messy databases to real-world objects.</div>
+            </div>
+          </Link>
+          <Link href="/platform#mapper" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+            <Database size={18} style={{ color: "#0E7C8A", flex: "none", marginTop: 2 }} />
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Schema Mapper</div>
+              <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>Visual drag-and-drop column matching.</div>
             </div>
           </Link>
         </div>
-        <div style={{ background: "#F3F1EC", margin: "-24px -24px -24px 0", padding: "24px", display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.1em", color: "#7a848e", marginBottom: -4 }}>RESOURCES</div>
+        <div style={{ padding: 24, borderLeft: "1px solid rgba(20,24,28,0.08)", display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.1em", color: "#7a848e", marginBottom: 8 }}>CAPABILITIES</div>
+          <Link href="/platform#graph" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+            <Activity size={18} style={{ color: "#15854F", flex: "none", marginTop: 2 }} />
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Operational Graph</div>
+              <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>Live model of your entire operation.</div>
+            </div>
+          </Link>
+          <Link href="/platform#compliance" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+            <Terminal size={18} style={{ color: "#15854F", flex: "none", marginTop: 2 }} />
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Compliance Monitor</div>
+              <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>Deterministic rules, not AI guessing.</div>
+            </div>
+          </Link>
+          <Link href="/platform#audits" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+            <Lock size={18} style={{ color: "#15854F", flex: "none", marginTop: 2 }} />
+            <div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Audit Trails</div>
+              <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>Immutable, tamper-evident logging.</div>
+            </div>
+          </Link>
+        </div>
+        <div style={{ background: "#F3F1EC", padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.1em", color: "#7a848e" }}>QUICK LINKS</div>
           <Link href="/pricing" style={{ display: "block", fontSize: 14, fontWeight: 500, color: "#3d4750", textDecoration: "none" }}>Pricing Plans</Link>
           <Link href="/workspace" style={{ display: "block", fontSize: 14, fontWeight: 500, color: "#3d4750", textDecoration: "none" }}>Live Demo Workspace</Link>
+          <div style={{ marginTop: "auto", padding: 16, background: "rgba(14,124,138,0.06)", borderRadius: 8, border: "1px solid rgba(14,124,138,0.2)" }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#0E7C8A", marginBottom: 6 }}>See it running</div>
+            <div style={{ fontSize: 12, color: "#5a646e", lineHeight: 1.5, marginBottom: 10 }}>Explore the live workspace with five simulated industries.</div>
+            <Link href="/workspace" style={{ fontSize: 12, fontWeight: 700, color: "#0E7C8A", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}>Open workspace <ArrowRight size={14}/></Link>
+          </div>
         </div>
       </div>
     )

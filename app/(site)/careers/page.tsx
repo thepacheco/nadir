@@ -1,7 +1,26 @@
 import type { Metadata } from "next";
-import { PageHero, Section, ContentBlock } from "@/components/site/PageShell";
+import Link from "next/link";
+import { PageHero, Section } from "@/components/site/PageShell";
+import { ROLES } from "@/lib/roles";
+import { MapPin, ArrowRight, Code, Rocket, Palette } from "lucide-react";
+import styles from "@/components/nadir/nadir.module.css";
 
 export const metadata: Metadata = { title: "Careers — Nadir" };
+
+const MONO = "var(--font-ibm-plex-mono), monospace";
+const SERIF = "var(--font-newsreader), serif";
+
+const ROLE_ICONS = [
+  <Code key="0" size={22} />,
+  <Rocket key="1" size={22} />,
+  <Palette key="2" size={22} />,
+];
+
+const CULTURE = [
+  { title: "Engineers talk to customers", desc: "There are no layers between you and the people using your work. You'll talk directly to plant managers, compliance officers, and line workers." },
+  { title: "Legacy is the job", desc: "Our customers run on Oracle databases from 1998 and bespoke ERPs that nobody documented. That mess is where the value lives." },
+  { title: "Ship fast, verify hard", desc: "We deploy to enterprise customers in under two weeks. But in regulated industries, every output must be deterministically correct." },
+];
 
 export default function CareersPage() {
   return (
@@ -9,56 +28,103 @@ export default function CareersPage() {
       <PageHero
         eyebrow="CAREERS"
         title="Help companies see their own floor."
-        sub="We're a small team building software for physical industries. We move fast, and our customers see real results in days, not years."
+        sub="We're a small team building the nervous system for physical industry. We move fast, and our customers see real results in days."
       />
 
+      {/* CULTURE CARDS */}
       <Section>
-        <ContentBlock n="01" title="How we work">
-          <p style={{ marginBottom: 16 }}>
-            Building Nadir means dealing with a lot of legacy mess. You might spend the morning writing SQL queries against an Oracle database from 1998, and the afternoon writing LLM prompts to map that data into something useful.
-          </p>
-          <p>
-            We don't have product managers handing down strictly scoped Jira tickets. Our engineers talk directly to plant managers, compliance officers, and line workers. You own the problem from the first database connection to the final interface the customer uses to solve their crisis.
-          </p>
-        </ContentBlock>
-
-        <ContentBlock n="02" title="Open Positions">
-          <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
-                <div style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 22, color: "#14181C" }}>Founding Fusion Engineer</div>
-                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", letterSpacing: "0.06em" }}>ATLANTA · HYBRID</div>
-              </div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-                We need someone to own our data ingestion. You'll write the code that connects to messy, on-premise ERPs and turns ten disjointed databases into one clean operational graph. If you like untangling gnarly SQL schemas and building fault-tolerant systems, this is for you.
-              </p>
+        <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>HOW WE WORK</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          {CULTURE.map((c) => (
+            <div key={c.title} style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, padding: "28px 24px" }}>
+              <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 10, color: "#14181C" }}>{c.title}</div>
+              <p style={{ fontSize: 14.5, lineHeight: 1.65, color: "#5a646e", margin: 0 }}>{c.desc}</p>
             </div>
-            
-            <div style={{ height: 1, background: "rgba(20,24,28,0.06)" }} />
+          ))}
+        </div>
+      </Section>
 
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
-                <div style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 22, color: "#14181C" }}>Forward-Deployed Engineer</div>
-                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", letterSpacing: "0.06em" }}>REMOTE (US) / TRAVEL</div>
+      {/* OPEN ROLES */}
+      <Section alt>
+        <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>OPEN POSITIONS</div>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 32px", letterSpacing: "-0.01em", color: "#14181C" }}>Current openings.</h2>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {ROLES.map((role, i) => (
+            <Link
+              key={role.slug}
+              href={`/careers/${role.slug}`}
+              style={{
+                display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 20, alignItems: "center",
+                background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12,
+                padding: "24px 28px", textDecoration: "none", color: "inherit",
+                transition: "border-color 0.2s, box-shadow 0.2s",
+              }}
+              className={styles.layerCard}
+            >
+              <div style={{ width: 48, height: 48, borderRadius: 10, background: "rgba(14,124,138,0.08)", color: "#0E7C8A", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {ROLE_ICONS[i]}
               </div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-                You'll be the bridge between our product and our enterprise clients. You'll travel to client sites, hook up their databases to Nadir, and help them find hidden risks in their operations within the first two weeks. It's a highly autonomous role for someone who likes both engineering and talking to customers.
-              </p>
-            </div>
-
-            <div style={{ height: 1, background: "rgba(20,24,28,0.06)" }} />
-
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
-                <div style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 22, color: "#14181C" }}>Product Design Engineer</div>
-                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", letterSpacing: "0.06em" }}>REMOTE (US)</div>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 17, color: "#14181C", marginBottom: 4 }}>{role.title}</div>
+                <div style={{ fontSize: 14, color: "#5a646e" }}>{role.shortDesc}</div>
+                <div style={{ display: "flex", gap: 16, marginTop: 8 }}>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontFamily: MONO, fontSize: 11, color: "#7a848e", letterSpacing: "0.04em" }}>
+                    <MapPin size={12} /> {role.location}
+                  </span>
+                  <span style={{ fontFamily: MONO, fontSize: 11, color: "#7a848e", letterSpacing: "0.04em" }}>{role.team}</span>
+                </div>
               </div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-                You'll design the interface our customers use every day. The challenge here is taking incredibly dense operational data and making it obvious—whether a factory line worker is checking their shift schedule on a phone, or a CEO is reviewing compliance reports on a desktop. Strong React and CSS skills are required.
-              </p>
-            </div>
+              <ArrowRight size={20} style={{ color: "#7a848e" }} />
+            </Link>
+          ))}
+        </div>
+      </Section>
+
+      {/* LOCATION */}
+      <Section>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
+          <div>
+            <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>LOCATIONS</div>
+            <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Atlanta, GA</h2>
+            <p style={{ fontSize: 15, lineHeight: 1.7, color: "#4a545e", margin: "0 0 24px" }}>
+              Our headquarters are in Atlanta. Most engineering roles are hybrid (3 days in-office). Forward-deployed engineers work remotely with regular client travel. We also support fully remote for the right candidates.
+            </p>
+            <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Remote (US)</h2>
+            <p style={{ fontSize: 15, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
+              For roles that don't require regular on-site presence, we support fully remote work within the United States.
+            </p>
           </div>
-        </ContentBlock>
+          <div style={{ background: "#F6F5F3", border: "1px solid rgba(20,24,28,0.08)", borderRadius: 12, padding: "32px 28px" }}>
+            <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 16 }}>BENEFITS</div>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                "Competitive salary + meaningful equity",
+                "Health, dental, and vision insurance",
+                "Unlimited PTO (actually used — we track it)",
+                "Home office stipend",
+                "Annual learning budget",
+              ].map((b) => (
+                <li key={b} style={{ display: "flex", gap: 10, fontSize: 14.5, color: "#3d4750", lineHeight: 1.5 }}>
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#15854F", flex: "none", marginTop: 7 }} />
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Section>
+
+      {/* BOTTOM CTA */}
+      <Section alt>
+        <div style={{ textAlign: "center", padding: "40px 0" }}>
+          <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Don't see your role?</h2>
+          <p style={{ fontSize: 16, color: "#4a545e", margin: "0 auto 32px", maxWidth: 500 }}>
+            We're always looking for people who are excited about turning messy data into operational clarity. Reach out anyway.
+          </p>
+          <Link href="/contact" className={styles.btnDark} style={{ fontSize: 15, fontWeight: 600, padding: "14px 32px", background: "#14181C", color: "#FFFFFF", borderRadius: 8, textDecoration: "none" }}>
+            Get in touch
+          </Link>
+        </div>
       </Section>
     </>
   );
