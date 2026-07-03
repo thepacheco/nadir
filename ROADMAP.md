@@ -70,26 +70,28 @@ something, something happens) and **Bloomberg Terminal** (dense, connected, dril
   reporting lines, approver identity, notification routing toggles, demo-state reset)
   plus a live notifications bell in the top bar.
 
-## Phase 3 — Real product architecture (pre-customer-#1)
+## Phase 3 — Real product architecture (demonstrated in-product; production engines still to build)
 
-- [ ] **Ingestion cost discipline** (this is the margin): schema-first mapping — read
-  table/column names + keys + the 3 most recent rows per table, never full tables,
-  through an LLM. Build the join map once, cache it, reuse it. Deterministic
-  checks (invoice_id ↔ invoice_id mismatch) run as plain algorithms, not model calls;
-  the model is reserved for reconciliation the algorithm can't do.
-- [ ] **Learned formats**: once Nadir generates a write-up/PO/report format the company
-  accepts, store it as a template — never re-generate (and re-pay for) it.
-- [ ] **Security**: read-only DB credentials, per-tenant isolation, no training on
-  customer data, audit every read. This is on /security already as a promise;
-  it has to be true.
-- [ ] **Plug-and-play onboarding**: first customer must connect a database and see a real
-  insight in under an hour, guided the whole way — the system must be able to teach
-  you how to use itself (in-product guide, not a PDF).
-- [ ] **Custom site blueprints**: upload/draw a real floor plan (restaurant layout, plant
-  layout) so the 3D ops map is *their* site, not a generic one; multi-site rollup
-  (50 restaurants: owner → regional → GM → host all see their slice).
-- [ ] **Third-party model cost tracking**: per-tenant token budgets and usage
-  metering, since inference is bought, not owned.
+- [x] **User-owned ontology wiring** (demo): onboarding now has a "Wire connections"
+  step — Nadir's inferred relationships shown as branches per object; rename any
+  object inline, rename any relationship, re-point where a connection lands, or add
+  a wire Nadir missed. Renames carry the wiring along; orphaned wires prompt for a
+  new target; every edit hits the audit trail and Nadir learns from the corrections.
+- [x] **Ingestion cost discipline** (demo surface): schema scan shows "sampled 3 rows
+  per table · full tables never leave your database"; Settings has the usage meter
+  splitting spend into CACHED mapping / ALGORITHMIC checks / METERED reconciliation /
+  TEMPLATED drafting. The production ingestion engine behind it is the build.
+- [x] **Learned formats** (demo surface): Settings format library — each accepted
+  format stored with reuse count; generated once, reused free.
+- [x] **Security posture** (stated + surfaced): read-only strip in onboarding,
+  /security page commitments. Production hardening is the real work.
+- [x] **Plug-and-play onboarding / self-teaching**: in-product Guide (6 live moves,
+  auto-checked as you do them) + the five-step connect flow. Target stands: first
+  insight on a real database in under an hour.
+- [ ] **Custom site blueprints**: upload/draw a real floor plan so the 3D ops map is
+  *their* site; multi-site rollup (owner → regional → GM all see their slice).
+- [x] **Third-party model cost tracking** (demo surface): per-tenant budget bar with
+  cap in Settings. Production metering to build.
 
 ---
 

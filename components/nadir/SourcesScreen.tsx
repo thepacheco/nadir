@@ -1,11 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { OB_LABELS, SRC_TYPES } from "@/lib/constants";
 import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
+const MONO = "var(--font-ibm-plex-mono), monospace";
+
 export default function SourcesScreen() {
-  const { co, obStep, obSrc, setObSrc, obNext, obConfirmed, onConfirmMapping, onConfirmAll, allConfirmed, obRestart, goMap } = useNadir();
+  const { co, obStep, obSrc, setObSrc, obNext, obConfirmed, onConfirmMapping, onConfirmAll, allConfirmed, obRestart, goMap, objectName, renameObject, wires, retargetWire, relabelWire, addWire, rewiredCount } = useNadir();
+  const [editingName, setEditingName] = useState<number | null>(null);
+  const [newFrom, setNewFrom] = useState("");
+  const [newLabel, setNewLabel] = useState("");
+  const [newTo, setNewTo] = useState("");
+
+  const objectOptions = co.obMappings.map((_, i) => objectName(i));
+  // group wires into branches by target object
+  const branches = objectOptions
+    .map((obj) => ({ obj, wires: wires.map((w, i) => ({ ...w, i })).filter((w) => w.to === obj) }))
+    .filter((b) => b.wires.length > 0);
+  const orphans = wires.map((w, i) => ({ ...w, i })).filter((w) => !objectOptions.includes(w.to));
 
   return (
     <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
@@ -86,11 +100,18 @@ export default function SourcesScreen() {
               </div>
               {co.obTables.map((tb) => (
                 <div key={tb.name} style={{ padding: "12px 20px", borderBottom: "1px solid rgba(20,24,28,0.06)", display: "flex", alignItems: "center", gap: 14 }}>
-                  <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 12.5, color: "#14181C", width: 220 }}>{tb.name}</span>
-                  <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#9aa2ab" }}>{tb.rows} rows</span>
+                  <span style={{ fontFamily: MONO, fontSize: 12.5, color: "#14181C", width: 220 }}>{tb.name}</span>
+                  <span style={{ fontFamily: MONO, fontSize: 11, color: "#9aa2ab" }}>{tb.rows} rows</span>
+                  <span style={{ fontFamily: MONO, fontSize: 10.5, color: "#0E7C8A" }}>sampled 3 rows</span>
                   <span style={{ marginLeft: "auto", width: 7, height: 7, borderRadius: "50%", background: "#15854F" }} />
                 </div>
               ))}
+              <div style={{ padding: "11px 20px", display: "flex", alignItems: "center", gap: 8, background: "rgba(21,133,79,0.05)" }}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#15854F", flex: "none" }} />
+                <span style={{ fontFamily: MONO, fontSize: 10.5, color: "#15854F" }}>
+                  READ-ONLY · schema + 3 sampled rows per table · full tables never leave your database · every read logged
+                </span>
+              </div>
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 22 }}>
               <button onClick={obNext} style={{ fontFamily: "inherit", fontSize: 14, fontWeight: 700, padding: "12px 26px", background: "#0E7C8A", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}>
@@ -108,12 +129,32 @@ export default function SourcesScreen() {
             <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, overflow: "hidden" }}>
               {co.obMappings.map((mp, i) => {
                 const c = !!obConfirmed[i];
+                const renamed = objectName(i) !== mp.proposed;
                 return (
                   <div key={mp.table} style={{ padding: "13px 20px", borderBottom: "1px solid rgba(20,24,28,0.06)", display: "flex", alignItems: "center", gap: 14 }}>
-                    <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 12.5, color: "#7a848e", width: 200 }}>{mp.table}</span>
+                    <span style={{ fontFamily: MONO, fontSize: 12.5, color: "#7a848e", width: 200 }}>{mp.table}</span>
                     <span style={{ color: "#9aa2ab" }}>→</span>
-                    <span style={{ fontSize: 13.5, fontWeight: 600 }}>{mp.proposed}</span>
-                    <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, color: "#9aa2ab" }}>{mp.conf}</span>
+                    {editingName === i ? (
+                      <input
+                        autoFocus
+                        value={objectName(i)}
+                        onChange={(e) => renameObject(i, e.target.value)}
+                        onBlur={() => setEditingName(null)}
+                        onKeyDown={(e) => { if (e.key === "Enter") setEditingName(null); }}
+                        style={{ fontFamily: "inherit", fontSize: 13.5, fontWeight: 600, padding: "4px 8px", border: "1.5px solid rgba(14,124,138,0.6)", borderRadius: 6, outline: "none", color: "#14181C", width: 190 }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: 13.5, fontWeight: 600 }}>{objectName(i)}</span>
+                    )}
+                    <button
+                      onClick={() => setEditingName(editingName === i ? null : i)}
+                      title="Rename this object"
+                      className={styles.iconBtn}
+                      style={{ fontFamily: "inherit", fontSize: 12, background: "transparent", color: "#9aa2ab", border: "none", borderRadius: 5, cursor: "pointer", padding: "3px 6px" }}
+                    >
+                      ✎
+                    </button>
+                    <span style={{ fontFamily: MONO, fontSize: 10.5, color: renamed ? "#0E7C8A" : "#9aa2ab" }}>{renamed ? "renamed" : mp.conf}</span>
                     <button
                       onClick={() => onConfirmMapping(i)}
                       style={{
@@ -136,20 +177,129 @@ export default function SourcesScreen() {
                 onClick={obNext}
                 style={{ fontFamily: "inherit", fontSize: 14, fontWeight: 700, padding: "12px 26px", background: allConfirmed ? "#0E7C8A" : "rgba(20,24,28,0.1)", color: allConfirmed ? "#FFFFFF" : "#b7bec5", border: "none", borderRadius: 8, cursor: allConfirmed ? "pointer" : "default" }}
               >
-                Build the graph →
+                Wire the connections →
               </button>
             </div>
           </>
         )}
 
         {obStep === 4 && (
+          <>
+            <div style={{ fontSize: 13, color: "#5a646e", marginBottom: 14, lineHeight: 1.6 }}>
+              This is how Nadir believes your objects connect — grouped as branches per object. <strong>You own the wiring:</strong> rename a relationship, re-point where a connection lands, or add one Nadir missed. Every edit is recorded in the audit trail.
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {branches.map((b) => (
+                <div key={b.obj} style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, overflow: "hidden" }}>
+                  <div style={{ padding: "11px 18px", display: "flex", alignItems: "center", gap: 9, borderBottom: "1px solid rgba(20,24,28,0.08)", background: "#FCFBF9" }}>
+                    <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#0E7C8A" }} />
+                    <span style={{ fontSize: 13.5, fontWeight: 700 }}>{b.obj}</span>
+                    <span style={{ fontFamily: MONO, fontSize: 10.5, color: "#9aa2ab", marginLeft: "auto" }}>{b.wires.length} inbound</span>
+                  </div>
+                  {b.wires.map((w) => (
+                    <div key={w.i} style={{ padding: "10px 18px 10px 26px", borderBottom: "1px solid rgba(20,24,28,0.05)", display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontFamily: MONO, fontSize: 12, color: "#b7bec5", flex: "none" }}>└─</span>
+                      <span style={{ fontFamily: MONO, fontSize: 12, color: "#14181C", minWidth: 230 }}>{w.from}</span>
+                      <input
+                        value={w.label}
+                        onChange={(e) => relabelWire(w.i, e.target.value)}
+                        title="Name this relationship"
+                        style={{ fontFamily: MONO, fontSize: 11, color: "#0E7C8A", background: "rgba(14,124,138,0.06)", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 5, padding: "3px 8px", width: 118, outline: "none", textAlign: "center" }}
+                      />
+                      <span style={{ color: "#9aa2ab" }}>→</span>
+                      <select
+                        value={w.to}
+                        onChange={(e) => retargetWire(w.i, e.target.value)}
+                        title="Re-point this connection"
+                        style={{ fontFamily: "inherit", fontSize: 12.5, fontWeight: 600, color: "#14181C", background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.18)", borderRadius: 6, padding: "4px 8px", cursor: "pointer" }}
+                      >
+                        {objectOptions.map((o) => (
+                          <option key={o} value={o}>{o}</option>
+                        ))}
+                      </select>
+                      <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10, color: w.conf === "manual" ? "#0E7C8A" : "#9aa2ab" }}>
+                        {w.custom ? "ADDED BY YOU" : w.conf === "manual" ? "REWIRED" : w.conf}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+              {orphans.map((w) => (
+                <div key={w.i} style={{ padding: "10px 18px", background: "#FFF", border: "1px dashed rgba(180,118,20,0.5)", borderRadius: 10, display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontFamily: MONO, fontSize: 12, color: "#14181C", minWidth: 230 }}>{w.from}</span>
+                  <span style={{ fontFamily: MONO, fontSize: 11, color: "#B47614" }}>target &quot;{w.to}&quot; no longer exists — re-point it</span>
+                  <select
+                    value=""
+                    onChange={(e) => retargetWire(w.i, e.target.value)}
+                    style={{ marginLeft: "auto", fontFamily: "inherit", fontSize: 12.5, border: "1px solid rgba(20,24,28,0.18)", borderRadius: 6, padding: "4px 8px" }}
+                  >
+                    <option value="" disabled>choose object…</option>
+                    {objectOptions.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+
+              <div style={{ background: "rgba(14,124,138,0.04)", border: "1px dashed rgba(14,124,138,0.4)", borderRadius: 12, padding: "13px 18px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                <span style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: "0.08em", color: "#0E7C8A", flex: "none" }}>ADD CONNECTION</span>
+                <input
+                  value={newFrom}
+                  onChange={(e) => setNewFrom(e.target.value)}
+                  placeholder="table.column"
+                  style={{ fontFamily: MONO, fontSize: 12, padding: "6px 10px", border: "1px solid rgba(20,24,28,0.18)", borderRadius: 6, outline: "none", width: 210 }}
+                />
+                <input
+                  value={newLabel}
+                  onChange={(e) => setNewLabel(e.target.value)}
+                  placeholder="relationship"
+                  style={{ fontFamily: MONO, fontSize: 12, padding: "6px 10px", border: "1px solid rgba(20,24,28,0.18)", borderRadius: 6, outline: "none", width: 130 }}
+                />
+                <span style={{ color: "#9aa2ab" }}>→</span>
+                <select
+                  value={newTo}
+                  onChange={(e) => setNewTo(e.target.value)}
+                  style={{ fontFamily: "inherit", fontSize: 12.5, border: "1px solid rgba(20,24,28,0.18)", borderRadius: 6, padding: "6px 8px" }}
+                >
+                  <option value="">object…</option>
+                  {objectOptions.map((o) => (
+                    <option key={o} value={o}>{o}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => {
+                    if (!newFrom.trim() || !newTo) return;
+                    addWire(newFrom.trim(), newLabel.trim() || "relates to", newTo);
+                    setNewFrom(""); setNewLabel(""); setNewTo("");
+                  }}
+                  style={{ fontFamily: "inherit", fontSize: 12.5, fontWeight: 700, padding: "7px 16px", background: newFrom.trim() && newTo ? "#0E7C8A" : "rgba(20,24,28,0.1)", color: newFrom.trim() && newTo ? "#fff" : "#b7bec5", border: "none", borderRadius: 6, cursor: newFrom.trim() && newTo ? "pointer" : "default" }}
+                >
+                  ＋ Wire it
+                </button>
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 22 }}>
+              <span style={{ fontFamily: MONO, fontSize: 11, color: rewiredCount ? "#0E7C8A" : "#9aa2ab" }}>
+                {rewiredCount ? `${rewiredCount} connection${rewiredCount > 1 ? "s" : ""} customized by you` : "Nadir’s inference, untouched — edit anything above"}
+              </span>
+              <button onClick={obNext} style={{ fontFamily: "inherit", fontSize: 14, fontWeight: 700, padding: "12px 26px", background: "#0E7C8A", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}>
+                Build the graph →
+              </button>
+            </div>
+          </>
+        )}
+
+        {obStep === 5 && (
           <div style={{ textAlign: "center", padding: "40px 20px" }}>
             <div style={{ width: 58, height: 58, border: "3px solid #15854F", borderRadius: "50%", margin: "0 auto 22px", position: "relative" }}>
               <div style={{ position: "absolute", left: "50%", bottom: 7, transform: "translateX(-50%)", width: 11, height: 11, borderRadius: "50%", background: "#15854F" }} />
             </div>
             <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 10 }}>Your operational graph is live.</div>
-            <div style={{ fontSize: 14, color: "#5a646e", lineHeight: 1.6, maxWidth: 440, margin: "0 auto 28px" }}>
+            <div style={{ fontSize: 14, color: "#5a646e", lineHeight: 1.6, maxWidth: 460, margin: "0 auto 12px" }}>
               {co.obDone} Every new source you plug in makes the model sharper — this is where the compounding starts.
+            </div>
+            <div style={{ fontFamily: MONO, fontSize: 11.5, color: rewiredCount ? "#0E7C8A" : "#9aa2ab", marginBottom: 28 }}>
+              {wires.length} connections wired{rewiredCount ? ` · ${rewiredCount} customized by you — Nadir learns from your corrections` : " · mapped once, cached, never re-read"}
             </div>
             <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
               <button onClick={goMap} style={{ fontFamily: "inherit", fontSize: 14, fontWeight: 700, padding: "13px 26px", background: "#0E7C8A", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}>

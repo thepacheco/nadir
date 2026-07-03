@@ -47,7 +47,7 @@ export const SEV_STYLES: Record<string, [string, string]> = {
   PASS: ["#15854F", "rgba(21,133,79,0.1)"],
 };
 
-export const OB_LABELS = ["Choose source", "Scan schema", "Confirm objects", "Live"];
+export const OB_LABELS = ["Choose source", "Scan schema", "Confirm objects", "Wire connections", "Live"];
 
 export const SRC_TYPES = [
   { name: "PostgreSQL", kind: "direct · read-only", dot: "#0E7C8A", shape: "2px" },

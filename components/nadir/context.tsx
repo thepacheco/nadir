@@ -4,6 +4,7 @@ import { createContext, useContext } from "react";
 import type { Alert, AuditEntry, ChatMessage, Company, GraphNode, Person, ThreadMessage } from "@/lib/types";
 import type { ScreenId } from "@/lib/constants";
 import type { AlertMeta, Approver, Department, GraphChild } from "@/lib/phase2";
+import type { Wire } from "@/lib/phase3";
 
 export interface NotifItem {
   time: string;
@@ -118,7 +119,7 @@ export interface NadirCtxValue {
   onSendMsg: () => void;
 
   // onboarding
-  obStep: 1 | 2 | 3 | 4;
+  obStep: 1 | 2 | 3 | 4 | 5;
   obSrc: number;
   setObSrc: (i: number) => void;
   obNext: () => void;
@@ -128,6 +129,18 @@ export interface NadirCtxValue {
   allConfirmed: boolean;
   obRestart: () => void;
   goMap: () => void;
+
+  // phase 3 — object renaming + wiring
+  objectName: (i: number) => string;
+  renameObject: (i: number, name: string) => void;
+  wires: Wire[];
+  retargetWire: (i: number, to: string) => void;
+  relabelWire: (i: number, label: string) => void;
+  addWire: (from: string, label: string, to: string) => void;
+  rewiredCount: number;
+
+  // phase 3 — guide
+  guideItems: { id: string; label: string; desc: string; done: boolean; go: () => void }[];
 
   // toast
   toast: DecoratedAlert | null;

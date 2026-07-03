@@ -18,6 +18,54 @@ import Toast from "./Toast";
 
 const NOTIF_COLORS = { ok: "#15854F", warn: "#B47614", info: "#0E7C8A" } as const;
 
+function GuideButton() {
+  const { guideItems } = useNadir();
+  const [open, setOpen] = useState(false);
+  const doneCount = guideItems.filter((g) => g.done).length;
+  return (
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        title="Guide — learn the workspace"
+        style={{ fontFamily: "inherit", display: "flex", alignItems: "center", gap: 7, height: 32, padding: "0 12px", borderRadius: 8, border: "1px solid rgba(14,124,138,0.4)", background: open ? "rgba(14,124,138,0.12)" : "rgba(14,124,138,0.06)", cursor: "pointer", fontSize: 12.5, fontWeight: 600, color: "#0E7C8A" }}
+      >
+        Guide
+        <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5 }}>{doneCount}/{guideItems.length}</span>
+      </button>
+      {open && (
+        <>
+          <div style={{ position: "fixed", inset: 0, zIndex: 49 }} onClick={() => setOpen(false)} />
+          <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 50, width: 380, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.14)", borderRadius: 10, boxShadow: "0 18px 44px -16px rgba(20,30,40,0.35)", padding: 6 }}>
+            <div style={{ padding: "10px 12px 8px" }}>
+              <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.12em", color: "#9aa2ab", marginBottom: 3 }}>LEARN THE WORKSPACE</div>
+              <div style={{ fontSize: 12, color: "#5a646e", lineHeight: 1.5 }}>The system teaches you how to use itself. Six moves, each one live — do them in any order.</div>
+            </div>
+            {guideItems.map((g) => (
+              <div key={g.id} style={{ display: "flex", gap: 10, padding: "10px 12px", borderTop: "1px solid rgba(20,24,28,0.06)", alignItems: "flex-start" }}>
+                <span style={{ width: 18, height: 18, borderRadius: "50%", flex: "none", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, background: g.done ? "rgba(21,133,79,0.14)" : "rgba(20,24,28,0.06)", color: g.done ? "#15854F" : "#9aa2ab", border: `1.5px solid ${g.done ? "rgba(21,133,79,0.5)" : "rgba(20,24,28,0.14)"}` }}>
+                  {g.done ? "✓" : ""}
+                </span>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: g.done ? "#9aa2ab" : "#14181C", textDecoration: g.done ? "line-through" : "none" }}>{g.label}</div>
+                  <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "#7a848e", marginTop: 2 }}>{g.desc}</div>
+                </div>
+                {!g.done && (
+                  <button
+                    onClick={() => { g.go(); setOpen(false); }}
+                    style={{ fontFamily: "inherit", fontSize: 11.5, fontWeight: 700, padding: "5px 11px", background: "rgba(14,124,138,0.08)", color: "#0E7C8A", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 6, cursor: "pointer", flex: "none" }}
+                  >
+                    Show me
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 function NotificationsBell() {
   const { notifications, unseenCount, markNotifsSeen } = useNadir();
   const [open, setOpen] = useState(false);
@@ -159,6 +207,7 @@ export default function AppShell() {
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#15854F", animation: "nadirBlink 2.4s infinite" }} />
             {co.sources.length} live
           </div>
+          <GuideButton />
           <NotificationsBell />
           <button
             onClick={exitApp}

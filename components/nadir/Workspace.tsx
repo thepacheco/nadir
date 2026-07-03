@@ -7,6 +7,7 @@ import { GRAPH_TYPE_STYLE, AV_PALETTE, STATUS_COLORS, type ScreenId } from "@/li
 import { useRouter } from "next/navigation";
 import { alertKey, fmtClock, initialToast, sevAnim } from "@/lib/derive";
 import { PHASE2 } from "@/lib/phase2";
+import { GUIDE_STEPS, WIRES, type Wire } from "@/lib/phase3";
 import { NadirContext, type DecoratedAlert, type NadirCtxValue, type NotifItem, type ThreadItemView } from "./context";
 import AppShell from "./AppShell";
 
@@ -58,9 +59,13 @@ export default function Workspace() {
   const [, setReplyIdx] = useState<Record<string, number>>({});
   const [snapshotSent, setSnapshotSent] = useState<Record<string, boolean>>({});
   const [selNode, setSelNode] = useState(COMPANIES[0].graph.nodes.length - 1);
-  const [obStep, setObStep] = useState<1 | 2 | 3 | 4>(1);
+  const [obStep, setObStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [obSrc, setObSrc] = useState(-1);
   const [obConfirmed, setObConfirmed] = useState<Record<number, boolean>>({});
+  const [obNames, setObNames] = useState<Record<string, Record<number, string>>>({});
+  const [obWires, setObWires] = useState<Record<string, Wire[]>>({});
+  const [rewired, setRewired] = useState<Record<string, number>>({});
+  const [guideFlags, setGuideFlags] = useState<Record<string, boolean>>({});
   const [selPerson, setSelPerson] = useState(0);
   const [msgSent, setMsgSent] = useState<Record<string, boolean>>({});
   const [clock, setClock] = useState(COMPANIES[0].nowMin);
@@ -284,7 +289,7 @@ export default function Workspace() {
       subLabel: active ? a.loc : "opens " + fmtClock(a.at),
       onGoMap: () => setScreen("map"),
       onAsk: () => { setScreen("chat"); send(a.q); },
-      onEvidence: () => setEvidenceIdx(idx >= 0 ? idx : co.alerts.indexOf(a)),
+      onEvidence: () => { setEvidenceIdx(idx >= 0 ? idx : co.alerts.indexOf(a)); setGuideFlags((prev) => ({ ...prev, evidence: true })); },
     };
   };
   const alertsSide = co.alerts.map((a, i) => decorateAlert(a, i));
@@ -368,13 +373,56 @@ export default function Workspace() {
   function obNext() {
     if (obStep === 1 && obSrc < 0) return;
     if (obStep === 3 && !allConfirmed) return;
-    setObStep((s) => (Math.min(4, s + 1) as 1 | 2 | 3 | 4));
+    setObStep((s) => (Math.min(5, s + 1) as 1 | 2 | 3 | 4 | 5));
   }
   function obRestart() {
     setObStep(1);
     setObSrc(-1);
     setObConfirmed({});
+    setObNames((prev) => ({ ...prev, [co.id]: {} }));
+    setObWires((prev) => ({ ...prev, [co.id]: WIRES[co.id].map((w) => ({ ...w })) }));
+    setRewired((prev) => ({ ...prev, [co.id]: 0 }));
   }
+
+  // ---- phase 3: object renaming + relationship wiring ----
+  const objectName = (i: number) => obNames[co.id]?.[i] ?? co.obMappings[i]?.proposed ?? "";
+  function renameObject(i: number, name: string) {
+    const old = objectName(i);
+    setObNames((prev) => ({ ...prev, [co.id]: { ...(prev[co.id] || {}), [i]: name } }));
+    // carry existing wiring along with the rename
+    mutateWires((ws) => ws.map((w) => (w.to === old ? { ...w, to: name } : w)));
+  }
+  const wires = obWires[co.id] ?? WIRES[co.id];
+  function bumpRewired() {
+    setRewired((prev) => ({ ...prev, [co.id]: (prev[co.id] || 0) + 1 }));
+    setGuideFlags((prev) => ({ ...prev, rewire: true }));
+  }
+  function mutateWires(fn: (ws: Wire[]) => Wire[]) {
+    setObWires((prev) => ({ ...prev, [co.id]: fn(prev[co.id] ?? WIRES[co.id].map((w) => ({ ...w }))) }));
+  }
+  function retargetWire(i: number, to: string) {
+    mutateWires((ws) => ws.map((w, j) => (j === i ? { ...w, to, conf: "manual" } : w)));
+    bumpRewired();
+    audit(`Ontology edit — connection ${wires[i]?.from} re-pointed to "${to}" by the user.`);
+  }
+  function relabelWire(i: number, label: string) {
+    mutateWires((ws) => ws.map((w, j) => (j === i ? { ...w, label } : w)));
+  }
+  function addWire(from: string, label: string, to: string) {
+    mutateWires((ws) => [...ws, { from, label, to, conf: "manual", custom: true }]);
+    bumpRewired();
+    notify(`New connection wired: ${from} → ${to}`, "info");
+    audit(`Ontology edit — user added connection ${from} —[${label}]→ ${to}.`);
+  }
+
+  // ---- phase 3: guide ----
+  const guideItems = GUIDE_STEPS.map((g) => {
+    let done = !!guideFlags[g.id];
+    if (g.id === "ask") done = (chats[co.id] || []).length > 1;
+    if (g.id === "approve") done = approval !== "none";
+    if (g.id === "escalate") done = Object.keys(escalations).length > 0;
+    return { id: g.id, label: g.label, desc: g.desc, done, go: () => setScreen(g.screen) };
+  });
 
   // ---- toast view ----
   const toastView: DecoratedAlert | null = toast
@@ -419,7 +467,11 @@ export default function Workspace() {
     gnodes,
     edges,
     selNode,
-    setSelNode: (i: number) => { setSelNode(i); setSelChild(null); },
+    setSelNode: (i: number) => {
+      setSelNode(i);
+      setSelChild(null);
+      if (p2.children[i]?.length) setGuideFlags((prev) => ({ ...prev, expand: true }));
+    },
     selNodeView,
     childNodes,
     selChild,
@@ -443,9 +495,18 @@ export default function Workspace() {
     obRestart,
     goMap: () => setScreen("map"),
 
+    objectName,
+    renameObject,
+    wires,
+    retargetWire,
+    relabelWire,
+    addWire,
+    rewiredCount: rewired[co.id] || 0,
+    guideItems,
+
     alertMeta: p2.alerts,
     evidenceIdx,
-    openEvidence: (i: number) => setEvidenceIdx(i),
+    openEvidence: (i: number) => { setEvidenceIdx(i); setGuideFlags((prev) => ({ ...prev, evidence: true })); },
     closeEvidence: () => setEvidenceIdx(null),
     dataDecision: evidenceIdx !== null ? decisions[`${co.id}|a${evidenceIdx}`] || null : null,
     onDataDecision,
