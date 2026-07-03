@@ -1,0 +1,70 @@
+/* Hover/focus overlays. Base look for every element stays as an inline style object
+   (mirrors the source design 1:1); these classes only add the :hover / :focus-within
+   deltas, using !important so they can win over the inline base declarations. */
+
+.btnDark:hover {
+  background: #0e7c8a !important;
+}
+
+.linkOutline:hover {
+  border-color: #14181c !important;
+}
+
+.layerCard:hover {
+  border-color: rgba(14, 124, 138, 0.45) !important;
+}
+
+.navItem:hover {
+  background: rgba(20, 24, 28, 0.05) !important;
+}
+
+.sourceCard:hover {
+  border-color: rgba(14, 124, 138, 0.45) !important;
+}
+
+.alertCard:hover {
+  border-color: rgba(14, 124, 138, 0.4) !important;
+}
+
+.iconBtn:hover {
+  color: #14181c !important;
+  background: rgba(20, 24, 28, 0.05) !important;
+}
+
+.chip:hover {
+  color: #0e7c8a !important;
+  border-color: rgba(14, 124, 138, 0.5) !important;
+}
+
+.askBtn:hover {
+  background: rgba(14, 124, 138, 0.16) !important;
+}
+
+.graphNode:hover {
+  border-color: #0e7c8a !important;
+}
+
+.personBtn:hover {
+  border-color: rgba(14, 124, 138, 0.4) !important;
+}
+
+.planItem:hover {
+  border-color: rgba(14, 124, 138, 0.35) !important;
+}
+
+.obSourceCard:hover {
+  border-color: rgba(14, 124, 138, 0.5) !important;
+}
+
+.exitBtn:hover {
+  color: #14181c !important;
+  border-color: rgba(20, 24, 28, 0.35) !important;
+}
+
+.ghostBtn:hover {
+  color: #14181c !important;
+}
+
+.inputWrap:focus-within {
+  border-color: rgba(14, 124, 138, 0.5) !important;
+}

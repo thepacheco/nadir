@@ -1,0 +1,78 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #FAF9F7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-ibm-plex-sans), system-ui, sans-serif;
+}
+
+::selection {
+  background: rgba(14, 124, 138, 0.18);
+}
+
+@keyframes nadirPulseRed {
+  0% { box-shadow: 0 0 0 0 rgba(199, 69, 47, 0.45); }
+  70% { box-shadow: 0 0 0 8px rgba(199, 69, 47, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(199, 69, 47, 0); }
+}
+
+@keyframes nadirPulseAmber {
+  0% { box-shadow: 0 0 0 0 rgba(180, 118, 20, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(180, 118, 20, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(180, 118, 20, 0); }
+}
+
+@keyframes nadirBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes nadirTyping {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-3px); opacity: 1; }
+}
+
+@keyframes nadirScan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(340%); }
+}
+
+@keyframes nadirDrift {
+  to { background-position: 27px 27px, -19px 19px; }
+}
+
+@keyframes nadirFloat {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50% { transform: translate(-50%, -56%); }
+}
+
+@keyframes nadirDash {
+  to { stroke-dashoffset: -6; }
+}
+
+@keyframes nadirToastIn {
+  0% { transform: translateY(18px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(20, 24, 28, 0.16);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}

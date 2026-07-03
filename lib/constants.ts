@@ -1,0 +1,56 @@
+import type { NodeType } from "./types";
+
+export const RETICLE_CURSOR =
+  "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30\" height=\"30\" viewBox=\"0 0 30 30\"><circle cx=\"15\" cy=\"15\" r=\"9\" fill=\"none\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><circle cx=\"15\" cy=\"15\" r=\"1.6\" fill=\"%230E7C8A\"/><line x1=\"15\" y1=\"1\" x2=\"15\" y2=\"6\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><line x1=\"15\" y1=\"24\" x2=\"15\" y2=\"29\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><line x1=\"1\" y1=\"15\" x2=\"6\" y2=\"15\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><line x1=\"24\" y1=\"15\" x2=\"29\" y2=\"15\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/></svg>') 15 15, crosshair";
+
+export const SCREENS = [
+  { id: "chat", label: "Ask Nadir", r: "50%", rot: "0deg" },
+  { id: "map", label: "Ops map", r: "2px", rot: "45deg" },
+  { id: "graph", label: "Fusion graph", r: "2px", rot: "0deg" },
+  { id: "team", label: "Team & inbox", r: "50% 50% 50% 2px", rot: "0deg" },
+  { id: "plan", label: "Guidance plan", r: "50% 2px 50% 2px", rot: "0deg" },
+  { id: "comp", label: "Compliance", r: "50% 2px 50% 2px", rot: "0deg" },
+  { id: "sources", label: "Data sources", r: "2px 50% 50% 50%", rot: "0deg" },
+] as const;
+
+export type ScreenId = (typeof SCREENS)[number]["id"];
+
+export const TAG_COLORS: Record<string, string> = {
+  "PREVENTS OUTAGE": "#C7452F", "STOPS BLEEDING": "#C7452F", "UNBLOCKS REVENUE": "#C7452F", "HARD DEADLINE": "#C7452F",
+  "NO-COST FIX": "#15854F", CASH: "#15854F", "5-MIN FIX": "#15854F",
+  COMPLIANCE: "#B47614", "SHIP FRIDAY": "#B47614", "REMOVES FRICTION": "#B47614", CONTINGENCY: "#B47614", "PREVENT REPEAT": "#B47614",
+  GROWTH: "#0E7C8A", SYSTEMIZE: "#0E7C8A", COMPOUND: "#0E7C8A", "DE-RISK": "#0E7C8A", "SCALE PREP": "#0E7C8A", "FUNDING PATH": "#0E7C8A",
+};
+
+export const GRAPH_TYPE_STYLE: Record<NodeType, { dotColor: string; dotShape: string; shape: string; bg: string; bd: string; typeLabel: string }> = {
+  source: { dotColor: "#9aa2ab", dotShape: "2px", shape: "8px", bg: "#FFFFFF", bd: "rgba(20,24,28,0.2)", typeLabel: "SOURCE SYSTEM" },
+  object: { dotColor: "#0E7C8A", dotShape: "50%", shape: "100px", bg: "#FFFFFF", bd: "rgba(14,124,138,0.35)", typeLabel: "BUSINESS OBJECT" },
+  process: { dotColor: "#15854F", dotShape: "50%", shape: "100px", bg: "#FFFFFF", bd: "rgba(21,133,79,0.35)", typeLabel: "PROCESS" },
+  risk: { dotColor: "#B47614", dotShape: "50%", shape: "100px", bg: "#FBF4E6", bd: "rgba(180,118,20,0.5)", typeLabel: "LIVE RISK" },
+};
+
+export const AV_PALETTE: [string, string][] = [
+  ["rgba(14,124,138,0.14)", "#0E7C8A"],
+  ["rgba(180,118,20,0.16)", "#8a5a10"],
+  ["rgba(21,133,79,0.14)", "#0f6b3f"],
+  ["rgba(199,69,47,0.13)", "#a5391f"],
+];
+
+export const STATUS_COLORS: Record<string, string> = { red: "#C7452F", amber: "#B47614", green: "#15854F" };
+
+export const SEV_STYLES: Record<string, [string, string]> = {
+  HIGH: ["#C7452F", "rgba(199,69,47,0.1)"],
+  MED: ["#B47614", "rgba(180,118,20,0.1)"],
+  PASS: ["#15854F", "rgba(21,133,79,0.1)"],
+};
+
+export const OB_LABELS = ["Choose source", "Scan schema", "Confirm objects", "Live"];
+
+export const SRC_TYPES = [
+  { name: "PostgreSQL", kind: "direct · read-only", dot: "#0E7C8A", shape: "2px" },
+  { name: "SQL Server", kind: "direct · read-only", dot: "#0E7C8A", shape: "2px" },
+  { name: "Oracle / EBS", kind: "direct · read-only", dot: "#0E7C8A", shape: "2px" },
+  { name: "MySQL", kind: "direct · read-only", dot: "#0E7C8A", shape: "2px" },
+  { name: "CSV / Excel", kind: "drop files here", dot: "#15854F", shape: "50%" },
+  { name: "SaaS APIs", kind: "ADP · SAP · QuickBooks…", dot: "#15854F", shape: "50%" },
+];
