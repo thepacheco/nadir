@@ -1,7 +1,7 @@
 "use client";
 
 import { AV_PALETTE, STATUS_COLORS } from "@/lib/constants";
-import { FORMAT_LIBRARY, USAGE_ROWS, USAGE_TOTAL } from "@/lib/phase3";
+import { FORMAT_LIBRARY, PER_USER_USAGE, SYSTEM_USAGE, USAGE_ROWS, USAGE_TOTAL } from "@/lib/phase3";
 import { useNadir } from "./context";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -112,6 +112,24 @@ export default function SettingsScreen() {
               <div style={{ fontSize: 11, color: "#9aa2ab", marginTop: 8, lineHeight: 1.5 }}>
                 Intelligence is bought by the token. Mapping is cached, checks are algorithmic — the model is reserved for what only a model can do.
               </div>
+            </div>
+            <div style={{ padding: "13px 18px 6px", fontFamily: MONO, fontSize: 10.5, letterSpacing: "0.1em", color: "#7a848e", borderTop: "1px solid rgba(20,24,28,0.08)" }}>
+              BY USER
+            </div>
+            {co.people.map((p, i) => {
+              const u = PER_USER_USAGE[i % PER_USER_USAGE.length];
+              return (
+                <div key={p.name} style={{ padding: "9px 18px", display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid rgba(20,24,28,0.05)" }}>
+                  <span style={{ fontSize: 12.5, fontWeight: 600, flex: 1 }}>{p.name}</span>
+                  <span style={{ fontFamily: MONO, fontSize: 10.5, color: "#9aa2ab" }}>{u.queries} queries · {u.briefings} briefings</span>
+                  <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, width: 52, textAlign: "right" }}>{u.cost}</span>
+                </div>
+              );
+            })}
+            <div style={{ padding: "9px 18px 14px", display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 12.5, color: "#7a848e", flex: 1 }}>{SYSTEM_USAGE.label}</span>
+              <span style={{ fontFamily: MONO, fontSize: 10.5, color: "#9aa2ab" }}>{SYSTEM_USAGE.queries} runs · mostly algorithmic</span>
+              <span style={{ fontFamily: MONO, fontSize: 12, fontWeight: 600, width: 52, textAlign: "right" }}>{SYSTEM_USAGE.cost}</span>
             </div>
           </div>
 

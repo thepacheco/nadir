@@ -4,15 +4,15 @@ export const RETICLE_CURSOR =
   "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30\" height=\"30\" viewBox=\"0 0 30 30\"><circle cx=\"15\" cy=\"15\" r=\"9\" fill=\"none\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><circle cx=\"15\" cy=\"15\" r=\"1.6\" fill=\"%230E7C8A\"/><line x1=\"15\" y1=\"1\" x2=\"15\" y2=\"6\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><line x1=\"15\" y1=\"24\" x2=\"15\" y2=\"29\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><line x1=\"1\" y1=\"15\" x2=\"6\" y2=\"15\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/><line x1=\"24\" y1=\"15\" x2=\"29\" y2=\"15\" stroke=\"%230E7C8A\" stroke-width=\"1.4\"/></svg>') 15 15, crosshair";
 
 export const SCREENS = [
-  { id: "chat", label: "Ask Nadir", r: "50%", rot: "0deg" },
-  { id: "map", label: "Ops map", r: "2px", rot: "45deg" },
-  { id: "graph", label: "Fusion graph", r: "2px", rot: "0deg" },
-  { id: "team", label: "Team & inbox", r: "50% 50% 50% 2px", rot: "0deg" },
-  { id: "depts", label: "Departments", r: "2px 2px 50% 2px", rot: "0deg" },
-  { id: "plan", label: "Guidance plan", r: "50% 2px 50% 2px", rot: "0deg" },
-  { id: "comp", label: "Compliance", r: "50% 2px 50% 2px", rot: "0deg" },
-  { id: "sources", label: "Data sources", r: "2px 50% 50% 50%", rot: "0deg" },
-  { id: "settings", label: "Settings", r: "50% 50% 2px 50%", rot: "45deg" },
+  { id: "chat", label: "Ask Nadir" },
+  { id: "map", label: "Ops map" },
+  { id: "graph", label: "Fusion graph" },
+  { id: "team", label: "Team & inbox" },
+  { id: "depts", label: "Departments" },
+  { id: "plan", label: "Guidance plan" },
+  { id: "comp", label: "Compliance" },
+  { id: "sources", label: "Data sources" },
+  { id: "settings", label: "Settings" },
 ] as const;
 
 export type ScreenId = (typeof SCREENS)[number]["id"];

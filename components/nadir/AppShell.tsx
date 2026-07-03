@@ -18,6 +18,33 @@ import Toast from "./Toast";
 
 const NOTIF_COLORS = { ok: "#15854F", warn: "#B47614", info: "#0E7C8A" } as const;
 
+// Distinct icon per tab — 15px stroke icons, colored by active state.
+function NavIcon({ id, color }: { id: string; color: string }) {
+  const common = { width: 15, height: 15, viewBox: "0 0 16 16", fill: "none", stroke: color, strokeWidth: 1.5, strokeLinecap: "round" as const, strokeLinejoin: "round" as const, style: { flex: "none" } };
+  switch (id) {
+    case "chat": // speech bubble
+      return <svg {...common}><path d="M2.5 3.5h11v7h-6l-3 3v-3h-2z" /></svg>;
+    case "map": // location pin
+      return <svg {...common}><path d="M8 14s4.5-4.2 4.5-7.5a4.5 4.5 0 1 0-9 0C3.5 9.8 8 14 8 14z" /><circle cx="8" cy="6.5" r="1.6" /></svg>;
+    case "graph": // linked nodes
+      return <svg {...common}><circle cx="3.5" cy="12.5" r="1.8" /><circle cx="8" cy="4" r="1.8" /><circle cx="12.5" cy="11" r="1.8" /><path d="M4.6 11.1 7 5.7M9.3 5.3l2.3 4.2M5.3 12.3l5.4-.9" /></svg>;
+    case "team": // two people
+      return <svg {...common}><circle cx="5.5" cy="5.5" r="2" /><path d="M1.8 13.5c0-2 1.7-3.4 3.7-3.4s3.7 1.4 3.7 3.4" /><circle cx="11.5" cy="6" r="1.6" /><path d="M10.5 10.4c2.1-.2 3.7 1.2 3.7 3.1" /></svg>;
+    case "depts": // org chart
+      return <svg {...common}><rect x="5.2" y="1.8" width="5.6" height="3.4" rx="0.8" /><rect x="1.2" y="10.8" width="5.2" height="3.4" rx="0.8" /><rect x="9.6" y="10.8" width="5.2" height="3.4" rx="0.8" /><path d="M8 5.2v2.6M8 7.8H3.8v3M8 7.8h4.2v3" /></svg>;
+    case "plan": // kanban columns
+      return <svg {...common}><rect x="1.8" y="2" width="3.6" height="12" rx="0.8" /><rect x="6.2" y="2" width="3.6" height="8" rx="0.8" /><rect x="10.6" y="2" width="3.6" height="5" rx="0.8" /></svg>;
+    case "comp": // shield + check
+      return <svg {...common}><path d="M8 1.8 13 3.6v4.2c0 3.4-2.2 5.4-5 6.4-2.8-1-5-3-5-6.4V3.6z" /><path d="m5.8 7.8 1.6 1.6 2.8-3" /></svg>;
+    case "sources": // database cylinder
+      return <svg {...common}><ellipse cx="8" cy="3.4" rx="5.4" ry="1.9" /><path d="M2.6 3.4v9.2c0 1 2.4 1.9 5.4 1.9s5.4-.9 5.4-1.9V3.4M2.6 8c0 1 2.4 1.9 5.4 1.9s5.4-.9 5.4-1.9" /></svg>;
+    case "settings": // gear
+      return <svg {...common}><circle cx="8" cy="8" r="2.2" /><path d="M8 1.6v2M8 12.4v2M1.6 8h2M12.4 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M12.5 3.5l-1.4 1.4M4.9 11.1l-1.4 1.4" /></svg>;
+    default:
+      return <svg {...common}><circle cx="8" cy="8" r="4" /></svg>;
+  }
+}
+
 function GuideButton() {
   const { guideItems } = useNadir();
   const [open, setOpen] = useState(false);
@@ -245,7 +272,7 @@ export default function AppShell() {
                   color: active ? "#14181C" : "#5a646e", border: "none", width: "100%",
                 }}
               >
-                <span style={{ width: 9, height: 9, flex: "none", background: active ? "#0E7C8A" : "#b7bec5", borderRadius: sc.r, transform: `rotate(${sc.rot})` }} />
+                <NavIcon id={sc.id} color={active ? "#0E7C8A" : "#9aa2ab"} />
                 {sc.label}
                 {badge && (
                   <span style={{ marginLeft: "auto", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, background: badgeBg, color: badgeFg, padding: "1px 7px", borderRadius: 20 }}>

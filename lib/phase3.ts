@@ -53,6 +53,15 @@ export const USAGE_ROWS = [
 
 export const USAGE_TOTAL = { spent: 18.0, cap: 50 };
 
+// Per-user consumption this month, indexed against company.people order.
+// The remainder (system jobs: sweeps, monitors, standing checks) is shown separately.
+export const PER_USER_USAGE = [
+  { queries: 124, briefings: 6, cost: "$4.10" },
+  { queries: 86, briefings: 3, cost: "$2.60" },
+  { queries: 51, briefings: 2, cost: "$1.30" },
+];
+export const SYSTEM_USAGE = { label: "System · sweeps & standing checks", queries: 1412, cost: "$10.00" };
+
 // Learned formats: generated once, accepted, stored — never paid for twice.
 export const FORMAT_LIBRARY = [
   { name: "One-page briefing", reuses: 6, saved: "accepted 5/12" },
