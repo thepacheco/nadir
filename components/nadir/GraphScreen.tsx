@@ -127,8 +127,85 @@ export default function GraphScreen() {
             </div>
           ))}
         </div>
-        <div style={{ fontSize: 12, lineHeight: 1.6, color: "#9aa2ab", borderTop: "1px solid rgba(20,24,28,0.08)", paddingTop: 12 }}>
+        <div style={{ fontSize: 12, lineHeight: 1.6, color: "#9aa2ab", borderTop: "1px solid rgba(20,24,28,0.08)", paddingTop: 12, marginBottom: 24 }}>
           Nadir inspected the raw schema, proposed what each table represents, and a human confirmed it once. Relationships were inferred from keys, timestamps, and usage.
+        </div>
+
+        {/* --- GOTHAM-INSPIRED SEARCH AROUND --- */}
+        <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 10 }}>SEARCH AROUND</div>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
+          {selNodeView.type === "object" && (
+            <>
+              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Linked Sources</button>
+              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Active Tasks</button>
+              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#B47614", background: "rgba(180,118,20,0.08)", border: "1px solid rgba(180,118,20,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Open Alerts</button>
+            </>
+          )}
+          {selNodeView.type === "source" && (
+            <>
+              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Derived Objects</button>
+              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Ingestion Logs</button>
+            </>
+          )}
+          {selNodeView.type === "process" && (
+            <>
+              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#C7452F", background: "rgba(199,69,47,0.08)", border: "1px solid rgba(199,69,47,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Blocking Risks</button>
+              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Involved Objects</button>
+            </>
+          )}
+          {selNodeView.type === "risk" && (
+            <>
+              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#C7452F", background: "rgba(199,69,47,0.08)", border: "1px solid rgba(199,69,47,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Affected Processes</button>
+              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#B47614", background: "rgba(180,118,20,0.08)", border: "1px solid rgba(180,118,20,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Related Incidents</button>
+            </>
+          )}
+        </div>
+
+        {/* --- GOTHAM-INSPIRED TASK & ACTIONS PANEL --- */}
+        <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 10 }}>ACTIVE TASKS & ACTIONS</div>
+        <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 10, overflow: "hidden" }}>
+          <div style={{ padding: 14, borderBottom: "1px solid rgba(20,24,28,0.08)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#14181C" }}>{selNodeView.type === "risk" ? "Urgent Remediation" : "Standard Review"}</div>
+              <span style={{ fontSize: 11, fontWeight: 600, color: selNodeView.type === "risk" ? "#C7452F" : "#B47614", background: selNodeView.type === "risk" ? "rgba(199,69,47,0.1)" : "rgba(180,118,20,0.1)", padding: "2px 6px", borderRadius: 4 }}>PENDING</span>
+            </div>
+            <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.5 }}>
+              {selNodeView.type === "source" ? "Verify schema sync status and map consistency." : "Ensure compliance parameters are within normal ranges."}
+            </div>
+          </div>
+          <div style={{ padding: 14, background: "#FCFBF9" }}>
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.08em", color: "#7a848e", marginBottom: 8 }}>EXECUTE WEBHOOK</div>
+            <select style={{ width: "100%", padding: "8px 10px", borderRadius: 6, border: "1px solid rgba(20,24,28,0.2)", fontSize: 13, fontFamily: "inherit", cursor: "pointer", marginBottom: 10, appearance: "none", background: "#FFFFFF" }}>
+              {selNodeView.type === "object" && (
+                <>
+                  <option>Log Lockout/Tagout</option>
+                  <option>Assign Certified Operator</option>
+                  <option>Approve Supervisor Sign-off</option>
+                </>
+              )}
+              {selNodeView.type === "source" && (
+                <>
+                  <option>Trigger Manual Sync</option>
+                  <option>View Raw Schema</option>
+                </>
+              )}
+              {selNodeView.type === "process" && (
+                <>
+                  <option>Halt Process (Emergency)</option>
+                  <option>Escalate to Manager</option>
+                </>
+              )}
+              {selNodeView.type === "risk" && (
+                <>
+                  <option>Dispatch Remediation Ticket</option>
+                  <option>Silence Alert (24h)</option>
+                </>
+              )}
+            </select>
+            <button style={{ width: "100%", padding: "8px", borderRadius: 6, border: "none", background: "#14181C", color: "#FFFFFF", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+              Run Action
+            </button>
+          </div>
         </div>
       </div>
     </div>
