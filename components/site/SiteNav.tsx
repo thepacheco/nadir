@@ -22,14 +22,14 @@ const MENU_ITEMS = [
               <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>How the platform works end-to-end.</div>
             </div>
           </Link>
-          <Link href="/platform#ontology" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+          <Link href="/platform/ontology-engine" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
             <GitMerge size={18} style={{ color: "#0E7C8A", flex: "none", marginTop: 2 }} />
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Ontology Engine</div>
               <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>Map messy databases to real-world objects.</div>
             </div>
           </Link>
-          <Link href="/platform#mapper" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+          <Link href="/platform/schema-mapper" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
             <Database size={18} style={{ color: "#0E7C8A", flex: "none", marginTop: 2 }} />
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Schema Mapper</div>
@@ -39,21 +39,21 @@ const MENU_ITEMS = [
         </div>
         <div style={{ padding: 24, borderLeft: "1px solid rgba(20,24,28,0.08)", display: "flex", flexDirection: "column", gap: 6 }}>
           <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.1em", color: "#7a848e", marginBottom: 8 }}>CAPABILITIES</div>
-          <Link href="/platform#graph" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+          <Link href="/platform/operational-graph" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
             <Activity size={18} style={{ color: "#15854F", flex: "none", marginTop: 2 }} />
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Operational Graph</div>
               <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>Live model of your entire operation.</div>
             </div>
           </Link>
-          <Link href="/platform#compliance" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+          <Link href="/platform/compliance-monitor" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
             <Terminal size={18} style={{ color: "#15854F", flex: "none", marginTop: 2 }} />
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Compliance Monitor</div>
               <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>Deterministic rules, not AI guessing.</div>
             </div>
           </Link>
-          <Link href="/platform#audits" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
+          <Link href="/platform/audit-trails" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
             <Lock size={18} style={{ color: "#15854F", flex: "none", marginTop: 2 }} />
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Audit Trails</div>
