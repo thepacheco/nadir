@@ -1,47 +1,55 @@
-import type { Metadata } from "next";
-import { MONO, PageHero, Section } from "@/components/site/PageShell";
+"use client";
 
-export const metadata: Metadata = { title: "Careers — Nadir" };
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
-const ROLES = [
-  { title: "Founding Fusion Engineer", team: "ENGINEERING", loc: "Atlanta · hybrid", desc: "Own the ingestion layer: direct SQL connections to legacy ERPs, schema inference, and the join map that turns ten ugly databases into one graph. The weirder the ERP variant, the more we want you." },
-  { title: "Forward-Deployed Engineer", team: "CUSTOMER", loc: "Atlanta / travel", desc: "Live inside design-partner deployments. Connect the first database, confirm the first ontology, find the first piece of hidden risk — and turn what you learn into product." },
-  { title: "Product Design Engineer", team: "DESIGN", loc: "Remote (US)", desc: "The interface is the argument: ops maps, fusion graphs, guidance plans. Make dense operational data legible to a plant manager at 6am and an investor at noon." },
-  { title: "Compliance & Trust Lead", team: "TRUST", loc: "Remote (US)", desc: "Own the compliance rulebook — OSHA, NERC, HACCP, AS9100 — and the audit-trail machinery that proves what Nadir saw and when. Regulated-industry background strongly preferred." },
+const MONO = "var(--font-ibm-plex-mono), monospace";
+
+const JOBS = [
+  { role: "Founding Forward Deployed Engineer", loc: "New York / Remote", type: "Full-time" },
+  { role: "Senior Rust Systems Engineer", loc: "Remote", type: "Full-time" },
+  { role: "Ontology Architect", loc: "New York", type: "Full-time" },
+  { role: "Product Designer (Data Viz)", loc: "Remote", type: "Full-time" }
 ];
 
 export default function CareersPage() {
   return (
-    <>
-      <PageHero
-        eyebrow="CAREERS"
-        title="Help companies see their own floor."
-        sub="Small team, hard data problems, customers who feel the difference the same week. We hire people who like both halves of that."
-      />
-      <Section>
-        <div style={{ display: "flex", flexDirection: "column", maxWidth: 900 }}>
-          {ROLES.map((r) => (
-            <div key={r.title} style={{ display: "grid", gridTemplateColumns: "1fr 2fr auto", gap: 32, padding: "28px 0", borderTop: "1px solid rgba(20,24,28,0.12)", alignItems: "start" }}>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 6 }}>{r.title}</div>
-                <div style={{ fontFamily: MONO, fontSize: 11, letterSpacing: "0.1em", color: "#7a848e" }}>{r.team} · {r.loc}</div>
-              </div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>{r.desc}</p>
-              <a
-                href={`mailto:careers@nadir.systems?subject=${encodeURIComponent(r.title)}`}
-                style={{ fontSize: 14, fontWeight: 600, color: "#0E7C8A", textDecoration: "none", whiteSpace: "nowrap", paddingTop: 2 }}
-              >
-                Apply →
-              </a>
-            </div>
-          ))}
-        </div>
-        <div style={{ marginTop: 40, padding: "22px 26px", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 12, background: "rgba(14,124,138,0.05)", maxWidth: 900 }}>
-          <p style={{ fontSize: 14.5, lineHeight: 1.65, color: "#2a333c", margin: 0 }}>
-            Don&apos;t see your role? If you&apos;ve untangled a legacy ERP, run a plant, audited a utility, or shipped data products people actually used — write us anyway: <a href="mailto:careers@nadir.systems" style={{ color: "#0E7C8A", fontWeight: 600, textDecoration: "none" }}>careers@nadir.systems</a>
+    <div style={{ background: "#FAF9F7", minHeight: "100vh", padding: "160px 48px 100px" }}>
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+        
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <div style={{ fontFamily: MONO, fontSize: 13, letterSpacing: "0.14em", color: "#0E7C8A", marginBottom: 24 }}>CAREERS</div>
+          <h1 style={{ fontFamily: "var(--font-newsreader), serif", fontSize: 56, fontWeight: 400, margin: "0 0 24px", color: "#14181C", letterSpacing: "-0.01em", lineHeight: 1.1 }}>
+            Build the central nervous system of physical industry.
+          </h1>
+          <p style={{ fontSize: 20, color: "#5a646e", lineHeight: 1.6, marginBottom: 60 }}>
+            We're a team of engineers building deterministic intelligence layers for environments where hallucinations are catastrophic. If you want to solve complex, real-world data problems, join us.
           </p>
-        </div>
-      </Section>
-    </>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>Open Roles</h2>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {JOBS.map((job) => (
+              <div key={job.role} style={{ background: "#FFFFFF", padding: 24, borderRadius: 12, border: "1px solid rgba(20,24,28,0.1)", display: "flex", alignItems: "center", justifyContent: "space-between", cursor: "pointer", transition: "transform 0.2s, box-shadow 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 30px rgba(0,0,0,0.06)"; }} onMouseOut={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}>
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: "#14181C", marginBottom: 8 }}>{job.role}</div>
+                  <div style={{ display: "flex", gap: 12, fontFamily: MONO, fontSize: 12, color: "#7a848e" }}>
+                    <span>{job.loc}</span>
+                    <span>·</span>
+                    <span>{job.type}</span>
+                  </div>
+                </div>
+                <div style={{ color: "#0E7C8A" }}>
+                  <ArrowRight size={20} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+      </div>
+    </div>
   );
 }

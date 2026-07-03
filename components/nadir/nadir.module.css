@@ -96,3 +96,7 @@
 .timelineScrubber::-webkit-slider-thumb:active {
   cursor: grabbing;
 }
+
+.navHover:hover {
+  background: rgba(20,24,28,0.04);
+}

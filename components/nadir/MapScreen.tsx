@@ -12,6 +12,7 @@ export default function MapScreen() {
   const { co, alertsFull, activeCount, clockLabel } = useNadir();
   const [clickedBuilding, setClickedBuilding] = useState<number | null>(null);
   const [isQuerying, setIsQuerying] = useState(false);
+  const [isPanelOpen, setIsPanelOpen] = useState(true);
 
   // If a building is clicked, we filter the alerts to simulate focus
   const handleBuildingClick = (idx: number | null) => {
@@ -40,16 +41,41 @@ export default function MapScreen() {
         </div>
         <div style={{ flex: 1, minHeight: 0, position: "relative", background: "#F3F1EC", cursor: RETICLE_CURSOR }}>
           <Nadir3D variant={co.id} onBuildingClick={handleBuildingClick} />
+          
+          {!isPanelOpen && (
+            <button
+              onClick={() => setIsPanelOpen(true)}
+              style={{
+                position: "absolute", top: 16, right: 16, fontFamily: "inherit", fontSize: 12, fontWeight: 700,
+                padding: "8px 14px", background: "#FFFFFF", color: "#14181C", border: "1px solid rgba(20,24,28,0.1)",
+                borderRadius: 8, cursor: "pointer", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", zIndex: 10,
+                display: "flex", alignItems: "center", gap: 8
+              }}
+            >
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#C7452F", animation: "nadirBlink 2s infinite" }} />
+              Show Signals
+            </button>
+          )}
+
           <div style={{ position: "absolute", left: 16, bottom: 14, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", pointerEvents: "none" }}>
             drag to rotate · live from {co.sources.length} systems · as of {clockLabel}
           </div>
         </div>
       </div>
-      <div className={styles.mobileFullWidth} style={{ width: 344, flex: "none", borderLeft: "1px solid rgba(20,24,28,0.1)", overflowY: "auto", padding: 20, background: "#FCFBF9" }}>
-        <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 14 }}>
-          {clickedBuilding !== null ? `BUILDING SIGNALS · ${filteredCount}` : `ACTIVE SIGNALS · ${activeCount}`}
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {isPanelOpen && (
+        <div className={styles.mobileFullWidth} style={{ width: 344, flex: "none", borderLeft: "1px solid rgba(20,24,28,0.1)", overflowY: "auto", padding: 20, background: "#FCFBF9", display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e" }}>
+              {clickedBuilding !== null ? `BUILDING SIGNALS · ${filteredCount}` : `ACTIVE SIGNALS · ${activeCount}`}
+            </div>
+            <button 
+              onClick={() => setIsPanelOpen(false)}
+              style={{ background: "transparent", border: "none", color: "#9aa2ab", cursor: "pointer", fontSize: 18, lineHeight: 1, padding: 4 }}
+            >
+              ×
+            </button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {isQuerying ? (
             <div style={{ padding: 16, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 6, animation: "nadirPulse 1.5s infinite" }}>
               <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, color: "#0E7C8A", marginBottom: 12 }}>
@@ -90,8 +116,9 @@ export default function MapScreen() {
               </div>
             ))
           )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
