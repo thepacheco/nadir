@@ -1,8 +1,20 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { Alert, ChatMessage, Company, GraphNode, Person, ThreadMessage } from "@/lib/types";
+import type { Alert, AuditEntry, ChatMessage, Company, GraphNode, Person, ThreadMessage } from "@/lib/types";
 import type { ScreenId } from "@/lib/constants";
+import type { AlertMeta, Approver, Department, GraphChild } from "@/lib/phase2";
+
+export interface NotifItem {
+  time: string;
+  text: string;
+  kind: "ok" | "warn" | "info";
+}
+
+export interface ChildNodeView extends GraphChild {
+  x: number;
+  y: number;
+}
 
 export interface DecoratedAlert extends Alert {
   anim: string;
@@ -12,6 +24,7 @@ export interface DecoratedAlert extends Alert {
   subLabel: string;
   onGoMap: () => void;
   onAsk: () => void;
+  onEvidence: () => void;
 }
 
 export interface DecoratedGraphNode extends GraphNode {
@@ -121,6 +134,44 @@ export interface NadirCtxValue {
   dismissToast: () => void;
   toastToMap: () => void;
   toastToChat: () => void;
+
+  // phase 2 — evidence drill-down
+  alertMeta: AlertMeta[];
+  evidenceIdx: number | null;
+  openEvidence: (i: number) => void;
+  closeEvidence: () => void;
+  dataDecision: "wrong" | "correct" | null;
+  onDataDecision: (alertIdx: number, d: "wrong" | "correct") => void;
+  alertEscalated: (alertIdx: number) => boolean;
+  escalateAlert: (alertIdx: number) => void;
+
+  // phase 2 — approvals
+  approval: "none" | "pending" | "approved";
+  approver: Approver;
+
+  // phase 2 — team escalation
+  personEscalated: boolean;
+  escalatePerson: () => void;
+
+  // phase 2 — graph children
+  childNodes: ChildNodeView[];
+  selChild: number | null;
+  setSelChild: (i: number | null) => void;
+  parentLabel: string;
+
+  // phase 2 — departments
+  departments: Department[];
+
+  // phase 2 — notifications
+  notifications: NotifItem[];
+  unseenCount: number;
+  markNotifsSeen: () => void;
+
+  // phase 2 — audit + settings
+  auditMerged: AuditEntry[];
+  notifPrefs: Record<string, boolean>;
+  toggleNotifPref: (k: string) => void;
+  resetDemo: () => void;
 }
 
 export const NadirContext = createContext<NadirCtxValue | null>(null);

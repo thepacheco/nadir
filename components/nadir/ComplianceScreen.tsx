@@ -4,7 +4,7 @@ import { SEV_STYLES } from "@/lib/constants";
 import { useNadir } from "./context";
 
 export default function ComplianceScreen() {
-  const { co } = useNadir();
+  const { co, auditMerged } = useNadir();
   const { compliance } = co;
 
   return (
@@ -42,7 +42,7 @@ export default function ComplianceScreen() {
         <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, overflow: "hidden" }}>
           <div style={{ padding: "14px 18px", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", borderBottom: "1px solid rgba(20,24,28,0.08)" }}>AUDIT TRAIL · AUTO</div>
           <div style={{ padding: "8px 0" }}>
-            {compliance.audit.map((a, i) => (
+            {auditMerged.map((a, i) => (
               <div key={i} style={{ padding: "10px 18px", display: "flex", gap: 12, alignItems: "baseline" }}>
                 <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, color: "#9aa2ab", flex: "none", width: 52 }}>{a.time}</span>
                 <span style={{ fontSize: 12.5, lineHeight: 1.5, color: "#2a333c" }}>{a.text}</span>

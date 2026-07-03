@@ -41,13 +41,22 @@ export default function MapScreen() {
               <div style={{ fontSize: 13.5, fontWeight: 600, lineHeight: 1.45, marginBottom: 6 }}>{al.title}</div>
               <div style={{ fontSize: 12.5, lineHeight: 1.55, color: "#5a646e", marginBottom: 8 }}>{al.detail}</div>
               <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, color: "#9aa2ab" }}>{al.loc}</div>
-              <button
-                onClick={al.onAsk}
-                className={styles.askBtn}
-                style={{ marginTop: 10, fontFamily: "inherit", fontSize: 12, fontWeight: 600, padding: "7px 12px", background: "rgba(14,124,138,0.08)", color: "#0E7C8A", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 6, cursor: "pointer" }}
-              >
-                Ask Nadir what to do →
-              </button>
+              <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                <button
+                  onClick={al.onAsk}
+                  className={styles.askBtn}
+                  style={{ fontFamily: "inherit", fontSize: 12, fontWeight: 600, padding: "7px 12px", background: "rgba(14,124,138,0.08)", color: "#0E7C8A", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 6, cursor: "pointer" }}
+                >
+                  Ask Nadir →
+                </button>
+                <button
+                  onClick={al.onEvidence}
+                  className={styles.ghostBtn}
+                  style={{ fontFamily: "inherit", fontSize: 12, fontWeight: 600, padding: "7px 12px", background: "transparent", color: "#5a646e", border: "1px solid rgba(20,24,28,0.16)", borderRadius: 6, cursor: "pointer" }}
+                >
+                  Evidence →
+                </button>
+              </div>
             </div>
           ))}
         </div>

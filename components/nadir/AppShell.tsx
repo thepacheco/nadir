@@ -8,10 +8,55 @@ import ChatScreen from "./ChatScreen";
 import MapScreen from "./MapScreen";
 import GraphScreen from "./GraphScreen";
 import TeamScreen from "./TeamScreen";
+import DepartmentsScreen from "./DepartmentsScreen";
 import PlannerScreen from "./PlannerScreen";
 import ComplianceScreen from "./ComplianceScreen";
 import SourcesScreen from "./SourcesScreen";
+import SettingsScreen from "./SettingsScreen";
+import EvidenceDrawer from "./EvidenceDrawer";
 import Toast from "./Toast";
+
+const NOTIF_COLORS = { ok: "#15854F", warn: "#B47614", info: "#0E7C8A" } as const;
+
+function NotificationsBell() {
+  const { notifications, unseenCount, markNotifsSeen } = useNadir();
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ position: "relative" }}>
+      <button
+        onClick={() => { setOpen((o) => !o); if (!open) markNotifsSeen(); }}
+        title="Notifications"
+        style={{ fontFamily: "inherit", position: "relative", width: 32, height: 32, borderRadius: 8, border: "1px solid rgba(20,24,28,0.14)", background: open ? "rgba(14,124,138,0.08)" : "transparent", cursor: "pointer", fontSize: 14, color: "#5a646e" }}
+      >
+        ◔
+        {unseenCount > 0 && (
+          <span style={{ position: "absolute", top: -6, right: -6, minWidth: 16, height: 16, padding: "0 4px", borderRadius: 10, background: "#C7452F", color: "#fff", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {unseenCount}
+          </span>
+        )}
+      </button>
+      {open && (
+        <>
+          <div style={{ position: "fixed", inset: 0, zIndex: 49 }} onClick={() => setOpen(false)} />
+          <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, zIndex: 50, width: 360, maxHeight: 420, overflowY: "auto", background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.14)", borderRadius: 10, boxShadow: "0 18px 44px -16px rgba(20,30,40,0.35)", padding: 6 }}>
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.12em", color: "#9aa2ab", padding: "8px 12px 6px" }}>NOTIFICATIONS</div>
+            {notifications.length === 0 ? (
+              <div style={{ padding: "14px 12px 18px", fontSize: 12.5, color: "#9aa2ab" }}>Nothing yet. Send a briefing for approval, escalate an alert, or answer a data-quality question — everything lands here.</div>
+            ) : (
+              notifications.map((n, i) => (
+                <div key={i} style={{ display: "flex", gap: 10, padding: "10px 12px", borderTop: i ? "1px solid rgba(20,24,28,0.06)" : "none", alignItems: "flex-start" }}>
+                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: NOTIF_COLORS[n.kind], flex: "none", marginTop: 4 }} />
+                  <div style={{ fontSize: 12.5, lineHeight: 1.5, color: "#2a333c", flex: 1 }}>{n.text}</div>
+                  <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: "#9aa2ab", flex: "none" }}>{n.time}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
 
 function CompanySwitcher() {
   const { companies, cidx, selectCompany } = useNadir();
@@ -114,6 +159,7 @@ export default function AppShell() {
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#15854F", animation: "nadirBlink 2.4s infinite" }} />
             {co.sources.length} live
           </div>
+          <NotificationsBell />
           <button
             onClick={exitApp}
             className={styles.exitBtn}
@@ -135,6 +181,10 @@ export default function AppShell() {
             if (sc.id === "comp") badge = String(co.compliance.tiles[0].val);
             if (sc.id === "map") badge = String(co.alerts.length);
             if (sc.id === "team" && unreadTotal) { badge = String(unreadTotal); badgeBg = "rgba(14,124,138,0.12)"; badgeFg = "#0E7C8A"; }
+            if (sc.id === "depts") {
+              const red = ctx.departments.filter((d) => d.status === "red").length;
+              if (red) badge = String(red);
+            }
             return (
               <button
                 key={sc.id}
@@ -167,12 +217,15 @@ export default function AppShell() {
           {screen === "map" && <MapScreen />}
           {screen === "graph" && <GraphScreen />}
           {screen === "team" && <TeamScreen />}
+          {screen === "depts" && <DepartmentsScreen />}
           {screen === "plan" && <PlannerScreen />}
           {screen === "comp" && <ComplianceScreen />}
           {screen === "sources" && <SourcesScreen />}
+          {screen === "settings" && <SettingsScreen />}
         </div>
       </div>
 
+      <EvidenceDrawer />
       <Toast />
     </div>
   );

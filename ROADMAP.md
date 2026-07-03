@@ -41,32 +41,34 @@ something, something happens) and **Bloomberg Terminal** (dense, connected, dril
 - [x] **Escalation chain, v1** — every person in Team & Inbox now shows who they report
   to, and PTO status is surfaced (if the owner is out, Nadir tells you who to go to).
 
-## Phase 2 — Demo depth (next)
+## Phase 2 — Demo depth (SHIPPED, except where noted)
 
-- [ ] **Approve/disapprove workflow**: Nadir drafts a briefing → owner approves →
-  action executes → audit trail records it. (Send-snapshot should land in the recipient's
-  Team & Inbox thread, and their reply should be drafted from what's in their inbox.)
-- [ ] **Escalation actions**: "Escalate" button on any alert/thread — walks the manager
-  chain (manager → their manager), reassigns, notifies.
-- [ ] **Department oversight & KPI dashboards**: assign a department head to oversee
-  another; per-department scorecards (QHSE, Finance, Ops, HR) with drill-down.
-- [ ] **Nadir questions the data**: when data doesn't reconcile (invoice priced over
-  contract, duplicate payment, impossible timestamps), Nadir flags it as *suspect data*,
-  asks "is this correct?", and user confirmations build a per-company data-quality
-  profile over time. (Seeded in the restaurant demo: invoice #7741 priced 8% over contract.)
-- [ ] **Drill-down everywhere**: click an overdue invoice → the invoice, the receipt,
-  the contract line it violates. Click a machine → its audit log. Bloomberg-terminal rule:
-  every number is a door.
-- [ ] **Expandable fusion graph**: click "Machines" → it unfolds into the three lines;
-  click a line → stations; progressive disclosure instead of one flat graph.
-- [ ] **Spot checks / confirmations**: system-generated checklists from past mistakes
-  ("last time this looked like X, Y was missed — did you check Y?"); departments can
-  author their own sign-off forms. (Aerospace demo is the natural home.)
-- [ ] **More industries**: solo operator, paper & pulp, air defense — plus scenario
-  timers (a 2-week looping scenario clock so logging in at 2pm shows what's happening
-  at 2pm in that fake company).
-- [ ] **Settings, users, roles, notifications**: user management, which areas you
-  oversee, alert routing preferences.
+- [x] **Approve/disapprove workflow**: "Send for approval" routes the briefing to the
+  company's approver (respecting PTO — Solera's routes past Ray to the owner), the
+  approval comes back with their reply, actions release, and the audit trail records
+  both ends. Notifications track the whole arc.
+- [x] **Escalation actions**: "Escalate ↑" on team threads and inside every alert's
+  evidence drawer — walks the manager chain, notes PTO routing, notifies, audits.
+- [x] **Department oversight & KPI dashboards**: new Departments screen — per-dept
+  scorecards with status, head, oversight assignments ("oversees / overseen by",
+  including Meridian's unowned Legal gap), three KPIs each, and open-issue notes.
+- [x] **Nadir questions the data**: invoice #7741's evidence drawer asks "which record
+  is wrong?" — dispute the invoice or correct the contract; either answer updates the
+  data-quality profile, the audit trail, and what Nadir trusts going forward.
+- [x] **Drill-down everywhere (v1)**: every alert now opens an evidence drawer — the
+  sensor trend, the contract line, the incident file — with owner, escalation, and
+  actions attached. v2: make every KPI and graph edge a door too.
+- [x] **Expandable fusion graph (one level)**: nodes with a "+" chip unfold into
+  components (Machines → the three lines; Locations → the six sites; Parts → V-221 /
+  TI-88 / seal batch). v2: recurse to stations/serials.
+- [ ] **Spot checks / confirmations**: system-generated checklists from past mistakes;
+  departments author their own sign-off forms. (Represented in aerospace copy;
+  interactive checklist UI still to build.)
+- [ ] **More industries**: solo operator, paper & pulp, air defense — plus a 2-week
+  looping scenario clock.
+- [x] **Settings, users, roles, notifications**: Settings screen (users & access with
+  reporting lines, approver identity, notification routing toggles, demo-state reset)
+  plus a live notifications bell in the top bar.
 
 ## Phase 3 — Real product architecture (pre-customer-#1)
 

@@ -6,7 +6,8 @@ import type { Alert, ChatMessage } from "@/lib/types";
 import { GRAPH_TYPE_STYLE, AV_PALETTE, STATUS_COLORS, type ScreenId } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { alertKey, fmtClock, initialToast, sevAnim } from "@/lib/derive";
-import { NadirContext, type DecoratedAlert, type NadirCtxValue, type ThreadItemView } from "./context";
+import { PHASE2 } from "@/lib/phase2";
+import { NadirContext, type DecoratedAlert, type NadirCtxValue, type NotifItem, type ThreadItemView } from "./context";
 import AppShell from "./AppShell";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -67,7 +68,29 @@ export default function Workspace() {
   const [toast, setToast] = useState<Alert | null>(null);
   const [toastDismissed, setToastDismissed] = useState<Record<string, boolean>>({});
 
+  // phase 2 runtime state
+  const [evidenceIdx, setEvidenceIdx] = useState<number | null>(null);
+  const [approvals, setApprovals] = useState<Record<string, "none" | "pending" | "approved">>({});
+  const [escalations, setEscalations] = useState<Record<string, boolean>>({});
+  const [decisions, setDecisions] = useState<Record<string, "wrong" | "correct">>({});
+  const [threadExtras, setThreadExtras] = useState<Record<string, string[]>>({});
+  const [notifications, setNotifications] = useState<NotifItem[]>([]);
+  const [notifSeen, setNotifSeen] = useState(0);
+  const [runtimeAudit, setRuntimeAudit] = useState<Record<string, { time: string; text: string }[]>>({});
+  const [selChild, setSelChild] = useState<number | null>(null);
+  const [notifPrefs, setNotifPrefs] = useState<Record<string, boolean>>({ critical: true, digest: true, approvals: true, quality: true });
+  const approvalTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (approvalTimer.current) clearTimeout(approvalTimer.current); }, []);
+
   const co = COMPANIES[cidx];
+  const p2 = PHASE2[co.id];
+
+  function notify(text: string, kind: NotifItem["kind"]) {
+    setNotifications((prev) => [{ time: fmtClock(clockRef.current), text, kind }, ...prev].slice(0, 30));
+  }
+  function audit(text: string) {
+    setRuntimeAudit((prev) => ({ ...prev, [coRef.current.id]: [{ time: fmtClock(clockRef.current), text }, ...(prev[coRef.current.id] || [])] }));
+  }
 
   const coRef = useRef(co);
   useEffect(() => {
@@ -77,6 +100,10 @@ export default function Workspace() {
   useEffect(() => {
     toastDismissedRef.current = toastDismissed;
   }, [toastDismissed]);
+  const clockRef = useRef(clock);
+  useEffect(() => {
+    clockRef.current = clock;
+  }, [clock]);
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   useEffect(() => () => { if (timerRef.current) clearInterval(timerRef.current); }, []);
@@ -143,7 +170,75 @@ export default function Workspace() {
     setSelPerson(0);
     setClock(c.nowMin);
     setPlaying(false);
+    setEvidenceIdx(null);
+    setSelChild(null);
     setToast(crit && !toastDismissed[alertKey(c, crit)] ? crit : null);
+  }
+
+  // ---- phase 2: approvals ----
+  const approval = approvals[co.id] || "none";
+  function onSendSnapshot() {
+    if (approval !== "none") return;
+    const id = co.id;
+    const approver = PHASE2[id].approver;
+    setApprovals((prev) => ({ ...prev, [id]: "pending" }));
+    notify(`Briefing sent to ${approver.name} for approval`, "info");
+    audit(`Briefing "${co.action.title}" sent to ${approver.name} — approval requested.`);
+    approvalTimer.current = setTimeout(() => {
+      setApprovals((prev) => ({ ...prev, [id]: "approved" }));
+      notify(`${approver.name.split(" · ")[0]} approved: "${approver.reply}"`, "ok");
+      audit(`Approval recorded — ${approver.name} approved the plan. Actions released for execution.`);
+    }, 2600);
+  }
+
+  // ---- phase 2: escalation ----
+  function escalateAlert(alertIdx: number) {
+    const key = `${co.id}|a${alertIdx}`;
+    if (escalations[key]) return;
+    const owner = co.people[p2.alerts[alertIdx].owner];
+    const target = owner.pto && owner.manager ? owner.manager : owner.manager || "leadership";
+    setEscalations((prev) => ({ ...prev, [key]: true }));
+    notify(`Escalated "${co.alerts[alertIdx].title}" to ${target}${owner.pto ? ` (${owner.name} is on PTO — routed past)` : ""}`, "warn");
+    audit(`Escalation — "${co.alerts[alertIdx].title}" routed to ${target} with the evidence pack.`);
+  }
+  const personEscalatedKey = () => `${co.id}|p${Math.min(selPerson, co.people.length - 1)}`;
+  function escalatePerson() {
+    const key = personEscalatedKey();
+    if (escalations[key]) return;
+    const person = co.people[Math.min(selPerson, co.people.length - 1)];
+    if (!person.manager) return;
+    setEscalations((prev) => ({ ...prev, [key]: true }));
+    setThreadExtras((prev) => ({
+      ...prev,
+      [key]: [...(prev[key] || []), `Escalated to ${person.manager} — full thread and evidence pack attached. They've been notified.`],
+    }));
+    notify(`Thread with ${person.name} escalated to ${person.manager}`, "warn");
+    audit(`Escalation — ${person.name}'s open issue routed up to ${person.manager}.`);
+  }
+
+  // ---- phase 2: data questioning ----
+  function onDataDecision(alertIdx: number, d: "wrong" | "correct") {
+    const key = `${co.id}|a${alertIdx}`;
+    if (decisions[key]) return;
+    setDecisions((prev) => ({ ...prev, [key]: d }));
+    const s = p2.alerts[alertIdx].suspect!;
+    notify(d === "wrong" ? "Suspect data confirmed wrong — dispute filed, source trust adjusted" : "Record corrected — Nadir updated its model and stopped flagging", "ok");
+    audit(`Data-quality decision on "${co.alerts[alertIdx].title}": ${d === "wrong" ? s.wrongLabel : s.correctLabel}. Company data-quality profile updated.`);
+  }
+
+  function resetDemo() {
+    if (approvalTimer.current) clearTimeout(approvalTimer.current);
+    setApprovals({});
+    setEscalations({});
+    setDecisions({});
+    setThreadExtras({});
+    setNotifications([]);
+    setNotifSeen(0);
+    setRuntimeAudit({});
+    setSnapshotSent({});
+    setMsgSent({});
+    setToastDismissed({});
+    notify("Demo state reset — approvals, escalations, and audit entries cleared", "info");
   }
 
   function send(text?: string) {
@@ -178,7 +273,7 @@ export default function Workspace() {
   }
 
   // ---- decorated alerts (chat sidebar + ops map) ----
-  const decorateAlert = (a: Alert): DecoratedAlert => {
+  const decorateAlert = (a: Alert, idx = -1): DecoratedAlert => {
     const active = a.at <= clock;
     return {
       ...a,
@@ -189,9 +284,10 @@ export default function Workspace() {
       subLabel: active ? a.loc : "opens " + fmtClock(a.at),
       onGoMap: () => setScreen("map"),
       onAsk: () => { setScreen("chat"); send(a.q); },
+      onEvidence: () => setEvidenceIdx(idx >= 0 ? idx : co.alerts.indexOf(a)),
     };
   };
-  const alertsSide = co.alerts.map(decorateAlert);
+  const alertsSide = co.alerts.map((a, i) => decorateAlert(a, i));
   const alertsFull = alertsSide;
   const activeCount = co.alerts.filter((a) => a.at <= clock).length;
 
@@ -221,6 +317,20 @@ export default function Workspace() {
   const seln = co.graph.nodes[selIdx];
   const selNodeView = { ...seln, ...GRAPH_TYPE_STYLE[seln.type], anim: "none", shadow: "none", onClick: () => {} };
 
+  // phase 2: expandable children for the selected node
+  const childFan = [
+    { dx: 13, dy: -10 },
+    { dx: 15, dy: 0 },
+    { dx: 13, dy: 10 },
+    { dx: 9, dy: 18 },
+  ];
+  const rawChildren = p2.children[selIdx] || [];
+  const childNodes = rawChildren.map((c, i) => ({
+    ...c,
+    x: Math.min(seln.x + childFan[i % childFan.length].dx, 88),
+    y: Math.max(4, Math.min(seln.y + childFan[i % childFan.length].dy, 92)),
+  }));
+
   // ---- team ----
   const unreadTotal = co.people.reduce((n, p) => n + (p.unread || 0), 0);
   const people = co.people.map((p, i) => {
@@ -248,6 +358,9 @@ export default function Workspace() {
   });
   if (msgSentFlag) {
     thread = thread.concat([{ from: "me", text: sp.draft, who: "You", align: "flex-end", bg: "#0E7C8A", bd: "#0E7C8A", fg: "#FFFFFF", radius: "12px 12px 3px 12px" }]);
+  }
+  for (const extra of threadExtras[`${co.id}|p${spIdx}`] || []) {
+    thread = thread.concat([{ from: "nadir", text: extra, who: "Nadir", align: "flex-start", bg: "rgba(180,118,20,0.07)", bd: "rgba(180,118,20,0.35)", fg: "#14181C", radius: "12px 12px 12px 3px" }]);
   }
 
   // ---- onboarding ----
@@ -296,7 +409,7 @@ export default function Workspace() {
     actionTitle: co.action.title,
     actionDesc: co.action.desc,
     snapshotSent: !!snapshotSent[co.id],
-    onSendSnapshot: () => setSnapshotSent((prev) => ({ ...prev, [co.id]: true })),
+    onSendSnapshot,
     onOpenSource: (node: number) => { setScreen("graph"); setSelNode(node); },
     onAttach: () => setScreen("sources"),
 
@@ -306,8 +419,12 @@ export default function Workspace() {
     gnodes,
     edges,
     selNode,
-    setSelNode,
+    setSelNode: (i: number) => { setSelNode(i); setSelChild(null); },
     selNodeView,
+    childNodes,
+    selChild,
+    setSelChild,
+    parentLabel: seln.label,
 
     people,
     selPersonView,
@@ -325,6 +442,32 @@ export default function Workspace() {
     allConfirmed,
     obRestart,
     goMap: () => setScreen("map"),
+
+    alertMeta: p2.alerts,
+    evidenceIdx,
+    openEvidence: (i: number) => setEvidenceIdx(i),
+    closeEvidence: () => setEvidenceIdx(null),
+    dataDecision: evidenceIdx !== null ? decisions[`${co.id}|a${evidenceIdx}`] || null : null,
+    onDataDecision,
+    alertEscalated: (i: number) => !!escalations[`${co.id}|a${i}`],
+    escalateAlert,
+
+    approval,
+    approver: p2.approver,
+
+    personEscalated: !!escalations[personEscalatedKey()],
+    escalatePerson,
+
+    departments: p2.departments,
+
+    notifications,
+    unseenCount: Math.max(0, notifications.length - notifSeen),
+    markNotifsSeen: () => setNotifSeen(notifications.length),
+
+    auditMerged: [...(runtimeAudit[co.id] || []), ...co.compliance.audit],
+    notifPrefs,
+    toggleNotifPref: (k: string) => setNotifPrefs((prev) => ({ ...prev, [k]: !prev[k] })),
+    resetDemo,
 
     toast: toastView,
     dismissToast: () => { dismissCurrentToast(toast); setToast(null); },

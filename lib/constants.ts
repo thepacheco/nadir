@@ -8,9 +8,11 @@ export const SCREENS = [
   { id: "map", label: "Ops map", r: "2px", rot: "45deg" },
   { id: "graph", label: "Fusion graph", r: "2px", rot: "0deg" },
   { id: "team", label: "Team & inbox", r: "50% 50% 50% 2px", rot: "0deg" },
+  { id: "depts", label: "Departments", r: "2px 2px 50% 2px", rot: "0deg" },
   { id: "plan", label: "Guidance plan", r: "50% 2px 50% 2px", rot: "0deg" },
   { id: "comp", label: "Compliance", r: "50% 2px 50% 2px", rot: "0deg" },
   { id: "sources", label: "Data sources", r: "2px 50% 50% 50%", rot: "0deg" },
+  { id: "settings", label: "Settings", r: "50% 50% 2px 50%", rot: "45deg" },
 ] as const;
 
 export type ScreenId = (typeof SCREENS)[number]["id"];

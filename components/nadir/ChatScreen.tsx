@@ -4,7 +4,13 @@ import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
 export default function ChatScreen() {
-  const { co, messages, typing, draft, setDraft, onSend, chatScrollRef, alertsSide, actionTitle, actionDesc, snapshotSent, onSendSnapshot, onOpenSource, onAttach } = useNadir();
+  const { co, messages, typing, draft, setDraft, onSend, chatScrollRef, alertsSide, actionTitle, actionDesc, onSendSnapshot, onOpenSource, onAttach, approval, approver } = useNadir();
+
+  const snapshotStyles = {
+    none: { label: "Send for approval →", bg: "#0E7C8A", fg: "#FFFFFF", bd: "none" },
+    pending: { label: `Sent to ${approver.name.split(" · ")[0]} — awaiting approval…`, bg: "rgba(180,118,20,0.12)", fg: "#8a5a10", bd: "1px solid rgba(180,118,20,0.4)" },
+    approved: { label: "✓ Approved — executing plan", bg: "rgba(21,133,79,0.12)", fg: "#15854F", bd: "1px solid rgba(21,133,79,0.4)" },
+  }[approval];
 
   return (
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
@@ -111,7 +117,8 @@ export default function ChatScreen() {
             {alertsSide.map((al) => (
               <button
                 key={al.title}
-                onClick={al.onGoMap}
+                onClick={al.onEvidence}
+                title="View evidence"
                 className={styles.alertCard}
                 style={{ textAlign: "left", fontFamily: "inherit", display: "flex", gap: 10, padding: "11px 12px", background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 8, cursor: "pointer", width: "100%", color: "inherit", opacity: al.opacity }}
               >
@@ -132,13 +139,18 @@ export default function ChatScreen() {
             <button
               onClick={onSendSnapshot}
               style={{
-                fontFamily: "inherit", fontSize: 12.5, fontWeight: 700, width: "100%", padding: 9, borderRadius: 7, cursor: "pointer",
-                background: snapshotSent ? "rgba(21,133,79,0.12)" : "#0E7C8A", color: snapshotSent ? "#15854F" : "#FFFFFF",
-                border: snapshotSent ? "1px solid rgba(21,133,79,0.4)" : "none",
+                fontFamily: "inherit", fontSize: 12.5, fontWeight: 700, width: "100%", padding: 9, borderRadius: 7,
+                cursor: approval === "none" ? "pointer" : "default",
+                background: snapshotStyles.bg, color: snapshotStyles.fg, border: snapshotStyles.bd,
               }}
             >
-              {snapshotSent ? "✓ Sent — awaiting reply" : "Send snapshot →"}
+              {snapshotStyles.label}
             </button>
+            {approval === "approved" && (
+              <div style={{ fontSize: 11.5, lineHeight: 1.55, color: "#5a646e", marginTop: 8, fontStyle: "italic" }}>
+                “{approver.reply}”
+              </div>
+            )}
           </div>
         </div>
       </div>

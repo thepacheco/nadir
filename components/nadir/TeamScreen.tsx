@@ -4,7 +4,7 @@ import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
 export default function TeamScreen() {
-  const { people, selPersonView, thread, msgSent, onSendMsg } = useNadir();
+  const { people, selPersonView, thread, msgSent, onSendMsg, personEscalated, escalatePerson } = useNadir();
 
   return (
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
@@ -70,6 +70,22 @@ export default function TeamScreen() {
             <div>{selPersonView.email}</div>
             <div>{selPersonView.phone}</div>
           </div>
+          {selPersonView.manager && (
+            <button
+              onClick={escalatePerson}
+              disabled={personEscalated}
+              title={`Escalate this thread to ${selPersonView.manager}`}
+              style={{
+                fontFamily: "inherit", fontSize: 12, fontWeight: 700, padding: "8px 14px", borderRadius: 7, flex: "none",
+                cursor: personEscalated ? "default" : "pointer",
+                background: personEscalated ? "rgba(21,133,79,0.1)" : "rgba(180,118,20,0.1)",
+                color: personEscalated ? "#15854F" : "#8a5a10",
+                border: `1px solid ${personEscalated ? "rgba(21,133,79,0.4)" : "rgba(180,118,20,0.45)"}`,
+              }}
+            >
+              {personEscalated ? "✓ Escalated" : "Escalate ↑"}
+            </button>
+          )}
         </div>
         <div style={{ padding: "12px 24px", borderBottom: "1px solid rgba(20,24,28,0.08)", background: "#FCFBF9", flex: "none", display: "flex", gap: 12, alignItems: "baseline" }}>
           <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, letterSpacing: "0.1em", color: selPersonView.statusColor, flex: "none" }}>OPEN ISSUE</span>

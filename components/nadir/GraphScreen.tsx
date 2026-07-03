@@ -1,11 +1,16 @@
 "use client";
 
 import { RETICLE_CURSOR } from "@/lib/constants";
+import { PHASE2 } from "@/lib/phase2";
 import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
+const TONE: Record<string, string> = { red: "#C7452F", amber: "#B47614", ok: "#15854F" };
+
 export default function GraphScreen() {
-  const { co, gnodes, edges, selNodeView } = useNadir();
+  const { co, gnodes, edges, selNodeView, childNodes, selChild, setSelChild, parentLabel, selNode } = useNadir();
+  const childrenMap = PHASE2[co.id].children;
+  const child = selChild !== null ? childNodes[selChild] : null;
 
   return (
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
@@ -15,7 +20,7 @@ export default function GraphScreen() {
             Fusion graph <span style={{ fontWeight: 400, color: "#9aa2ab", fontSize: 13 }}>· live model</span>
           </div>
           <div style={{ fontSize: 12.5, color: "#5a646e", marginTop: 3 }}>
-            How {co.name} actually moves, inferred from {co.sources.length} systems. Click a node.
+            How {co.name} actually moves, inferred from {co.sources.length} systems. Click a node — a “+” chip unfolds its components.
           </div>
         </div>
         <div style={{ position: "absolute", bottom: 16, left: 24, zIndex: 3, display: "flex", gap: 16, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e" }}>
@@ -34,8 +39,16 @@ export default function GraphScreen() {
               style={e.animated ? { animation: "nadirDash 0.9s linear infinite" } : undefined}
             />
           ))}
+          {childNodes.map((c, i) => (
+            <line
+              key={`c${i}`}
+              x1={selNodeView.x} y1={selNodeView.y * 0.62} x2={c.x} y2={c.y * 0.62}
+              stroke="rgba(14,124,138,0.5)" strokeWidth={0.13} strokeDasharray="0.6 0.5"
+              style={{ animation: "nadirDash 0.9s linear infinite" }}
+            />
+          ))}
         </svg>
-        {gnodes.map((n) => (
+        {gnodes.map((n, i) => (
           <button
             key={n.label}
             onClick={n.onClick}
@@ -48,12 +61,46 @@ export default function GraphScreen() {
           >
             <span style={{ width: 8, height: 8, flex: "none", background: n.dotColor, borderRadius: n.dotShape }} />
             {n.label}
+            {(childrenMap[i]?.length ?? 0) > 0 && (
+              <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 9.5, color: i === selNode ? "#0E7C8A" : "#9aa2ab", background: "rgba(14,124,138,0.08)", padding: "1px 6px", borderRadius: 8 }}>
+                {i === selNode ? "−" : "+"}{childrenMap[i].length}
+              </span>
+            )}
+          </button>
+        ))}
+        {childNodes.map((c, i) => (
+          <button
+            key={c.label}
+            onClick={() => setSelChild(i)}
+            style={{
+              position: "absolute", left: `${c.x}%`, top: `${c.y}%`, fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6,
+              padding: "5px 11px", background: selChild === i ? "rgba(14,124,138,0.08)" : "#FFFFFF",
+              border: `1.5px solid ${selChild === i ? "#0E7C8A" : "rgba(14,124,138,0.35)"}`, borderRadius: 100, cursor: "pointer",
+              color: "#14181C", fontSize: 11, fontWeight: 600, whiteSpace: "nowrap", zIndex: 3,
+              boxShadow: "0 2px 8px -3px rgba(20,30,40,0.25)", animation: "nadirFadeUp 0.3s ease both",
+            }}
+          >
+            <span style={{ width: 6, height: 6, flex: "none", background: TONE[c.tone], borderRadius: "50%" }} />
+            {c.label}
           </button>
         ))}
       </div>
       <div style={{ width: 320, flex: "none", borderLeft: "1px solid rgba(20,24,28,0.1)", padding: "22px 20px", overflowY: "auto", background: "#FCFBF9" }}>
         <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 14 }}>NODE DETAIL</div>
-        <div style={{ padding: 16, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 10, marginBottom: 16 }}>
+        {child && (
+          <div style={{ padding: 16, background: "#FFFFFF", border: "1.5px solid rgba(14,124,138,0.45)", borderRadius: 10, marginBottom: 16, animation: "nadirFadeUp 0.25s ease" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 8 }}>
+              <span style={{ width: 8, height: 8, background: TONE[child.tone], borderRadius: "50%" }} />
+              <span style={{ fontSize: 14.5, fontWeight: 700 }}>{child.label}</span>
+            </div>
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.1em", color: "#0E7C8A", marginBottom: 8 }}>COMPONENT · {parentLabel.toUpperCase()}</div>
+            <div style={{ fontSize: 12.5, lineHeight: 1.6, color: "#5a646e", marginBottom: 10 }}>{child.meta}</div>
+            <button onClick={() => setSelChild(null)} style={{ fontFamily: "inherit", fontSize: 11.5, fontWeight: 600, color: "#0E7C8A", background: "transparent", border: "none", cursor: "pointer", padding: 0 }}>
+              ← Back to {parentLabel}
+            </button>
+          </div>
+        )}
+        <div style={{ padding: 16, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 10, marginBottom: 16, opacity: child ? 0.55 : 1 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 10 }}>
             <span style={{ width: 9, height: 9, background: selNodeView.dotColor, borderRadius: selNodeView.dotShape }} />
             <span style={{ fontSize: 15, fontWeight: 700 }}>{selNodeView.label}</span>
