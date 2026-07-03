@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero, Section } from "@/components/site/PageShell";
-import { Eye, Server, Trash2, Share2 } from "lucide-react";
+import { Eye, Server, Trash2, ShieldCheck, Database, FileText } from "lucide-react";
 
 export const metadata: Metadata = { title: "Privacy Policy — Nadir" };
 
@@ -9,10 +9,10 @@ const MONO = "var(--font-ibm-plex-mono), monospace";
 const SERIF = "var(--font-newsreader), serif";
 
 const TOC = [
-  { id: "collect", label: "Information We Collect", icon: <Eye size={16} /> },
-  { id: "use", label: "How We Use It", icon: <Server size={16} /> },
-  { id: "retention", label: "Retention & Destruction", icon: <Trash2 size={16} /> },
-  { id: "sharing", label: "Third-Party Sharing", icon: <Share2 size={16} /> },
+  { id: "collect", label: "1. Data Collection & VPC Ingestion", icon: <Eye size={16} /> },
+  { id: "use", label: "2. Scope of Data Processing", icon: <Server size={16} /> },
+  { id: "governance", label: "3. HIPAA & Regulatory Alignment", icon: <ShieldCheck size={16} /> },
+  { id: "retention", label: "4. Storage & Deletion Cycles", icon: <Trash2 size={16} /> },
 ];
 
 export default function PrivacyPage() {
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
       <PageHero
         eyebrow="LEGAL"
         title="Privacy Policy"
-        sub="Last Updated: July 3, 2026. This policy governs how Nadir Intelligence, Inc. collects, processes, and protects your information."
+        sub="Last Updated: July 3, 2026. Data handling policy governing raw databases, system schemas, and entity graphs under Nadir custody."
       />
 
       {/* QUICK NAV */}
@@ -43,48 +43,55 @@ export default function PrivacyPage() {
       <div style={{ maxWidth: 1040, margin: "0 auto", padding: "0 48px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 64 }}>
           <div>
+            {/* Section 1 */}
             <div id="collect" style={{ paddingBottom: 48, marginBottom: 48, borderBottom: "1px solid rgba(20,24,28,0.1)" }}>
               <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 12 }}>SECTION 01</div>
-              <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Information We Collect</h2>
+              <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Data Collection &amp; VPC Ingestion</h2>
               <p style={{ fontSize: 15, lineHeight: 1.75, color: "#4a545e", marginBottom: 16 }}>
-                <strong>Operational Data.</strong> When you deploy Nadir, you grant the system read-only access to your internal databases, ERPs, and APIs. This data is collected solely to generate your isolated Operational Graph and run compliance checks. We do not aggregate, sell, or monetize Operational Data.
+                <strong>1.1 Ingested Database Schemas.</strong> The Ontology Engine reads system schemas, table names, primary/foreign keys, and data samples from your connected databases. This information is processed strictly within your isolated VPC tenant.
               </p>
               <p style={{ fontSize: 15, lineHeight: 1.75, color: "#4a545e" }}>
-                <strong>Account Information.</strong> We collect basic contact and billing information (names, emails, addresses, payment details) for billing, support, and critical service notifications.
+                <strong>1.2 Personal Data Categories.</strong> In compiling the Operational Graph, the system may process employee IDs, full names, certification credentials, shift assignments, and email addresses. We do not ingest sensitive national IDs or personal financial records unless explicitly stored in your operational databases and required for mapping.
               </p>
             </div>
 
+            {/* Section 2 */}
             <div id="use" style={{ paddingBottom: 48, marginBottom: 48, borderBottom: "1px solid rgba(20,24,28,0.1)" }}>
               <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 12 }}>SECTION 02</div>
-              <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>How We Use Your Information</h2>
-              <div style={{ background: "#F6F5F3", borderRadius: 8, padding: "16px 20px", fontSize: 14, lineHeight: 1.7, color: "#4a545e", marginBottom: 20 }}>
-                <strong style={{ color: "#14181C" }}>Key commitment:</strong> Nadir operates strictly within isolated tenant boundaries. We do not analyze your data to extract industry trends, benchmark against other customers, or train AI models.
+              <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Scope of Data Processing</h2>
+              <p style={{ fontSize: 15, lineHeight: 1.75, color: "#4a545e", marginBottom: 16 }}>
+                <strong>2.1 Isolated Processing Covenants.</strong> Nadir operates strictly under single-tenant guidelines. We do not aggregate customer data across tenants, nor do we analyze operational charts to generate multi-client benchmarks or industry stats.
+              </p>
+              <div style={{ background: "#F6F5F3", borderRadius: 8, padding: "18px 22px", fontSize: 14, lineHeight: 1.7, color: "#4a545e", marginBottom: 20 }}>
+                <strong style={{ color: "#14181C" }}>AI Training Policy:</strong> Customer database schemas, telemetry, logs, and personal details are processed in memory and are never used to train, fine-tune, or check any foundational AI or language models. All processing remains isolated within your VPC boundary.
               </div>
               <p style={{ fontSize: 15, lineHeight: 1.75, color: "#4a545e" }}>
-                Your Operational Data is processed automatically to provide the core platform functionality: generating alerts, resolving database relationships, and identifying compliance violations.
+                <strong>2.2 Sub-processor Auditing.</strong> We utilize infrastructure hosts (e.g. AWS and GCP) to deploy isolated VPCs. All sub-processors are bound by strict Data Processing Agreements (DPAs) matching or exceeding the safety guidelines of this policy.
               </p>
             </div>
 
-            <div id="retention" style={{ paddingBottom: 48, marginBottom: 48, borderBottom: "1px solid rgba(20,24,28,0.1)" }}>
+            {/* Section 3 */}
+            <div id="governance" style={{ paddingBottom: 48, marginBottom: 48, borderBottom: "1px solid rgba(20,24,28,0.1)" }}>
               <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 12 }}>SECTION 03</div>
-              <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Data Retention and Destruction</h2>
+              <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>HIPAA &amp; Regulatory Alignment</h2>
               <p style={{ fontSize: 15, lineHeight: 1.75, color: "#4a545e", marginBottom: 16 }}>
-                <strong>Active Subscriptions.</strong> We retain the Operational Graph and audit logs for the duration of your subscription.
-              </p>
-              <div style={{ background: "#FDF6F0", border: "1px solid rgba(199,69,47,0.15)", borderRadius: 8, padding: "16px 20px", fontSize: 14, lineHeight: 1.7, color: "#4a545e" }}>
-                <strong style={{ color: "#14181C" }}>Post-Termination.</strong> Upon termination or verified deletion request, Nadir initiates a complete cryptographic wipe of your isolated tenant. All Operational Data, ontologies, and audit logs are permanently destroyed within 30 days.
-              </div>
-            </div>
-
-            <div id="sharing" style={{ paddingBottom: 48 }}>
-              <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 12 }}>SECTION 04</div>
-              <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Sub-processors and Third-Party Sharing</h2>
-              <p style={{ fontSize: 15, lineHeight: 1.75, color: "#4a545e", marginBottom: 16 }}>
-                We use vetted sub-processors (AWS, Google Cloud) to host infrastructure. These sub-processors are bound by strict Data Processing Agreements prohibiting access to or use of your Operational Data.
+                <strong>3.1 Health &amp; Safety Registries.</strong> In industries such as healthcare staffing and heavy manufacturing, the system may ingest worker medical clearances or vaccination statuses to verify compliance. Nadir complies with all applicable provisions of the Health Insurance Portability and Accountability Act (HIPAA) and is prepared to sign Business Associate Agreements (BAAs) with covered entities.
               </p>
               <p style={{ fontSize: 15, lineHeight: 1.75, color: "#4a545e" }}>
-                We will never share your data with third parties for marketing or advertising. We will only disclose information if legally compelled by a valid subpoena or court order, and will attempt to notify you prior to disclosure.
+                <strong>3.2 Legal Disclosures.</strong> We will not disclose operational records to law enforcement or regulators unless compelled by a valid subpoena, warrant, or court order. Except where legally prohibited, we will notify you immediately of any third-party request to access your records.
               </p>
+            </div>
+
+            {/* Section 4 */}
+            <div id="retention" style={{ paddingBottom: 48 }}>
+              <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 12 }}>SECTION 04</div>
+              <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Storage &amp; Deletion Cycles</h2>
+              <p style={{ fontSize: 15, lineHeight: 1.75, color: "#4a545e", marginBottom: 16 }}>
+                <strong>4.1 Secure Storage.</strong> All data within your VPC is encrypted in transit using TLS 1.3 and at rest using AES-256 keys managed via KMS.
+              </p>
+              <div style={{ background: "#FDF6F0", border: "1px solid rgba(199,69,47,0.15)", borderRadius: 8, padding: "18px 22px", fontSize: 14, lineHeight: 1.7, color: "#4a545e" }}>
+                <strong style={{ color: "#14181C" }}>Termination Deletion Guarantee:</strong> Upon termination of the subscription or upon customer deletion request, the tenant VPC undergoes immediate shutdown. All backups, database mapping graphs, and ledger archives are cryptographically wiped and physically deleted from our hosting servers within 30 days.
+              </div>
             </div>
           </div>
 
@@ -106,10 +113,11 @@ export default function PrivacyPage() {
         </div>
       </div>
 
+      {/* RELATED */}
       <Section alt>
         <div style={{ display: "flex", justifyContent: "center", gap: 24 }}>
           <Link href="/terms" style={{ fontSize: 15, fontWeight: 600, color: "#0E7C8A", textDecoration: "none" }}>Terms of Service →</Link>
-          <Link href="/security" style={{ fontSize: 15, fontWeight: 600, color: "#0E7C8A", textDecoration: "none" }}>Security & Trust →</Link>
+          <Link href="/security" style={{ fontSize: 15, fontWeight: 600, color: "#0E7C8A", textDecoration: "none" }}>Security &amp; Trust →</Link>
         </div>
       </Section>
     </>
