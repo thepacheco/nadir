@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageHero, Section, LegalBlock } from "@/components/site/PageShell";
+import { PageHero, Section, ContentBlock } from "@/components/site/PageShell";
 
 export const metadata: Metadata = { title: "Privacy Policy — Nadir" };
 
@@ -9,38 +9,44 @@ export default function PrivacyPage() {
       <PageHero
         eyebrow="LEGAL"
         title="Privacy Policy"
-        sub="Last Updated: July 3, 2026. This policy outlines how Nadir Intelligence, Inc. handles your data, ensuring complete transparency and control."
+        sub="Last Updated: July 3, 2026. This policy governs how Nadir Intelligence, Inc. collects, processes, and protects your information."
       />
       <Section>
-        <LegalBlock n="01" title="Data Collection & Usage">
-          <p>
-            Nadir operates entirely within isolated tenant boundaries. The operational data you connect to our platform (e.g., ERP data, SCADA feeds, HR systems) is processed solely to provide the agreed-upon services to your organization. We do not aggregate operational data across our customer base. The only data we collect for our own business purposes is the contact and billing information you voluntarily provide during account creation.
+        <ContentBlock n="01" title="1. Information We Collect">
+          <p style={{ marginBottom: 16 }}>
+            <strong>1.1 Operational Data.</strong> When you deploy the Nadir platform, you grant the system read-only access to your internal operational databases, ERPs, and APIs. This "Operational Data" is collected solely for the purpose of generating your isolated Operational Graph and running compliance checks. We do not aggregate, sell, or monetize your Operational Data in any way.
           </p>
-        </LegalBlock>
+          <p>
+            <strong>1.2 Account Information.</strong> To provide our services, we collect basic contact and billing information from your designated administrators. This includes names, email addresses, corporate addresses, and payment details. This information is used strictly for billing, support, and critical service notifications.
+          </p>
+        </ContentBlock>
 
-        <LegalBlock n="02" title="Zero Model Training">
-          <p>
-            We utilize large language models (LLMs) strictly as stateless translation engines to interpret rules and generate human-readable text. Any data sent to these models is purged immediately after inference. Nadir explicitly prohibits its infrastructure providers and sub-processors from utilizing any customer data to train or improve their foundational models.
+        <ContentBlock n="02" title="2. How We Use Your Information">
+          <p style={{ marginBottom: 16 }}>
+            <strong>2.1 Providing the Service.</strong> Your Operational Data is processed automatically by our ingestion pipelines and fusion engine to provide you with the core functionality of the platform (e.g., generating alerts, resolving database relationships, identifying compliance violations).
           </p>
-        </LegalBlock>
+          <p>
+            <strong>2.2 No Cross-Tenant Analysis.</strong> Nadir operates strictly within isolated tenant boundaries. We do not analyze your Operational Data to extract industry-wide trends, benchmark against other customers, or train foundational machine learning models. What happens in your tenant, stays in your tenant.
+          </p>
+        </ContentBlock>
 
-        <LegalBlock n="03" title="Data Retention & Deletion">
-          <p>
-            Within your deployed workspace, Nadir maintains a localized Knowledge Base and Audit Trail. This data belongs exclusively to you. Upon contract termination or upon a verified deletion request, Nadir will permanently destroy the isolated tenant environment, wiping all operational data, derived ontologies, and associated cryptographic keys within 30 days.
+        <ContentBlock n="03" title="3. Data Retention and Destruction">
+          <p style={{ marginBottom: 16 }}>
+            <strong>3.1 Active Subscriptions.</strong> As long as your subscription is active, Nadir will retain the Operational Graph and the associated audit logs required to maintain your compliance posture. 
           </p>
-        </LegalBlock>
+          <p>
+            <strong>3.2 Post-Termination.</strong> Upon termination of the Master Subscription Agreement, or upon receiving a verified deletion request from an authorized administrator, Nadir will initiate a complete cryptographic wipe of your isolated tenant environment. All Operational Data, derived ontologies, and audit logs will be permanently destroyed within thirty (30) days of the request.
+          </p>
+        </ContentBlock>
 
-        <LegalBlock n="04" title="Third-Party Sub-processors">
-          <p>
-            To provide our services, we rely on a strictly vetted list of sub-processors to host our infrastructure (e.g., Amazon Web Services, Google Cloud Platform). These vendors are contractually bound to the same strict privacy and security standards as Nadir. A full, up-to-date list of sub-processors can be provided via our support portal upon request.
+        <ContentBlock n="04" title="4. Sub-processors and Third-Party Sharing">
+          <p style={{ marginBottom: 16 }}>
+            To deliver enterprise-grade availability and security, Nadir utilizes a vetted list of sub-processors (such as Amazon Web Services and Google Cloud Platform) to host our infrastructure. These sub-processors are legally bound by strict Data Processing Agreements (DPAs) that prohibit them from accessing your Operational Data or using it for their own purposes.
           </p>
-        </LegalBlock>
-
-        <LegalBlock n="05" title="Marketing Communications">
           <p>
-            If you submit your information via our contact forms, we may use your email address to send you product updates or marketing materials. You retain the right to opt-out of these communications at any time by clicking the "unsubscribe" link at the bottom of our emails. Opting out will not affect critical service or security notifications.
+            We will never share your Operational Data with third parties for marketing or advertising purposes. We will only disclose information if legally compelled to do so by a valid subpoena or court order, and we will attempt to notify you prior to disclosure unless legally prohibited.
           </p>
-        </LegalBlock>
+        </ContentBlock>
       </Section>
     </>
   );

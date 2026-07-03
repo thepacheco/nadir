@@ -1,100 +1,55 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BILLING_COMPONENTS, PRICING_TIERS } from "@/lib/marketing";
-import { MONO, SERIF, PageHero, Section } from "@/components/site/PageShell";
-import styles from "@/components/nadir/nadir.module.css";
+import { PageHero, Section, ContentBlock } from "@/components/site/PageShell";
 
 export const metadata: Metadata = { title: "Pricing — Nadir" };
-
-const FAQ = [
-  { q: "How long does implementation take?", a: "One connection, one narrow process first — typically a working operational graph on your own data inside two weeks. No consultants, no data migration: Nadir reads your systems where they already live, read-only." },
-  { q: "Is my data used to train models?", a: "No. Your data is never used to train models — ours or anyone's. Access is read-only, per-tenant isolated, encrypted in transit and at rest, and every read is logged. See Security & trust for the full posture." },
-  { q: "What keeps AI costs from blowing up?", a: "Ingestion discipline plus visibility. Nadir maps schemas from table structure and a few sampled rows — never full-table reads through a model. Deterministic checks run as plain algorithms; the model is reserved for what only a model can do; accepted formats are cached, not regenerated. And the workspace shows the meter live, per user, against a tenant cap you set — so usage is a dial you control, not a surprise on the invoice." },
-  { q: "What happens when Nadir is wrong — or my data is?", a: "Both happen, and the system is built for it. When sources disagree, Nadir holds the record as suspect data and asks you instead of silently booking it. Every confirmation teaches it which of your systems to trust, for which fields." },
-  { q: "Can I switch tiers later?", a: "Yes — Founder to Operations is a connection upgrade, not a reimplementation. The ontology you confirmed carries over; you're adding direct database connections, the live ops map, and continuous compliance." },
-];
 
 export default function PricingPage() {
   return (
     <>
       <PageHero
         eyebrow="PRICING"
-        title="Starts where you are. Scales with the floor."
-        sub="A solo founder and a 40-client MSP shouldn't pay the same. Every tier gets the same brain — the difference is how many systems it fuses."
+        title="Predictable costs. Metered intelligence."
+        sub="We believe that base operational intelligence should be affordable, and advanced model computation should only be paid for when strictly necessary."
       />
 
       <Section>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, alignItems: "stretch" }}>
-          {PRICING_TIERS.map((t) => (
-            <div key={t.name} style={{ border: t.border, borderRadius: 14, padding: "34px 30px", display: "flex", flexDirection: "column", background: t.bg, color: t.fg }}>
-              <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 6 }}>{t.name}</div>
-              <div style={{ fontSize: 14, marginBottom: 22, opacity: 0.65 }}>{t.who}</div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 14 }}>
-                <span style={{ fontFamily: SERIF, fontSize: 44, fontWeight: 500 }}>{t.price}</span>
-                <span style={{ fontSize: 14, opacity: 0.6 }}>{t.per}</span>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 22, paddingBottom: 18, borderBottom: `1px solid ${t.name === "Operations" ? "rgba(250,249,247,0.18)" : "rgba(20,24,28,0.1)"}` }}>
-                <div style={{ fontFamily: MONO, fontSize: 11, letterSpacing: "0.04em", opacity: 0.85 }}>◦ {t.seats}</div>
-                <div style={{ fontFamily: MONO, fontSize: 11, letterSpacing: "0.04em", opacity: 0.85 }}>◦ {t.usage}</div>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 11, fontSize: 14.5, lineHeight: 1.45, marginBottom: 30 }}>
-                {t.feats.map((f) => (
-                  <div key={f} style={{ display: "flex", gap: 10, alignItems: "baseline" }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: t.dot, flex: "none", position: "relative", top: -2 }} />
-                    <span>{f}</span>
-                  </div>
-                ))}
-              </div>
-              <Link
-                href="/workspace"
-                style={{ marginTop: "auto", fontSize: 15, fontWeight: 600, padding: 13, background: t.btnBg, color: t.btnFg, border: t.btnBorder, borderRadius: 8, cursor: "pointer", textAlign: "center", textDecoration: "none" }}
-              >
-                {t.cta}
-              </Link>
-            </div>
-          ))}
-        </div>
+        <ContentBlock n="01" title="The Philosophy of Metered Intelligence">
+          <p style={{ marginBottom: 16 }}>
+            Most "AI on your data" products quietly re-read your entire database every single time a query is executed. This architectural flaw is why enterprise AI software often costs hundreds of thousands of dollars a year. Nadir operates differently.
+          </p>
+          <p>
+            We rely on deterministic algorithms for 95% of our continuous monitoring. Checking if an invoice exceeds a limit is arithmetic, not intelligence, and we provide that at a flat platform rate. We reserve expensive Large Language Model (LLM) tokens exclusively for tasks that require deep semantic reconciliation or complex text generation. 
+          </p>
+        </ContentBlock>
+
+        <ContentBlock n="02" title="Platform Fees vs. Seat Fees">
+          <p style={{ marginBottom: 16 }}>
+            Our pricing is divided into three transparent components. First, the <strong>Platform Fee</strong> covers the maintenance of the fusion engine, the continuous ingestion of data, the maintenance of the Operational Graph, and the execution of deterministic compliance checks.
+          </p>
+          <p>
+            Second, the <strong>Seat Fee</strong> applies only to active operators who require write-access to the system or the ability to configure new compliance rules. Executives or line workers who only receive automated briefings or read-only dashboards are completely free.
+          </p>
+        </ContentBlock>
+
+        <ContentBlock n="03" title="Enterprise Deployment">
+          <p style={{ marginBottom: 16 }}>
+            For multi-entity corporations, managed service providers (MSPs), and highly regulated environments requiring deep customization, we offer the Enterprise tier. This includes unlimited data sources, dedicated isolated VPCs, custom compliance rulebook ingestion, and access to our Forward-Deployed Engineering team.
+          </p>
+          <p>
+            Enterprise pricing is entirely custom, based on the sheer volume of data ingested and the complexity of the required semantic mappings. 
+          </p>
+        </ContentBlock>
       </Section>
 
       <Section alt>
-        <div style={{ fontFamily: MONO, fontSize: 12.5, letterSpacing: "0.14em", color: "#0E7C8A", marginBottom: 18 }}>HOW BILLING WORKS</div>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 40, lineHeight: 1.15, margin: "0 0 16px", maxWidth: 720, letterSpacing: "-0.01em" }}>
-          Three components. No mystery line items.
-        </h2>
-        <p style={{ fontSize: 16, lineHeight: 1.65, color: "#4a545e", maxWidth: 680, margin: "0 0 40px" }}>
-          Every invoice is platform + seats + metered intelligence — and the workspace shows the meter live, broken down per user, so finance never discovers the bill after the fact.
-        </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginBottom: 56 }}>
-          {BILLING_COMPONENTS.map((b) => (
-            <div key={b.n} style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, padding: "26px 28px" }}>
-              <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.12em", color: "#0E7C8A", marginBottom: 14 }}>{b.n}</div>
-              <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 10 }}>{b.title}</div>
-              <p style={{ fontSize: 14, lineHeight: 1.65, color: "#5a646e", margin: 0 }}>{b.desc}</p>
-            </div>
-          ))}
-        </div>
-        <div style={{ fontFamily: MONO, fontSize: 12.5, letterSpacing: "0.14em", color: "#0E7C8A", marginBottom: 18 }}>QUESTIONS, ANSWERED</div>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 40, lineHeight: 1.15, margin: "0 0 40px", letterSpacing: "-0.01em" }}>The fine print, in plain language.</h2>
-        <div style={{ display: "flex", flexDirection: "column", maxWidth: 860 }}>
-          {FAQ.map((f) => (
-            <div key={f.q} style={{ padding: "26px 0", borderTop: "1px solid rgba(20,24,28,0.12)" }}>
-              <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 10 }}>{f.q}</div>
-              <p style={{ fontSize: 15, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>{f.a}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      <Section>
-        <div style={{ textAlign: "center", padding: "20px 0" }}>
-          <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 38, margin: "0 0 16px", letterSpacing: "-0.01em" }}>Try it before any of this matters.</h2>
-          <p style={{ fontSize: 16, color: "#4a545e", margin: "0 0 30px" }}>The live workspace is open — five companies, real scenarios, no signup.</p>
-          <Link
-            href="/workspace"
-            className={styles.btnDark}
-            style={{ fontSize: 16, fontWeight: 600, padding: "16px 36px", background: "#14181C", color: "#FAF9F7", borderRadius: 8, textDecoration: "none", display: "inline-block" }}
-          >
-            Open the live workspace →
+        <div style={{ textAlign: "center", padding: "40px 0" }}>
+          <h2 style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 34, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Ready to evaluate Nadir?</h2>
+          <p style={{ fontSize: 16, color: "#4a545e", margin: "0 auto 32px", maxWidth: 500 }}>
+            Contact our engineering team to discuss a two-week proof of concept on your own data.
+          </p>
+          <Link href="/contact" style={{ fontSize: 15, fontWeight: 600, padding: "14px 32px", background: "#14181C", color: "#FFFFFF", borderRadius: 8, textDecoration: "none" }}>
+            Contact Engineering
           </Link>
         </div>
       </Section>

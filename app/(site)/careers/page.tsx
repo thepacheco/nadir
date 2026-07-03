@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
-import { MONO, PageHero, Section } from "@/components/site/PageShell";
+import { PageHero, Section, ContentBlock } from "@/components/site/PageShell";
 
 export const metadata: Metadata = { title: "Careers — Nadir" };
-
-const ROLES = [
-  { title: "Founding Fusion Engineer", team: "ENGINEERING", loc: "Atlanta · hybrid", desc: "You will own the data ingestion layer. You will write code that safely connects to legacy databases (like old ERP systems), understands their structure, and merges ten messy databases into one clean system. If you enjoy untangling complex data knots, this is for you." },
-  { title: "Forward-Deployed Engineer", team: "CUSTOMER", loc: "Atlanta / travel", desc: "You will work directly with our enterprise clients. You will travel to their sites, connect their databases to Nadir, and help them uncover hidden operational risks within their first two weeks. You will bridge the gap between our customers' needs and our core product." },
-  { title: "Product Design Engineer", team: "DESIGN", loc: "Remote (US)", desc: "You will design the interface that our customers use every day. Your goal is to take incredibly dense, complex operational data and make it instantly understandable—whether it's a factory line worker checking their shift or a CEO reviewing compliance reports." },
-  { title: "Compliance & Trust Lead", team: "TRUST", loc: "Remote (US)", desc: "You will be our internal expert on regulatory rules (like OSHA safety standards or aerospace regulations). You will ensure that our platform's automated checks and audit trails perfectly align with legal requirements. Experience in a highly regulated industry is heavily preferred." },
-];
 
 export default function CareersPage() {
   return (
@@ -16,31 +9,56 @@ export default function CareersPage() {
       <PageHero
         eyebrow="CAREERS"
         title="Help companies see their own floor."
-        sub="Small team, hard data problems, customers who feel the difference the same week. We hire people who like both halves of that."
+        sub="We are a small team solving exceptionally hard data problems for physical industries. Our customers feel the impact of our work within days, not years."
       />
+
       <Section>
-        <div style={{ display: "flex", flexDirection: "column", maxWidth: 900 }}>
-          {ROLES.map((r) => (
-            <div key={r.title} style={{ display: "grid", gridTemplateColumns: "1fr 2fr auto", gap: 32, padding: "28px 0", borderTop: "1px solid rgba(20,24,28,0.12)", alignItems: "start" }}>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 6 }}>{r.title}</div>
-                <div style={{ fontFamily: MONO, fontSize: 11, letterSpacing: "0.1em", color: "#7a848e" }}>{r.team} · {r.loc}</div>
-              </div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>{r.desc}</p>
-              <a
-                href={`mailto:careers@nadir.systems?subject=${encodeURIComponent(r.title)}`}
-                style={{ fontSize: 14, fontWeight: 600, color: "#0E7C8A", textDecoration: "none", whiteSpace: "nowrap", paddingTop: 2 }}
-              >
-                Apply →
-              </a>
-            </div>
-          ))}
-        </div>
-        <div style={{ marginTop: 40, padding: "22px 26px", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 12, background: "rgba(14,124,138,0.05)", maxWidth: 900 }}>
-          <p style={{ fontSize: 14.5, lineHeight: 1.65, color: "#2a333c", margin: 0 }}>
-            Don&apos;t see your role? If you&apos;ve untangled a legacy ERP, run a plant, audited a utility, or shipped data products people actually used — write us anyway: <a href="mailto:careers@nadir.systems" style={{ color: "#0E7C8A", fontWeight: 600, textDecoration: "none" }}>careers@nadir.systems</a>
+        <ContentBlock n="01" title="The Engineering Culture">
+          <p style={{ marginBottom: 16 }}>
+            Building Nadir requires a unique blend of extreme patience for legacy mess and aggressive ambition for cutting-edge AI. You will be writing SQL queries against Oracle databases that were installed in 1998, and in the exact same afternoon, writing prompts for state-of-the-art Large Language Models to infer the semantic relationships within those tables.
           </p>
-        </div>
+          <p>
+            We do not have product managers throwing Jira tickets over the wall. Engineers at Nadir talk directly to plant managers, compliance officers, and line workers. You own the problem end-to-end: from the initial database connection, to the semantic mapping, to the final interface the customer uses to solve their crisis.
+          </p>
+        </ContentBlock>
+
+        <ContentBlock n="02" title="Open Positions">
+          <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+                <div style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 22, color: "#14181C" }}>Founding Fusion Engineer</div>
+                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", letterSpacing: "0.06em" }}>ATLANTA · HYBRID</div>
+              </div>
+              <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
+                You will own the data ingestion layer. Your primary responsibility is writing robust, fault-tolerant code that safely connects to legacy databases (like older SAP or bespoke on-premise ERP systems). You will build the heuristics that allow our system to automatically infer schema structures, merging ten messy databases into one clean, unified operational graph. If you enjoy untangling complex data knots and possess a deep, innate understanding of relational data, this is for you.
+              </p>
+            </div>
+            
+            <div style={{ height: 1, background: "rgba(20,24,28,0.06)" }} />
+
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+                <div style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 22, color: "#14181C" }}>Forward-Deployed Engineer</div>
+                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", letterSpacing: "0.06em" }}>REMOTE (US) / TRAVEL</div>
+              </div>
+              <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
+                You will be the bridge between our enterprise clients and our core product. You will travel to client sites, orchestrate the connection of their databases to the Nadir platform, and guide them through the process of confirming their operational ontology. Your mandate is to help the client uncover hidden operational risks or compliance violations within their first two weeks of deployment.
+              </p>
+            </div>
+
+            <div style={{ height: 1, background: "rgba(20,24,28,0.06)" }} />
+
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+                <div style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 22, color: "#14181C" }}>Product Design Engineer</div>
+                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", letterSpacing: "0.06em" }}>REMOTE (US)</div>
+              </div>
+              <p style={{ fontSize: 14.5, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
+                You will design the interface that our customers rely on daily. Your goal is to take incredibly dense, multi-dimensional operational data and render it instantly understandable. You must balance the needs of a factory line worker checking their shift schedule on a mobile device with the needs of a CEO reviewing high-level compliance reports on a desktop. Strong React and CSS skills are mandatory.
+              </p>
+            </div>
+          </div>
+        </ContentBlock>
       </Section>
     </>
   );

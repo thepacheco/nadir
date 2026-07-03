@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MONO, SERIF, PageHero, Section } from "@/components/site/PageShell";
+import { PageHero, Section, ContentBlock } from "@/components/site/PageShell";
 import styles from "@/components/nadir/nadir.module.css";
 
 export const metadata: Metadata = { title: "About — Nadir" };
@@ -15,49 +15,45 @@ export default function AboutPage() {
       />
 
       <Section>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 44, maxWidth: 1100 }}>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 10 }}>Why now</div>
-            <p style={{ fontSize: 15, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-              Regulatory complexity is increasing, not shrinking. LLMs are finally good enough to do the reconciliation work that used to require armies of consultants. And no dominant player owns operational data fusion + compliance for the mid-market — Palantir plays enterprise and government scale; Harvey plays legal documents. This lane is open.
-            </p>
-          </div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 10 }}>How we build</div>
-            <p style={{ fontSize: 15, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-              Design partner first, deck second. We start with one company, one database, one narrow process — and show them a real piece of hidden risk or inefficiency in their own data within two weeks. That demo is the pitch. The product compounds from there, one source at a time.
-            </p>
-          </div>
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 10 }}>What we believe</div>
-            <p style={{ fontSize: 15, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-              The ontology is the product — a live model that turns raw database rows into real-world objects and relationships, so the system understands the business, not just its tables. And data isn&apos;t automatically right: a system that never questions its inputs is a dashboard, not a brain.
-            </p>
-          </div>
-        </div>
+        <ContentBlock n="01" title="The Problem of Fragmentation">
+          <p style={{ marginBottom: 16 }}>
+            Modern industrial operations are highly complex, yet they are managed through a patchwork of legacy enterprise resource planning (ERP) systems, siloed SQL databases, physical paperwork, and disparate SaaS applications. When a critical failure occurs, the root cause is rarely isolated to one system; it is found in the gaps between them. 
+          </p>
+          <p>
+            Regulatory compliance requires a unified view of these operations. Yet, because no single system can see the entire picture, compliance officers and operations managers are forced to manually export, reconcile, and analyze data after the fact. By the time a report is generated, the data is already stale, and the opportunity for proactive intervention has passed.
+          </p>
+        </ContentBlock>
+
+        <ContentBlock n="02" title="The Philosophical Shift: Ontologies over Tables">
+          <p style={{ marginBottom: 16 }}>
+            For decades, data engineering has focused on moving and transforming tabular data. At Nadir, we believe that businesses do not operate on rows and columns; they operate on <em>Entities</em> and <em>Relationships</em>. 
+          </p>
+          <p>
+            We utilize deterministic mapping and advanced language models to automatically infer the semantic meaning behind raw database schemas. A row in a `maintenance_log_v3` table is transformed into a living `WorkOrder` object, intrinsically linked to a `Machine` object and an `Employee` object. This creates an Operational Graph: a live, semantic model of the entire enterprise.
+          </p>
+        </ContentBlock>
+
+        <ContentBlock n="03" title="Deterministic Rules before Generative AI">
+          <p style={{ marginBottom: 16 }}>
+            In highly regulated environments like aerospace manufacturing, nuclear power, and defense, hallucinations are unacceptable. While we leverage Large Language Models (LLMs) to dramatically accelerate the initial data mapping phase, the actual runtime compliance checks are entirely deterministic.
+          </p>
+          <p>
+            If a pressure valve exceeds its rated limit, or an employee clocks in without the required certification, the rule is evaluated mathematically. AI is strictly reserved for generating human-readable context around the violation and proposing the next best action, never for the underlying logic evaluation itself.
+          </p>
+        </ContentBlock>
       </Section>
 
       <Section alt>
-        <div style={{ fontFamily: MONO, fontSize: 12.5, letterSpacing: "0.14em", color: "#0E7C8A", marginBottom: 18 }}>THE NAME</div>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 38, lineHeight: 1.2, margin: "0 0 18px", maxWidth: 720, letterSpacing: "-0.01em" }}>
-          The nadir is the point directly beneath you.
-        </h2>
-        <p style={{ fontSize: 16, lineHeight: 1.7, color: "#4a545e", maxWidth: 680, margin: 0 }}>
-          In observation, it&apos;s where the satellite looks: straight down, at the ground truth. That&apos;s the product — not a view from the org chart, but from directly above the floor, where the work actually happens and the risk actually hides.
-        </p>
-      </Section>
-
-      <Section>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 30, flexWrap: "wrap" }}>
           <div>
-            <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 10px", letterSpacing: "-0.01em" }}>Building this interests you?</h2>
-            <p style={{ fontSize: 15.5, color: "#4a545e", margin: 0 }}>We&apos;re a small team fusing ugly databases into living models. It&apos;s harder — and more fun — than it sounds.</p>
+            <h2 style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 34, margin: "0 0 10px", letterSpacing: "-0.01em", color: "#14181C" }}>Building this interests you?</h2>
+            <p style={{ fontSize: 15.5, color: "#4a545e", margin: 0 }}>We are a small team fusing ugly databases into living models. It is harder — and more rewarding — than it sounds.</p>
           </div>
           <div style={{ display: "flex", gap: 12, flex: "none" }}>
-            <Link href="/careers" className={styles.btnDark} style={{ fontSize: 15, fontWeight: 600, padding: "13px 26px", background: "#14181C", color: "#FAF9F7", borderRadius: 8, textDecoration: "none" }}>
+            <Link href="/careers" className={styles.btnDark} style={{ fontSize: 15, fontWeight: 600, padding: "13px 26px", background: "#14181C", color: "#FFFFFF", borderRadius: 8, textDecoration: "none" }}>
               Open roles →
             </Link>
-            <Link href="/contact" style={{ fontSize: 15, fontWeight: 600, padding: "13px 26px", color: "#14181C", border: "1.5px solid rgba(20,24,28,0.25)", borderRadius: 8, textDecoration: "none", background: "rgba(255,255,255,0.5)" }}>
+            <Link href="/contact" style={{ fontSize: 15, fontWeight: 600, padding: "13px 26px", color: "#14181C", border: "1px solid rgba(20,24,28,0.2)", borderRadius: 8, textDecoration: "none", background: "#FFFFFF" }}>
               Contact us
             </Link>
           </div>

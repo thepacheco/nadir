@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageHero, Section, LegalBlock } from "@/components/site/PageShell";
+import { PageHero, Section, ContentBlock } from "@/components/site/PageShell";
 
 export const metadata: Metadata = { title: "Security — Nadir" };
 
@@ -12,35 +12,41 @@ export default function SecurityPage() {
         sub="Nadir connects directly to your most sensitive operational and financial systems. We architected our security model from day one assuming a zero-trust environment."
       />
       <Section>
-        <LegalBlock n="01" title="Strict Tenant Isolation">
-          <p>
-            Your data never touches another customer's data. Nadir provisions completely isolated cloud environments for every enterprise deployment. This means your operations run within dedicated Virtual Private Clouds (VPCs), utilizing dedicated encryption keys and separate database clusters. We do not use shared multi-tenant databases for enterprise clients.
+        <ContentBlock n="01" title="Strict Tenant Isolation">
+          <p style={{ marginBottom: 16 }}>
+            We understand that for regulated physical industries, multi-tenant databases are often a non-starter. Nadir provisions completely isolated cloud environments for every enterprise deployment. Your data never co-mingles with another customer's data.
           </p>
-        </LegalBlock>
+          <p>
+            This isolation extends through the entire stack: your operations run within dedicated Virtual Private Clouds (VPCs), utilizing dedicated encryption keys, separate database clusters for the Operational Graph, and isolated compute instances for AI inference. 
+          </p>
+        </ContentBlock>
 
-        <LegalBlock n="02" title="No Model Training on Your Data">
-          <p>
-            Nadir's Large Language Model (LLM) components act strictly as stateless translation layers. This means that your operational data, incident memories, and compliance checks are used exclusively to process your queries at runtime. Your data is <strong>never</strong> used to train, fine-tune, or improve foundational AI models, either by us or our subprocessors.
+        <ContentBlock n="02" title="Zero AI Model Training">
+          <p style={{ marginBottom: 16 }}>
+            Nadir utilizes Large Language Models (LLMs) strictly as stateless translation layers to interpret rules and generate human-readable text. Your operational data is <strong>never</strong> used to train, fine-tune, or improve foundational AI models.
           </p>
-        </LegalBlock>
+          <p>
+            Any data transmitted to our LLM endpoints is processed entirely in memory and purged immediately following the inference request. We have executed strict Data Processing Agreements (DPAs) with our sub-processors ensuring they are legally and technically prohibited from retaining your data or using it for their own model development.
+          </p>
+        </ContentBlock>
 
-        <LegalBlock n="03" title="Role-Based Access Control (RBAC)">
-          <p>
-            Permissions in Nadir map 1:1 with your existing SSO provider (Okta, Entra, Google Workspace). We enforce strict least-privilege access: a line worker only sees their shift and equipment; an area manager sees their specific floor; executives see the aggregated views. Write-back actions into your ERP systems require explicit authorization and multi-step approvals.
+        <ContentBlock n="03" title="Encryption and Key Management (BYOK)">
+          <p style={{ marginBottom: 16 }}>
+            All data transmitted between your on-premise systems and the Nadir VPC is encrypted in transit using TLS 1.3. All data stored within the Nadir platform—including the generated Operational Graph and cached schemas—is encrypted at rest using AES-256 block-level encryption.
           </p>
-        </LegalBlock>
+          <p>
+            For Enterprise tier customers, we support Bring Your Own Key (BYOK) architectures via AWS Key Management Service (KMS) or Google Cloud KMS. This grants your security team the ultimate kill switch: you can cryptographically revoke Nadir's access to your data instantaneously, at any time, without our intervention.
+          </p>
+        </ContentBlock>
 
-        <LegalBlock n="04" title="Immutable Audit Logs">
-          <p>
-            Every single action taken within the platform is recorded. Every query, alert dismissal, system integration, and write-back action is logged immutably. These logs are preserved in a tamper-evident ledger, ensuring that Nadir meets the strict requirements of SOC-2 Type II, HIPAA, and DoD IL4 compliance audits.
+        <ContentBlock n="04" title="Immutable Audit Trails">
+          <p style={{ marginBottom: 16 }}>
+            Accountability is the foundation of compliance. Every single action taken within the Nadir platform is recorded in an append-only, tamper-evident ledger. 
           </p>
-        </LegalBlock>
-
-        <LegalBlock n="05" title="Data Encryption">
           <p>
-            All data is encrypted in transit using TLS 1.3 and at rest using AES-256 encryption. We support Bring Your Own Key (BYOK) architectures via AWS KMS or Google Cloud KMS, giving you the ability to revoke our access to your data instantaneously at any time.
+            This includes every query executed, every alert dismissed by a user, every integration sync, and every write-back action initiated by an authorized operator. These logs cannot be altered or deleted by any user, including Nadir administrators, ensuring full compliance with SOC-2 Type II, HIPAA, and DoD IL4 audit requirements.
           </p>
-        </LegalBlock>
+        </ContentBlock>
       </Section>
     </>
   );
