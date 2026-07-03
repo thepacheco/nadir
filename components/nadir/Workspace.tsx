@@ -75,6 +75,19 @@ export default function Workspace() {
 
   // phase 2 runtime state
   const [evidenceIdx, setEvidenceIdx] = useState<number | null>(null);
+  const [ingestedData, setIngestedData] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/ingest')
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === 'success') {
+          setIngestedData(data.data);
+        }
+      })
+      .catch(err => console.error("Failed to ingest data:", err));
+  }, []);
+
   const [approvals, setApprovals] = useState<Record<string, "none" | "pending" | "approved">>({});
   const [escalations, setEscalations] = useState<Record<string, boolean>>({});
   const [decisions, setDecisions] = useState<Record<string, "wrong" | "correct">>({});
@@ -539,6 +552,7 @@ export default function Workspace() {
     notifPrefs,
     toggleNotifPref: (k: string) => setNotifPrefs((prev) => ({ ...prev, [k]: !prev[k] })),
     resetDemo,
+    ingestedData,
 
     toast: toastView,
     dismissToast: () => { dismissCurrentToast(toast); setToast(null); },

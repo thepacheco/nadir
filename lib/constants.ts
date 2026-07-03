@@ -12,6 +12,7 @@ export const SCREENS = [
   { id: "plan", label: "Guidance plan" },
   { id: "comp", label: "Compliance" },
   { id: "sources", label: "Data sources" },
+  { id: "dash", label: "Dashboard" },
   { id: "settings", label: "Settings" },
 ] as const;
 

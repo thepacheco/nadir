@@ -1,0 +1,11 @@
+ticket_id,department,owner,status,priority,description,created_at,resolved_at,location
+T-1001,MAINTENANCE,JD_01,CLOSED,HIGH,Kiln actuator failure E-217,2026-06-25T08:15:00Z,2026-06-25T11:30:00Z,Line 3
+T-1002,HR,LR_02,OPEN,MEDIUM,Missing I-9 forms for Q3 hires,2026-07-01T09:00:00Z,,HQ Office
+T-1003,OPERATIONS,MK_03,IN_PROGRESS,HIGH,Prep sheet cover count mismatch,2026-07-03T11:00:00Z,,Midtown Kitchen
+T-1004,MAINTENANCE,JD_01,OPEN,CRITICAL,Walk-in cooler temperature spike,2026-07-03T15:20:00Z,,Midtown Storage
+T-1005,FINANCE,AT_04,CLOSED,LOW,Invoice #7741 price dispute,2026-06-28T14:22:00Z,2026-07-01T10:15:00Z,HQ Office
+T-1006,COMPLIANCE,DT_05,IN_PROGRESS,MEDIUM,OSHA 300 log gap review,2026-07-02T08:45:00Z,,Safety Office
+T-1007,OPERATIONS,RM_06,OPEN,HIGH,Thursday crew shortage Feeder 12,2026-07-03T07:12:00Z,,Substation 4
+T-1008,MAINTENANCE,JD_01,OPEN,HIGH,Transformer T-114 thermal risk,2026-07-03T06:12:00Z,,Substation 4
+T-1009,QA,LR_02,CLOSED,HIGH,Graphite lot #88 cert expiry,2026-06-28T16:00:00Z,2026-06-30T12:00:00Z,Receiving Dock
+T-1010,SALES,JD_07,IN_PROGRESS,MEDIUM,MSA template missing,2026-07-01T13:30:00Z,,HQ Office

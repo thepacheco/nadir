@@ -6,7 +6,7 @@ import { RETICLE_CURSOR } from "@/lib/constants";
 import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
-const Nadir3D = dynamic(() => import("../Nadir3D"), { ssr: false });
+import SiteMapper from "./SiteMapper";
 
 export default function MapScreen() {
   const { co, alertsFull, activeCount, clockLabel } = useNadir();
@@ -40,7 +40,7 @@ export default function MapScreen() {
           ))}
         </div>
         <div style={{ flex: 1, minHeight: 0, position: "relative", background: "#F3F1EC", cursor: RETICLE_CURSOR }}>
-          <Nadir3D variant={co.id} onBuildingClick={handleBuildingClick} />
+          <SiteMapper onBuildingClick={handleBuildingClick} />
           
           {!isPanelOpen && (
             <button

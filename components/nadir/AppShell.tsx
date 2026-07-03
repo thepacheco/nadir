@@ -13,6 +13,7 @@ import PlannerScreen from "./PlannerScreen";
 import ComplianceScreen from "./ComplianceScreen";
 import SourcesScreen from "./SourcesScreen";
 import SettingsScreen from "./SettingsScreen";
+import DashboardScreen from "./DashboardScreen";
 import EvidenceDrawer from "./EvidenceDrawer";
 import Toast from "./Toast";
 
@@ -38,6 +39,8 @@ function NavIcon({ id, color }: { id: string; color: string }) {
       return <svg {...common}><path d="M8 1.8 13 3.6v4.2c0 3.4-2.2 5.4-5 6.4-2.8-1-5-3-5-6.4V3.6z" /><path d="m5.8 7.8 1.6 1.6 2.8-3" /></svg>;
     case "sources": // database cylinder
       return <svg {...common}><ellipse cx="8" cy="3.4" rx="5.4" ry="1.9" /><path d="M2.6 3.4v9.2c0 1 2.4 1.9 5.4 1.9s5.4-.9 5.4-1.9V3.4M2.6 8c0 1 2.4 1.9 5.4 1.9s5.4-.9 5.4-1.9" /></svg>;
+    case "dash": // bar chart
+      return <svg {...common}><line x1="12" y1="14" x2="12" y2="6" /><line x1="8" y1="14" x2="8" y2="10" /><line x1="4" y1="14" x2="4" y2="3" /></svg>;
     case "settings": // gear
       return <svg {...common}><circle cx="8" cy="8" r="2.2" /><path d="M8 1.6v2M8 12.4v2M1.6 8h2M12.4 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M12.5 3.5l-1.4 1.4M4.9 11.1l-1.4 1.4" /></svg>;
     default:
@@ -300,6 +303,7 @@ export default function AppShell() {
           {screen === "plan" && <PlannerScreen />}
           {screen === "comp" && <ComplianceScreen />}
           {screen === "sources" && <SourcesScreen />}
+          {screen === "dash" && <DashboardScreen />}
           {screen === "settings" && <SettingsScreen />}
         </div>
       </div>

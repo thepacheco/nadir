@@ -185,6 +185,7 @@ export interface NadirCtxValue {
   notifPrefs: Record<string, boolean>;
   toggleNotifPref: (k: string) => void;
   resetDemo: () => void;
+  ingestedData: any[];
 }
 
 export const NadirContext = createContext<NadirCtxValue | null>(null);
