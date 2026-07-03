@@ -13,13 +13,15 @@ export function generateStaticParams() {
   return FEATURES.map((f) => ({ feature: f.slug }));
 }
 
-export function generateMetadata({ params }: { params: { feature: string } }): Metadata {
-  const feat = FEATURES.find((f) => f.slug === params.feature);
+export async function generateMetadata({ params }: { params: Promise<{ feature: string }> }): Promise<Metadata> {
+  const { feature } = await params;
+  const feat = FEATURES.find((f) => f.slug === feature);
   return { title: feat ? `${feat.title} — Platform — Nadir` : "Platform — Nadir" };
 }
 
-export default function FeatureDetailPage({ params }: { params: { feature: string } }) {
-  const feat = FEATURES.find((f) => f.slug === params.feature);
+export default async function FeatureDetailPage({ params }: { params: Promise<{ feature: string }> }) {
+  const { feature } = await params;
+  const feat = FEATURES.find((f) => f.slug === feature);
   if (!feat) notFound();
 
   return (

@@ -13,13 +13,15 @@ export function generateStaticParams() {
   return ROLES.map((r) => ({ slug: r.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const role = ROLES.find((r) => r.slug === params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const role = ROLES.find((r) => r.slug === slug);
   return { title: role ? `${role.title} — Careers — Nadir` : "Careers — Nadir" };
 }
 
-export default function RoleDetailPage({ params }: { params: { slug: string } }) {
-  const role = ROLES.find((r) => r.slug === params.slug);
+export default async function RoleDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const role = ROLES.find((r) => r.slug === slug);
   if (!role) notFound();
 
   return (
