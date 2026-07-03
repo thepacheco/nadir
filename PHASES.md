@@ -11,7 +11,7 @@
 What exists: enterprise marketing site, 8-industry scripted workspace, evidence drawers, approval flows, audit trail visuals. It's a good movie.
 
 Remaining Phase 1 tasks (days, not weeks):
-- [ ] Make the GitHub repo private (or purge `design/` and history). Internal strategy docs are currently public.
+- [x] Make the GitHub repo private (or purge `design/` and history). *(Done — flipped via GitHub API.)*
 - [ ] Label the workspace clearly as a guided demo internally; stop adding demo industries.
 - [ ] Visual pass: promote the ontology and mapping sections (site + app) to bolder visual weight — they're the core claim and currently underweighted.
 
@@ -25,11 +25,11 @@ Remaining Phase 1 tasks (days, not weeks):
 
 Build list:
 - [ ] **Schema extractor:** connect read-only to Postgres and MySQL (SQL Server next). Pull table list, column types, row counts, foreign keys, and 3–5 sampled rows per table. Never full tables — sampling is both the cost control and the security story.
-- [ ] **File ingestion:** CSV and XLSX upload path that produces the same normalized schema representation (an Excel sheet IS a database for a small customer — treat it as one). Replace `app/api/ingest/route.ts` entirely; use a real CSV parser, not split-on-comma.
-- [ ] **Claude mapping pass:** send schema + samples to the model; receive proposed object mappings, confidence, reasoning, and inferred relationships (from FKs, naming, and value overlap). Output feeds the existing OntologyGraph/DragDropMapper components.
-- [ ] **Validation layer (checks and balances):** value-overlap tests on every proposed and user-drawn wire; nonsensical wires error out with plain-English reasons; orphaned wires prompt for re-target.
+- [x] **File ingestion:** CSV path done — real RFC-4180 parser (`lib/engine/csv.ts`), normalized schema with type inference and 5-row sampling, `/api/ingest` fully replaced (POST upload + GET sample). XLSX still to add.
+- [~] **Claude mapping pass:** deterministic mapper live (`lib/engine/mapper.ts` — vocabulary + key-shape + value-overlap signals, computed confidence WITH reasoning). Portable model interface with hard token budget in `lib/engine/llm.ts`, activates when ANTHROPIC_API_KEY is set (founder to supply); degrades gracefully to deterministic. UI hookup to OntologyGraph/DragDropMapper next.
+- [x] **Validation layer (checks and balances):** `lib/engine/validate.ts` — value-overlap tests, type-compatibility checks, plain-English rejections WITH a suggested correct wire. (v1 runs on sampled values; full-column verification comes with the SQL extractor.)
 - [ ] **Correction memory:** every human confirm/rename/rewire stored per customer; corrections included in future mapping prompts for that customer.
-- [ ] **Test harness with real dummy data:** build 3 realistic dummy databases (a utility ops schema, a food-production schema modeled on the Newrest domain, a generic SMB schema) plus 2 messy Excel workbooks. Run the pipeline against all five on every change. This is how we know the science works before anyone watches.
+- [x] **Test harness with real dummy data:** `npm run harness` — utility ops, food-production, and messy-SMB CSV sets in `testdata/`, 16 assertions over parsing, proposals, wires, and validation. (It already caught its first real bug: FK columns were being rejected as IDs.) Messy XLSX workbooks to add with XLSX support.
 
 Founder supplies: Anthropic API key (Claude Console); a Postgres instance with the dummy data (local or a $5–10/mo managed instance); decision on hosting (Vercel is fine for now; the ingestion worker may need a small separate service).
 

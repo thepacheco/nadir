@@ -1,0 +1,6 @@
+wo_id,asset_id,crew_id,opened_date,status,priority
+WO-1001,A-114,C-3,2026-06-01,open,high
+WO-1002,A-115,C-7,2026-06-02,closed,low
+WO-1003,A-114,C-3,2026-06-04,open,high
+WO-1004,A-209,C-9,2026-06-05,open,medium
+WO-1005,A-115,C-7,2026-06-08,closed,low

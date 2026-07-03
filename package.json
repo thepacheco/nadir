@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "harness": "node --experimental-strip-types --disable-warning=ExperimentalWarning --import ./scripts/ts-resolve.mjs scripts/harness.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

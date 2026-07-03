@@ -1,0 +1,4 @@
+sku,item_name,on_hand,unit,supplier_id
+SKU-11,"Apples, case",42,case,SUP-2
+SKU-12,"Yogurt, 5kg tub",18,tub,SUP-2
+SKU-13,"Chicken, 10kg",7,box,SUP-5
