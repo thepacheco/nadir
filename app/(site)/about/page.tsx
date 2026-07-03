@@ -10,7 +10,7 @@ export default function AboutPage() {
     <>
       <PageHero
         eyebrow="THE COMPANY"
-        title="Nobody fuses the floor and the filing cabinet. So we do."
+        title="We build the central nervous system for physical industry."
         sub="Nadir exists because mid-market companies in regulated, operationally complex industries run on fragmented systems — and no one has a single live picture of what's actually happening."
       />
 

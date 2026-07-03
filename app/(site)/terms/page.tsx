@@ -1,47 +1,47 @@
-"use client";
+import type { Metadata } from "next";
+import { PageHero, Section, LegalBlock } from "@/components/site/PageShell";
 
-import { motion } from "framer-motion";
-
-const MONO = "var(--font-ibm-plex-mono), monospace";
+export const metadata: Metadata = { title: "Terms of Service — Nadir" };
 
 export default function TermsPage() {
   return (
-    <div style={{ background: "#FAF9F7", minHeight: "100vh", padding: "160px 48px 100px" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto" }}>
-        
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div style={{ fontFamily: MONO, fontSize: 13, letterSpacing: "0.14em", color: "#5a646e", marginBottom: 24 }}>LEGAL</div>
-          <h1 style={{ fontFamily: "var(--font-newsreader), serif", fontSize: 56, fontWeight: 400, margin: "0 0 24px", color: "#14181C", letterSpacing: "-0.01em", lineHeight: 1.1 }}>
-            Terms of Service
-          </h1>
-          <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", marginBottom: 60 }}>LAST UPDATED: JULY 3, 2026</div>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ background: "#FFFFFF", padding: 48, borderRadius: 16, border: "1px solid rgba(20,24,28,0.1)", fontSize: 15, lineHeight: 1.7, color: "#4a545e", display: "flex", flexDirection: "column", gap: 24 }}>
-          
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#14181C", margin: "0 0 -8px" }}>1. Provision of Services</h2>
+    <>
+      <PageHero
+        eyebrow="LEGAL"
+        title="Terms of Service"
+        sub="Last Updated: July 3, 2026. These terms govern your use of the Nadir platform. We've written them to be clear and straightforward."
+      />
+      <Section>
+        <LegalBlock n="01" title="Provision of Services">
           <p>
-            Nadir Intelligence, Inc. ("Company") grants the Customer a non-exclusive, non-transferable right to access and use the Nadir Platform during the Subscription Term, solely for the Customer's internal business operations.
+            Nadir Intelligence, Inc. ("Company") grants the Customer a non-exclusive, non-transferable right to access and use the Nadir Platform during the Subscription Term, solely for the Customer's internal business operations. You are responsible for ensuring that anyone using the platform under your account complies with these terms.
           </p>
+        </LegalBlock>
 
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#14181C", margin: "20px 0 -8px" }}>2. Acceptable Use</h2>
+        <LegalBlock n="02" title="Acceptable Use">
           <p>
-            Customer shall not use the Platform to process any data that violates applicable laws or regulations. The Customer is strictly prohibited from attempting to reverse engineer, decompile, or extract the underlying models, ontology schemas, or source code of the Platform.
+            You agree not to use the Platform for any illegal activities or to process data that violates applicable laws (including privacy and compliance regulations). Furthermore, you may not attempt to reverse engineer, decompile, or extract the underlying models, ontology schemas, or source code of the Platform. 
           </p>
+        </LegalBlock>
 
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#14181C", margin: "20px 0 -8px" }}>3. Data Ownership</h2>
+        <LegalBlock n="03" title="Data Ownership">
           <p>
-            Customer retains all rights, title, and interest in and to all Customer Data. The Company acquires no rights in Customer Data other than the rights necessary to provide the Services. The Ontology generated during the usage of the Platform specifically regarding the Customer's operational mapping remains the property of the Customer upon termination.
+            You own your data. Customer retains all rights, title, and interest in and to all Customer Data. The Company acquires no rights in Customer Data other than the rights necessary to provide the Services. The unique Ontology and logic schemas generated during your usage of the Platform remain your property upon termination of the contract.
           </p>
+        </LegalBlock>
 
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#14181C", margin: "20px 0 -8px" }}>4. Liability Limitations</h2>
+        <LegalBlock n="04" title="Liability Limitations">
           <p>
-            While Nadir implements deterministic checks, the Platform serves as an operational intelligence tool and does not guarantee the prevention of physical incidents or regulatory violations. Nadir is not liable for indirect, incidental, special, or consequential damages.
+            Nadir provides advanced deterministic checks and operational intelligence, but it is a tool—not a guarantee. The Platform does not guarantee the prevention of physical incidents, regulatory violations, or business disruptions. Therefore, Nadir is not liable for any indirect, incidental, special, or consequential damages resulting from the use or inability to use the Platform.
           </p>
+        </LegalBlock>
 
-        </motion.div>
-
-      </div>
-    </div>
+        <LegalBlock n="05" title="Termination">
+          <p>
+            Either party may terminate the agreement if the other party materially breaches these terms and fails to cure the breach within 30 days. Upon termination, your right to access the platform is immediately revoked, and we will initiate the secure deletion of your isolated tenant environment within 30 days as detailed in our Privacy Policy.
+          </p>
+        </LegalBlock>
+      </Section>
+    </>
   );
 }

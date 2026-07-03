@@ -1,72 +1,47 @@
-"use client";
+import type { Metadata } from "next";
+import { PageHero, Section, LegalBlock } from "@/components/site/PageShell";
 
-import { motion } from "framer-motion";
-import { Shield, Lock, Server, FileCheck } from "lucide-react";
-
-const MONO = "var(--font-ibm-plex-mono), monospace";
+export const metadata: Metadata = { title: "Security — Nadir" };
 
 export default function SecurityPage() {
   return (
-    <div style={{ background: "#FAF9F7", minHeight: "100vh", padding: "160px 48px 100px" }}>
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
-        
-        {/* HEADER */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div style={{ fontFamily: MONO, fontSize: 13, letterSpacing: "0.14em", color: "#8a5a10", marginBottom: 24 }}>SECURITY & TRUST</div>
-          <h1 style={{ fontFamily: "var(--font-newsreader), serif", fontSize: 56, fontWeight: 400, margin: "0 0 24px", color: "#14181C", letterSpacing: "-0.01em", lineHeight: 1.1 }}>
-            Enterprise-grade data protection.
-          </h1>
-          <p style={{ fontSize: 20, color: "#5a646e", lineHeight: 1.6, marginBottom: 60 }}>
-            Nadir connects directly to your most sensitive operational and financial systems. We architected our security model from day one assuming a zero-trust environment.
+    <>
+      <PageHero
+        eyebrow="SECURITY & TRUST"
+        title="Enterprise-grade data protection."
+        sub="Nadir connects directly to your most sensitive operational and financial systems. We architected our security model from day one assuming a zero-trust environment."
+      />
+      <Section>
+        <LegalBlock n="01" title="Strict Tenant Isolation">
+          <p>
+            Your data never touches another customer's data. Nadir provisions completely isolated cloud environments for every enterprise deployment. This means your operations run within dedicated Virtual Private Clouds (VPCs), utilizing dedicated encryption keys and separate database clusters. We do not use shared multi-tenant databases for enterprise clients.
           </p>
-        </motion.div>
+        </LegalBlock>
 
-        {/* SECURITY GRID */}
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 60 }}>
-          
-          <div style={{ background: "#FFFFFF", padding: 32, borderRadius: 16, border: "1px solid rgba(20,24,28,0.1)" }}>
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(180,118,20,0.1)", color: "#8a5a10", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
-              <Server size={24} />
-            </div>
-            <h3 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 12px" }}>Strict Tenant Isolation</h3>
-            <p style={{ fontSize: 15, color: "#5a646e", lineHeight: 1.6, margin: 0 }}>
-              Your data never touches another customer's data. Nadir provisions isolated cloud environments for every enterprise deployment, complete with dedicated VPCs and encryption keys.
-            </p>
-          </div>
+        <LegalBlock n="02" title="No Model Training on Your Data">
+          <p>
+            Nadir's Large Language Model (LLM) components act strictly as stateless translation layers. This means that your operational data, incident memories, and compliance checks are used exclusively to process your queries at runtime. Your data is <strong>never</strong> used to train, fine-tune, or improve foundational AI models, either by us or our subprocessors.
+          </p>
+        </LegalBlock>
 
-          <div style={{ background: "#FFFFFF", padding: 32, borderRadius: 16, border: "1px solid rgba(20,24,28,0.1)" }}>
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(14,124,138,0.1)", color: "#0E7C8A", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
-              <Lock size={24} />
-            </div>
-            <h3 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 12px" }}>No Model Training</h3>
-            <p style={{ fontSize: 15, color: "#5a646e", lineHeight: 1.6, margin: 0 }}>
-              Nadir's LLM components are strictly stateless translation layers. Your operational data, incident memories, and compliance checks are never used to train foundational models.
-            </p>
-          </div>
+        <LegalBlock n="03" title="Role-Based Access Control (RBAC)">
+          <p>
+            Permissions in Nadir map 1:1 with your existing SSO provider (Okta, Entra, Google Workspace). We enforce strict least-privilege access: a line worker only sees their shift and equipment; an area manager sees their specific floor; executives see the aggregated views. Write-back actions into your ERP systems require explicit authorization and multi-step approvals.
+          </p>
+        </LegalBlock>
 
-          <div style={{ background: "#FFFFFF", padding: 32, borderRadius: 16, border: "1px solid rgba(20,24,28,0.1)" }}>
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(21,133,79,0.1)", color: "#15854F", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
-              <Shield size={24} />
-            </div>
-            <h3 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 12px" }}>Role-Based Access</h3>
-            <p style={{ fontSize: 15, color: "#5a646e", lineHeight: 1.6, margin: 0 }}>
-              Permissions map 1:1 with your existing SSO provider (Okta, Entra). Line workers only see their shifts; area managers see their floor. Write-back actions require explicit authorization.
-            </p>
-          </div>
+        <LegalBlock n="04" title="Immutable Audit Logs">
+          <p>
+            Every single action taken within the platform is recorded. Every query, alert dismissal, system integration, and write-back action is logged immutably. These logs are preserved in a tamper-evident ledger, ensuring that Nadir meets the strict requirements of SOC-2 Type II, HIPAA, and DoD IL4 compliance audits.
+          </p>
+        </LegalBlock>
 
-          <div style={{ background: "#FFFFFF", padding: 32, borderRadius: 16, border: "1px solid rgba(20,24,28,0.1)" }}>
-            <div style={{ width: 48, height: 48, borderRadius: 12, background: "rgba(20,24,28,0.06)", color: "#14181C", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24 }}>
-              <FileCheck size={24} />
-            </div>
-            <h3 style={{ fontSize: 20, fontWeight: 700, margin: "0 0 12px" }}>Immutable Audit Logs</h3>
-            <p style={{ fontSize: 15, color: "#5a646e", lineHeight: 1.6, margin: 0 }}>
-              Every query, alert dismissal, and write-back action is logged immutably. Nadir is designed to be fully compliant with SOC-2, HIPAA, and DoD IL4 requirements.
-            </p>
-          </div>
-
-        </motion.div>
-
-      </div>
-    </div>
+        <LegalBlock n="05" title="Data Encryption">
+          <p>
+            All data is encrypted in transit using TLS 1.3 and at rest using AES-256 encryption. We support Bring Your Own Key (BYOK) architectures via AWS KMS or Google Cloud KMS, giving you the ability to revoke our access to your data instantaneously at any time.
+          </p>
+        </LegalBlock>
+      </Section>
+    </>
   );
 }

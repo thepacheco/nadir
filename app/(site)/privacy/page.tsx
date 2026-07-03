@@ -1,47 +1,47 @@
-"use client";
+import type { Metadata } from "next";
+import { PageHero, Section, LegalBlock } from "@/components/site/PageShell";
 
-import { motion } from "framer-motion";
-
-const MONO = "var(--font-ibm-plex-mono), monospace";
+export const metadata: Metadata = { title: "Privacy Policy — Nadir" };
 
 export default function PrivacyPage() {
   return (
-    <div style={{ background: "#FAF9F7", minHeight: "100vh", padding: "160px 48px 100px" }}>
-      <div style={{ maxWidth: 800, margin: "0 auto" }}>
-        
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div style={{ fontFamily: MONO, fontSize: 13, letterSpacing: "0.14em", color: "#5a646e", marginBottom: 24 }}>LEGAL</div>
-          <h1 style={{ fontFamily: "var(--font-newsreader), serif", fontSize: 56, fontWeight: 400, margin: "0 0 24px", color: "#14181C", letterSpacing: "-0.01em", lineHeight: 1.1 }}>
-            Privacy Policy
-          </h1>
-          <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", marginBottom: 60 }}>LAST UPDATED: JULY 3, 2026</div>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} style={{ background: "#FFFFFF", padding: 48, borderRadius: 16, border: "1px solid rgba(20,24,28,0.1)", fontSize: 15, lineHeight: 1.7, color: "#4a545e", display: "flex", flexDirection: "column", gap: 24 }}>
-          
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#14181C", margin: "0 0 -8px" }}>1. Data Collection</h2>
+    <>
+      <PageHero
+        eyebrow="LEGAL"
+        title="Privacy Policy"
+        sub="Last Updated: July 3, 2026. This policy outlines how Nadir Intelligence, Inc. handles your data, ensuring complete transparency and control."
+      />
+      <Section>
+        <LegalBlock n="01" title="Data Collection & Usage">
           <p>
-            Nadir Intelligence, Inc. ("Nadir") operates entirely within isolated tenant boundaries. We do not aggregate operational data across customers. Information collected via our marketing site is limited to contact information submitted voluntarily.
+            Nadir operates entirely within isolated tenant boundaries. The operational data you connect to our platform (e.g., ERP data, SCADA feeds, HR systems) is processed solely to provide the agreed-upon services to your organization. We do not aggregate operational data across our customer base. The only data we collect for our own business purposes is the contact and billing information you voluntarily provide during account creation.
           </p>
+        </LegalBlock>
 
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#14181C", margin: "20px 0 -8px" }}>2. Usage of AI Models</h2>
+        <LegalBlock n="02" title="Zero Model Training">
           <p>
-            We utilize large language models (LLMs) strictly as stateless translation engines. Any data sent to these models is purged immediately after inference. Nadir explicitly prohibits its sub-processors from utilizing customer data to train, fine-tune, or otherwise improve foundational models.
+            We utilize large language models (LLMs) strictly as stateless translation engines to interpret rules and generate human-readable text. Any data sent to these models is purged immediately after inference. Nadir explicitly prohibits its infrastructure providers and sub-processors from utilizing any customer data to train or improve their foundational models.
           </p>
+        </LegalBlock>
 
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#14181C", margin: "20px 0 -8px" }}>3. Data Retention</h2>
+        <LegalBlock n="03" title="Data Retention & Deletion">
           <p>
-            Within your deployed workspace, Nadir maintains a localized Knowledge Base and Audit Trail. This data belongs to you. Upon contract termination, Nadir permanently destroys the isolated tenant environment and all associated cryptographic keys within 30 days.
+            Within your deployed workspace, Nadir maintains a localized Knowledge Base and Audit Trail. This data belongs exclusively to you. Upon contract termination or upon a verified deletion request, Nadir will permanently destroy the isolated tenant environment, wiping all operational data, derived ontologies, and associated cryptographic keys within 30 days.
           </p>
+        </LegalBlock>
 
-          <h2 style={{ fontSize: 22, fontWeight: 700, color: "#14181C", margin: "20px 0 -8px" }}>4. Subprocessors</h2>
+        <LegalBlock n="04" title="Third-Party Sub-processors">
           <p>
-            We use a strictly vetted list of sub-processors to host our infrastructure (e.g., AWS, GCP). A full, up-to-date list of sub-processors can be requested via our support portal.
+            To provide our services, we rely on a strictly vetted list of sub-processors to host our infrastructure (e.g., Amazon Web Services, Google Cloud Platform). These vendors are contractually bound to the same strict privacy and security standards as Nadir. A full, up-to-date list of sub-processors can be provided via our support portal upon request.
           </p>
+        </LegalBlock>
 
-        </motion.div>
-
-      </div>
-    </div>
+        <LegalBlock n="05" title="Marketing Communications">
+          <p>
+            If you submit your information via our contact forms, we may use your email address to send you product updates or marketing materials. You retain the right to opt-out of these communications at any time by clicking the "unsubscribe" link at the bottom of our emails. Opting out will not affect critical service or security notifications.
+          </p>
+        </LegalBlock>
+      </Section>
+    </>
   );
 }

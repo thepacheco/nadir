@@ -1,15 +1,15 @@
 export const HOW_STEPS = [
-  { n: "01", title: "Connection", desc: "Read-only, schema-level access to the databases you already run — however messy. No manual entry, no forms, no migration." },
-  { n: "02", title: "Object mapping", desc: "AI proposes what each table actually represents in the real world — customers, work orders, machines, filings. You confirm once. Relationships are inferred automatically." },
-  { n: "03", title: "The operational graph", desc: "A live map of how your business actually flows, start to finish — order in, product out. Current because it reads the live database, not a snapshot." },
-  { n: "04", title: "The pain-point engine", desc: "AI watches the graph continuously: where is flow slowing, where is risk building, what broke last time this happened. Output isn’t a chart — it’s the next move." },
-  { n: "05", title: "Compounding", desc: "Every new source makes the model sharper about your specific company. The longer it runs, the more it knows — and the harder it is to live without." },
+  { n: "01", title: "Connection", desc: "We securely connect to the databases and software systems you are already using today (like SAP, Oracle, or legacy systems). We only require read-only access. There is no manual data entry required, and you do not have to migrate away from your current tools." },
+  { n: "02", title: "Object Mapping", desc: "Our AI looks at your messy raw data (rows and columns) and translates it into real-world concepts you actually care about—like 'Shifts', 'Work Orders', 'Turbines', or 'Employees'. You confirm our guesses once, and the system remembers." },
+  { n: "03", title: "The Operational Graph", desc: "Once the data is mapped, Nadir builds a living, breathing model of your entire business. It shows exactly how materials, people, and processes flow from start to finish, updating in real-time." },
+  { n: "04", title: "The Rules Engine", desc: "Nadir constantly monitors your live data against a set of strict rules (like OSHA safety guidelines or financial limits). Instead of just showing you a dashboard with a red light, it tells you exactly what is about to break and what to do next." },
+  { n: "05", title: "Compounding Knowledge", desc: "Every time you connect a new data source or confirm an AI suggestion, the system gets smarter about your specific company. It learns your operational quirks so well that it becomes a tailored nervous system for your business." },
 ];
 
 export const PLATFORM_LAYERS = [
-  { n: "LAYER 01", title: "Ingestion", desc: "Direct SQL-level connection to your databases and ERPs — not just API integrations. Maps disparate, inconsistent structures into one operational graph, however idiosyncratic the system." },
-  { n: "LAYER 02", title: "Fusion", desc: "AI reconciles the mess: resolves naming conflicts, links processes across systems, and builds a coherent model of how the business moves from input to output." },
-  { n: "LAYER 03", title: "Intelligence", desc: "Compliance monitoring against live requirements with auto-generated audit trails — plus operational foresight: the next bottleneck, the last fix, the next move." },
+  { n: "LAYER 01", title: "Data Ingestion", desc: "We plug directly into your databases. Unlike basic API integrations, we can handle messy, unstructured, and idiosyncratic data from decades-old legacy systems without breaking a sweat." },
+  { n: "LAYER 02", title: "AI Data Fusion", desc: "Our AI cleans up the mess. It automatically resolves naming conflicts (e.g., matching 'EmpID' in one system to 'EmployeeNumber' in another) and links broken processes together into one unified picture." },
+  { n: "LAYER 03", title: "Active Intelligence", desc: "We run constant, automated compliance checks against your live data. When an issue arises, the system generates a human-readable audit trail and predicts the best corrective action." },
 ];
 
 export const PRICING_TIERS = [
