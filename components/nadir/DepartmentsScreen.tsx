@@ -36,8 +36,8 @@ export default function DepartmentsScreen() {
             </div>
             <div style={{ fontSize: 12.5, lineHeight: 1.6, color: "#5a646e", marginBottom: 12 }}>{d.note}</div>
             <button
-              onClick={() => setScreen("team")}
-              style={{ fontFamily: "inherit", fontSize: 12, fontWeight: 600, padding: "7px 12px", background: "rgba(14,124,138,0.07)", color: "#0E7C8A", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 6, cursor: "pointer" }}
+              onClick={() => setScreen("inbox")}
+              style={{ fontFamily: "inherit", fontSize: 12, fontWeight: 600, padding: "7px 12px", background: "#14181C", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer" }}
             >
               Open team inbox →
             </button>

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../../../../lib/prisma';
-import { calculateTrueCost } from '../../../../../lib/engine/micro-costing';
+import { prisma } from '@/lib/prisma';
+import { calculateTrueCost } from '@/lib/engine/micro-costing';
 
 export async function POST(req: Request) {
   try {

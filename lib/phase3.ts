@@ -85,5 +85,5 @@ export const GUIDE_STEPS = [
   { id: "approve", label: "Send a briefing for approval", desc: "The suggested action routes to the right approver — even around PTO.", screen: "chat" as const },
   { id: "expand", label: "Expand a fusion-graph node", desc: "Nodes with a “+” chip unfold into their components.", screen: "graph" as const },
   { id: "rewire", label: "Rewire a data connection", desc: "Connect a source, confirm objects, then rename and re-point the wiring yourself.", screen: "sources" as const },
-  { id: "escalate", label: "Escalate up the chain", desc: "From a thread or an evidence drawer — Nadir walks the org chart for you.", screen: "team" as const },
+  { id: "escalate", label: "Escalate up the chain", desc: "From a thread or an evidence drawer — Nadir walks the org chart for you.", screen: "inbox" as const },
 ];
