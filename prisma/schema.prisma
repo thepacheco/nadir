@@ -48,6 +48,61 @@ model BOM {
   quantity    Float    // How many units of child are needed for 1 unit of parent
 }
 
+// ---- Graph Store (ARCHITECTURE.md Part 3.1) ----
+// The confirmed ontology made real: object types, sampled object instances,
+// and type-level relationships persisted from the mapping pipeline.
+// Instance-level edges (this work order → that asset) arrive with the SQL
+// schema extractor; sampling only proves the wiring at type level.
+
+model GraphObjectType {
+  id          String   @id @default(cuid())
+  companyId   String
+  name        String   // confirmed business name, e.g. "Work Orders"
+  sourceTable String   // raw table/file it came from
+  confidence  Float    // computed by the mapper, never invented
+  reasoning   String   // newline-joined mapper reasoning (the visible "why")
+  createdAt   DateTime @default(now())
+
+  objects GraphObject[]
+
+  @@unique([companyId, sourceTable])
+}
+
+model GraphObject {
+  id         String          @id @default(cuid())
+  companyId  String
+  typeId     String
+  type       GraphObjectType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  sourceKey  String          // key value in the source row ("" when the table has no key column)
+  attributes String          // JSON of the sampled source row
+  firstSeen  DateTime        @default(now())
+  lastSeen   DateTime        @default(now())
+}
+
+model GraphRelationship {
+  id          String   @id @default(cuid())
+  companyId   String
+  fromTable   String
+  fromColumn  String
+  toTable     String
+  toColumn    String
+  label       String   // e.g. "work order → asset"
+  matchRate   Float    // value-overlap on sampled rows at confirm time
+  confirmedBy String?  // user who confirmed; null = machine-proposed only
+  createdAt   DateTime @default(now())
+
+  @@unique([companyId, fromTable, fromColumn, toTable, toColumn])
+}
+
+model AuditEntry {
+  id        String   @id @default(cuid())
+  companyId String?
+  actor     String
+  action    String   // e.g. "mapping.persisted"
+  detail    String   // plain-English description of what changed
+  createdAt DateTime @default(now())
+}
+
 model Bid {
   id              String   @id @default(cuid())
   companyId       String

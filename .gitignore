@@ -41,3 +41,6 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
+
+# harness scratch database (copy of dev.db; never committed)
+/prisma/.harness.db*

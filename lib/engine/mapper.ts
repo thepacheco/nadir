@@ -17,6 +17,7 @@ export interface WireProposal {
   fromTable: string;
   fromColumn: string;
   toTable: string;
+  toColumn: string;
   toObject: string;
   label: string;
   matchRate: number; // computed value overlap on samples
@@ -94,7 +95,7 @@ export function proposeWires(schema: NormalizedSchema, objects: ObjectProposal[]
         if (overlap < 0.4) continue; // name matched, values don't — not a wire
         const vocab = VOCAB.find((v) => v.words.test(base) || v.words.test(other.name));
         wires.push({
-          fromTable: t.name, fromColumn: c.name, toTable: other.name,
+          fromTable: t.name, fromColumn: c.name, toTable: other.name, toColumn: targetKey.name,
           toObject: objByTable[other.name] ?? other.name,
           label: vocab?.label ?? "relates to",
           matchRate: overlap,
