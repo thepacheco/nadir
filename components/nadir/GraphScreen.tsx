@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { RETICLE_CURSOR } from "@/lib/constants";
 import { PHASE2 } from "@/lib/phase2";
@@ -11,6 +12,37 @@ export default function GraphScreen() {
   const { co, gnodes, edges, selNodeView, childNodes, selChild, setSelChild, parentLabel, selNode } = useNadir();
   const childrenMap = PHASE2[co.id].children;
   const child = selChild !== null ? childNodes[selChild] : null;
+
+  const [selectedAction, setSelectedAction] = React.useState<string>("");
+  const [webhookTerminal, setWebhookTerminal] = React.useState<{ action: string, logs: string[] } | null>(null);
+
+  const handleRunAction = () => {
+    const actionToRun = selectedAction || (
+      selNodeView.type === "object" ? "Log Lockout/Tagout" :
+      selNodeView.type === "source" ? "Trigger Manual Sync" :
+      selNodeView.type === "process" ? "Halt Process (Emergency)" :
+      "Dispatch Remediation Ticket"
+    );
+    
+    setWebhookTerminal({ action: actionToRun, logs: [
+      `> Initiating secure webhook execution for action: ${actionToRun}`,
+      `> Authenticating with target ERP (SAP/EBS)... [OK]`,
+      `> Constructing JSON payload from Operational Graph context... [OK]`,
+      `> POST /api/v1/erp/writeback`,
+      `> Awaiting response...`
+    ] });
+
+    // Simulate completion
+    setTimeout(() => {
+      setWebhookTerminal(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          logs: [...prev.logs, `> 200 OK: Transaction 0x8F9B committed successfully.`, `> Audit trail entry created.`]
+        };
+      });
+    }, 1500);
+  };
 
   return (
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
@@ -196,39 +228,66 @@ export default function GraphScreen() {
           </div>
           <div style={{ padding: 14, background: "#FCFBF9" }}>
             <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.08em", color: "#7a848e", marginBottom: 8 }}>EXECUTE WEBHOOK</div>
-            <select style={{ width: "100%", padding: "8px 10px", borderRadius: 6, border: "1px solid rgba(20,24,28,0.2)", fontSize: 13, fontFamily: "inherit", cursor: "pointer", marginBottom: 10, appearance: "none", background: "#FFFFFF" }}>
+            <select 
+              value={selectedAction}
+              onChange={(e) => setSelectedAction(e.target.value)}
+              style={{ width: "100%", padding: "8px 10px", borderRadius: 6, border: "1px solid rgba(20,24,28,0.2)", fontSize: 13, fontFamily: "inherit", cursor: "pointer", marginBottom: 10, appearance: "none", background: "#FFFFFF" }}
+            >
+              <option value="">Select an action...</option>
               {selNodeView.type === "object" && (
                 <>
-                  <option>Log Lockout/Tagout</option>
-                  <option>Assign Certified Operator</option>
-                  <option>Approve Supervisor Sign-off</option>
+                  <option value="Log Lockout/Tagout">Log Lockout/Tagout</option>
+                  <option value="Assign Certified Operator">Assign Certified Operator</option>
+                  <option value="Approve Supervisor Sign-off">Approve Supervisor Sign-off</option>
                 </>
               )}
               {selNodeView.type === "source" && (
                 <>
-                  <option>Trigger Manual Sync</option>
-                  <option>View Raw Schema</option>
+                  <option value="Trigger Manual Sync">Trigger Manual Sync</option>
+                  <option value="View Raw Schema">View Raw Schema</option>
                 </>
               )}
               {selNodeView.type === "process" && (
                 <>
-                  <option>Halt Process (Emergency)</option>
-                  <option>Escalate to Manager</option>
+                  <option value="Halt Process (Emergency)">Halt Process (Emergency)</option>
+                  <option value="Escalate to Manager">Escalate to Manager</option>
                 </>
               )}
               {selNodeView.type === "risk" && (
                 <>
-                  <option>Dispatch Remediation Ticket</option>
-                  <option>Silence Alert (24h)</option>
+                  <option value="Dispatch Remediation Ticket">Dispatch Remediation Ticket</option>
+                  <option value="Silence Alert (24h)">Silence Alert (24h)</option>
                 </>
               )}
             </select>
-            <button style={{ width: "100%", padding: "8px", borderRadius: 6, border: "none", background: "#14181C", color: "#FFFFFF", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+            <button onClick={handleRunAction} style={{ width: "100%", padding: "8px", borderRadius: 6, border: "none", background: "#14181C", color: "#FFFFFF", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
               Run Action
             </button>
           </div>
         </div>
       </div>
+
+      {/* Webhook Terminal Modal */}
+      {webhookTerminal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(20,24,28,0.6)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: 600, background: "#14181C", borderRadius: 8, overflow: "hidden", boxShadow: "0 20px 40px rgba(0,0,0,0.4)" }}>
+            <div style={{ padding: "12px 16px", borderBottom: "1px solid rgba(255,255,255,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#0c0f12" }}>
+              <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 12, color: "#9aa2ab", letterSpacing: "0.05em" }}>
+                SECURE WEBHOOK TERMINAL · {co.sources[0]?.name || "SAP ERP"}
+              </div>
+              <button onClick={() => setWebhookTerminal(null)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#5a646e" }}>×</button>
+            </div>
+            <div style={{ padding: 24, minHeight: 200, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 13, color: "#15854F", lineHeight: 1.6, background: "#14181C" }}>
+              {webhookTerminal.logs.map((log, idx) => (
+                <div key={idx} style={{ marginBottom: 4, color: log.includes("Error") ? "#C7452F" : log.includes("OK") ? "#15854F" : "#9aa2ab" }}>
+                  {log}
+                </div>
+              ))}
+              <div style={{ marginTop: 12, display: "inline-block", width: 8, height: 16, background: "#15854F", animation: "nadirBlink 1s infinite" }} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

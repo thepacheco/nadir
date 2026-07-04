@@ -44,8 +44,51 @@ export default function DashboardScreen() {
         ))}
       </div>
 
-      {/* Charts */}
-      <div style={{ display: "flex", gap: 24 }}>
+      {/* Charts & ROI */}
+      <div style={{ display: "flex", gap: 24, marginBottom: 24 }}>
+        {/* ROI Tracking (Predicted vs Actual) */}
+        <div style={{ flex: 1, background: "#FFFFFF", padding: 24, borderRadius: 12, border: "1px solid rgba(20,24,28,0.1)", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: "#14181C" }}>Live ROI Tracking</div>
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#15854F", background: "rgba(21,133,79,0.1)", padding: "4px 8px", borderRadius: 4, fontWeight: 700 }}>PREDICTED VS ACTUAL</div>
+          </div>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+            {/* Metric 1 */}
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#7a848e", marginBottom: 8, fontWeight: 700 }}>
+                <span>LABOR BURN (THIS MONTH)</span>
+                <span>$42k Predicted / $38k Actual</span>
+              </div>
+              <div style={{ position: "relative", height: 12, background: "rgba(20,24,28,0.05)", borderRadius: 6, overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: "100%", background: "#e0e4e8" }} />
+                <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: "90%", background: "#15854F" }} />
+                <div style={{ position: "absolute", top: 0, bottom: 0, left: "90%", width: 2, background: "#14181C" }} />
+              </div>
+              <div style={{ fontSize: 11, color: "#15854F", marginTop: 6, fontWeight: 600 }}>↓ 9.5% under predicted budget</div>
+            </div>
+
+            {/* Metric 2 */}
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#7a848e", marginBottom: 8, fontWeight: 700 }}>
+                <span>MATERIAL WASTE</span>
+                <span>$12k Predicted / $14k Actual</span>
+              </div>
+              <div style={{ position: "relative", height: 12, background: "rgba(20,24,28,0.05)", borderRadius: 6, overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: "85%", background: "#e0e4e8" }} />
+                <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: "100%", background: "#C7452F" }} />
+                <div style={{ position: "absolute", top: 0, bottom: 0, left: "85%", width: 2, background: "#14181C" }} />
+              </div>
+              <div style={{ fontSize: 11, color: "#C7452F", marginTop: 6, fontWeight: 600 }}>↑ 16.6% over predicted budget</div>
+            </div>
+            
+            <div style={{ background: "rgba(20,24,28,0.02)", border: "1px solid rgba(20,24,28,0.08)", borderRadius: 8, padding: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#14181C" }}>Total Value Realized YTD</span>
+              <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 18, fontWeight: 700, color: "#0E7C8A" }}>$142,400</span>
+            </div>
+          </div>
+        </div>
+
         {/* Bar Chart: Issues by Department */}
         <div style={{ flex: 1, background: "#FFFFFF", padding: 24, borderRadius: 12, border: "1px solid rgba(20,24,28,0.1)", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
           <div style={{ fontSize: 16, fontWeight: 600, color: "#14181C", marginBottom: 24 }}>Issues by Department</div>
@@ -65,6 +108,9 @@ export default function DashboardScreen() {
             ))}
           </div>
         </div>
+      </div>
+
+      <div style={{ display: "flex", gap: 24 }}>
 
         {/* Recent Tickets Feed */}
         <div style={{ flex: 1, background: "#FFFFFF", padding: 24, borderRadius: 12, border: "1px solid rgba(20,24,28,0.1)", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>

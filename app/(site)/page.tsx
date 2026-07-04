@@ -2,6 +2,7 @@ import Link from "next/link";
 import { COMPANIES } from "@/lib/data";
 import { PLATFORM_LAYERS, PRICING_TIERS } from "@/lib/marketing";
 import InteractiveHow from "@/components/site/InteractiveHow";
+import ROICalculator from "@/components/site/ROICalculator";
 import styles from "@/components/nadir/nadir.module.css";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -137,6 +138,15 @@ export default function Home() {
             </Link>
           </div>
         </div>
+      </div>
+
+      {/* ROI CALCULATOR */}
+      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "92px 48px" }}>
+        <div style={{ fontFamily: MONO, fontSize: 12.5, letterSpacing: "0.14em", color: "#0E7C8A", marginBottom: 18, textAlign: "center" }}>THE BUSINESS CASE</div>
+        <h2 style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 42, lineHeight: 1.15, margin: "0 auto 40px", textAlign: "center", letterSpacing: "-0.01em" }}>
+          Predictable payback in weeks, not years.
+        </h2>
+        <ROICalculator />
       </div>
 
       {/* PRICING PREVIEW */}
