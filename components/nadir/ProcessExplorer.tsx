@@ -90,9 +90,9 @@ export default function ProcessExplorer() {
       {/* header */}
       <div style={{ padding: "16px 24px 10px", display: "flex", alignItems: "flex-start", justifyContent: "space-between", flex: "none" }}>
         <div>
-          <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 3 }}>DISCOVER</div>
+          <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 3 }}>LIVE FLOW</div>
           <div style={{ fontSize: 17, fontWeight: 700 }}>
-            Process Explorer <span style={{ fontWeight: 400, color: "#9aa2ab", fontSize: 13 }}>· {flow.totalObjects} objects · computed from the event log</span>
+            How work actually moves <span style={{ fontWeight: 400, color: "#9aa2ab", fontSize: 13 }}>· {flow.totalObjects} objects · computed from the event log</span>
           </div>
           <div style={{ fontFamily: MONO, fontSize: 10.5, color: "#B47614", marginTop: 3 }}>[DEMO-ONLY] event data · every number on screen is computed, none are typed in</div>
         </div>
@@ -100,7 +100,7 @@ export default function ProcessExplorer() {
           onClick={() => setEditingPath([...expectedPath])}
           style={{ fontFamily: "inherit", fontSize: 12.5, fontWeight: 700, padding: "9px 16px", background: "#FFFFFF", color: "#14181C", border: "1px solid rgba(20,24,28,0.16)", borderRadius: 8, cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}
         >
-          ⑃ Change Expected Path
+          ⑃ Set the intended flow
         </button>
       </div>
 
@@ -117,8 +117,8 @@ export default function ProcessExplorer() {
       <div style={{ flex: 1, minHeight: 0, position: "relative" }}>
         {/* control card */}
         <div style={{ position: "absolute", top: 10, left: 24, zIndex: 4, width: 250, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.12)", borderRadius: 10, padding: 16, boxShadow: "0 8px 24px -8px rgba(20,30,40,0.18)" }}>
-          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 2 }}>Show Additional Transitions</div>
-          <div style={{ fontSize: 12, color: "#7a848e", marginBottom: 8 }}>based on highest:</div>
+          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 2 }}>Reveal more of the real flow</div>
+          <div style={{ fontSize: 12, color: "#7a848e", marginBottom: 8 }}>rank hidden paths by:</div>
           <select
             value={rankBy}
             onChange={(e) => setRankBy(e.target.value as "count" | "duration")}
@@ -279,7 +279,7 @@ export default function ProcessExplorer() {
         <div style={{ position: "fixed", inset: 0, background: "rgba(20,24,28,0.55)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ width: 460, background: "#FFFFFF", borderRadius: 12, overflow: "hidden", boxShadow: "0 12px 32px rgba(0,0,0,0.2)" }}>
             <div style={{ padding: "15px 20px", borderBottom: "1px solid rgba(20,24,28,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#FCFBF9" }}>
-              <div style={{ fontSize: 15, fontWeight: 700 }}>Change Expected Path</div>
+              <div style={{ fontSize: 15, fontWeight: 700 }}>Set the intended flow</div>
               <button onClick={() => setEditingPath(null)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#9aa2ab" }}>×</button>
             </div>
             <div style={{ padding: 20 }}>

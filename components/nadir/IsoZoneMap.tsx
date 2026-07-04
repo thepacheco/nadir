@@ -9,6 +9,7 @@
 
 import { useMemo, useState } from "react";
 import { useNadir } from "./context";
+import ZoneInterior from "./ZoneInterior";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
 
@@ -48,6 +49,7 @@ function facePath(pts: [number, number][]): string {
 export default function IsoZoneMap({ onZoneClick }: { onZoneClick?: (label: string | null) => void }) {
   const { co, alertsFull, ingestedData, people, audit, notify } = useNadir();
   const [selZone, setSelZone] = useState<string | null>(null);
+  const [insideZone, setInsideZone] = useState<string | null>(null);
   const [assignee, setAssignee] = useState("");
   const [note, setNote] = useState("");
   const [assigned, setAssigned] = useState<Record<string, { to: string; note: string }[]>>({});
@@ -166,6 +168,12 @@ export default function IsoZoneMap({ onZoneClick }: { onZoneClick?: (label: stri
             </div>
             <button onClick={() => pick(sel.label)} style={{ background: "none", border: "none", fontSize: 17, cursor: "pointer", color: "#9aa2ab" }}>×</button>
           </div>
+          <button
+            onClick={() => setInsideZone(sel.label)}
+            style={{ margin: "10px 14px 0", fontFamily: "inherit", fontSize: 12.5, fontWeight: 700, padding: "9px 0", borderRadius: 8, border: "none", background: "#14181C", color: "#fff", cursor: "pointer" }}
+          >
+            ⤢ Step inside this zone →
+          </button>
           <div style={{ padding: "10px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
             {selSig.alerts.map((a) => (
               <div key={a.title} style={{ borderLeft: `3px solid ${a.color}`, background: "#FCFBF9", borderRadius: "0 6px 6px 0", padding: "7px 10px" }}>
@@ -218,6 +226,20 @@ export default function IsoZoneMap({ onZoneClick }: { onZoneClick?: (label: stri
             </div>
           </div>
         </div>
+      )}
+
+      {insideZone && (
+        <ZoneInterior
+          label={insideZone}
+          alerts={zoneSignals[insideZone]?.alerts ?? []}
+          tickets={zoneSignals[insideZone]?.tickets ?? []}
+          people={people}
+          onClose={() => setInsideZone(null)}
+          onAssign={(who, msg, station) => {
+            audit(`Ops map — dispatched ${who} to ${station} in "${insideZone}"${msg ? `: "${msg}"` : ""}.`);
+            notify(`${who} dispatched to ${station} · ${insideZone}`, "ok");
+          }}
+        />
       )}
     </div>
   );

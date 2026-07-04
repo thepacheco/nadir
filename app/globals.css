@@ -70,6 +70,16 @@ body {
   to { opacity: 0; visibility: hidden; }
 }
 
+@keyframes nadirBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes nadirZoomIn {
+  0% { transform: scale(0.94); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

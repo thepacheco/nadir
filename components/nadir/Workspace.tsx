@@ -75,7 +75,7 @@ export default function Workspace() {
 
   // phase 2 runtime state
   const [evidenceIdx, setEvidenceIdx] = useState<number | null>(null);
-  const [ingestedData, setIngestedData] = useState<any[]>([]);
+  const [ingestedData, setIngestedData] = useState<Record<string, string>[]>([]);
 
   useEffect(() => {
     fetch('/api/ingest')
@@ -92,6 +92,12 @@ export default function Workspace() {
   const [escalations, setEscalations] = useState<Record<string, boolean>>({});
   const [decisions, setDecisions] = useState<Record<string, "wrong" | "correct">>({});
   const [threadExtras, setThreadExtras] = useState<Record<string, string[]>>({});
+  // Real inbox message store, keyed per company|person. Each message tracks
+  // edit and read state so the composer behaves like a real chat, not a one-shot.
+  type InboxMsg = { id: string; text: string; at: string; edited: boolean; read: boolean };
+  const [inbox, setInbox] = useState<Record<string, InboxMsg[]>>({});
+  const readTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  useEffect(() => () => { readTimers.current.forEach(clearTimeout); }, []);
   const [notifications, setNotifications] = useState<NotifItem[]>([]);
   const [notifSeen, setNotifSeen] = useState(0);
   const [runtimeAudit, setRuntimeAudit] = useState<Record<string, { time: string; text: string }[]>>({});
@@ -254,6 +260,7 @@ export default function Workspace() {
     setEscalations({});
     setDecisions({});
     setThreadExtras({});
+    setInbox({});
     setNotifications([]);
     setNotifSeen(0);
     setRuntimeAudit({});
@@ -391,9 +398,8 @@ export default function Workspace() {
       radius: mine ? "12px 12px 3px 12px" : "12px 12px 12px 3px",
     };
   });
-  if (msgSentFlag) {
-    thread = thread.concat([{ from: "me", text: sp.draft, who: "You", align: "flex-end", bg: "#0E7C8A", bd: "#0E7C8A", fg: "#FFFFFF", radius: "12px 12px 3px 12px" }]);
-  }
+  const inboxKey = `${co.id}|p${spIdx}`;
+  const inboxSent = inbox[inboxKey] || [];
   for (const extra of threadExtras[`${co.id}|p${spIdx}`] || []) {
     thread = thread.concat([{ from: "nadir", text: extra, who: "Nadir", align: "flex-start", bg: "rgba(180,118,20,0.07)", bd: "rgba(180,118,20,0.35)", fg: "#14181C", radius: "12px 12px 12px 3px" }]);
   }
@@ -509,6 +515,30 @@ export default function Workspace() {
     thread,
     msgSent: msgSentFlag,
     onSendMsg: () => setMsgSent((prev) => ({ ...prev, [`${co.id}|${spIdx}`]: true })),
+
+    inboxSent,
+    sendInbox: (text: string) => {
+      const t = text.trim();
+      if (!t) return;
+      const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      setInbox((prev) => ({ ...prev, [inboxKey]: [...(prev[inboxKey] || []), { id, text: t, at: fmtClock(clockRef.current), edited: false, read: false }] }));
+      audit(`Message sent to ${sp.name} in Inbox.`);
+      // read receipt flips after a short, deterministic delay
+      const timer = setTimeout(() => {
+        setInbox((prev) => ({ ...prev, [inboxKey]: (prev[inboxKey] || []).map((m) => (m.id === id ? { ...m, read: true } : m)) }));
+      }, 1800);
+      readTimers.current.push(timer);
+    },
+    editInbox: (id: string, text: string) => {
+      const t = text.trim();
+      if (!t) return;
+      setInbox((prev) => ({ ...prev, [inboxKey]: (prev[inboxKey] || []).map((m) => (m.id === id ? { ...m, text: t, edited: true } : m)) }));
+      audit(`Message edited in Inbox thread with ${sp.name}.`);
+    },
+    deleteInbox: (id: string) => {
+      setInbox((prev) => ({ ...prev, [inboxKey]: (prev[inboxKey] || []).filter((m) => m.id !== id) }));
+      audit(`Message deleted from Inbox thread with ${sp.name}.`);
+    },
 
     obStep,
     obSrc,

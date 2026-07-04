@@ -28,12 +28,21 @@ export default function MapScreen() {
     setClickedBuilding(idx);
   };
   
-  const filteredAlerts = (clickedBuilding !== null 
-    ? alertsFull.slice(0, 1) // Just mock filtering to 1 alert for the demo
-    : alertsFull
-  ).filter(a => activeFilter === "ALL" || (activeFilter === "CRITICAL" && a.color === "#C7452F") || (activeFilter === "MAINTENANCE" && a.title.includes("Maintenance")) || (activeFilter === "SECURITY" && a.title.includes("Security")));
+  // Categorize a signal from its own text so the filters actually mean
+  // something — no category field is faked, it's derived at read time.
+  const categoryOf = (a: (typeof alertsFull)[number]): "CRITICAL" | "MAINTENANCE" | "SECURITY" | "OTHER" => {
+    if (a.color === "#C7452F") return "CRITICAL";
+    const hay = `${a.title} ${a.detail ?? ""}`.toLowerCase();
+    if (/transformer|actuator|compressor|cooler|kiln|equipment|maintenance|calibration|torque|seal|bay|feeder|line|pump|motor|valve/.test(hay)) return "MAINTENANCE";
+    if (/osha|incident|log|audit|access|compliance|i-9|certificate|\bcert\b|filing|badge|security|breach|permit/.test(hay)) return "SECURITY";
+    return "OTHER";
+  };
+  const matchesFilter = (a: (typeof alertsFull)[number]) => activeFilter === "ALL" || categoryOf(a) === activeFilter;
 
-  const filteredCount = clickedBuilding !== null ? filteredAlerts.length : activeCount;
+  const countFor = (f: string) => (f === "ALL" ? alertsFull.length : alertsFull.filter((a) => categoryOf(a) === f).length);
+
+  const filteredAlerts = alertsFull.filter(matchesFilter);
+  const filteredCount = filteredAlerts.length;
 
   return (
     <div className={styles.mobileStack} style={{ display: "flex", flex: 1, minHeight: 0 }}>
@@ -41,21 +50,27 @@ export default function MapScreen() {
         
         {/* FILTERS & TOGGLES */}
         <div style={{ padding: "12px 16px", background: "#FCFBF9", borderBottom: "1px solid rgba(20,24,28,0.1)", display: "flex", gap: 16, alignItems: "center", flex: "none" }}>
-          <div style={{ display: "flex", gap: 8, flex: 1 }}>
-            {["ALL", "CRITICAL", "MAINTENANCE", "SECURITY"].map((f) => (
-              <button
-                key={f}
-                onClick={() => setActiveFilter(f as any)}
-                style={{
-                  fontFamily: "inherit", fontSize: 11, fontWeight: 700, padding: "6px 12px", borderRadius: 20, cursor: "pointer",
-                  background: activeFilter === f ? "rgba(14,124,138,0.1)" : "transparent",
-                  color: activeFilter === f ? "#0E7C8A" : "#7a848e",
-                  border: `1px solid ${activeFilter === f ? "rgba(14,124,138,0.3)" : "rgba(20,24,28,0.1)"}`
-                }}
-              >
-                {f}
-              </button>
-            ))}
+          <div style={{ display: "flex", gap: 8, flex: 1, alignItems: "center" }}>
+            {(["ALL", "CRITICAL", "MAINTENANCE", "SECURITY"] as const).map((f) => {
+              const n = countFor(f);
+              const tone = f === "CRITICAL" ? "#C7452F" : f === "MAINTENANCE" ? "#B47614" : f === "SECURITY" ? "#0E7C8A" : "#5a646e";
+              return (
+                <button
+                  key={f}
+                  onClick={() => setActiveFilter(f)}
+                  style={{
+                    fontFamily: "inherit", fontSize: 11, fontWeight: 700, padding: "6px 12px", borderRadius: 20, cursor: "pointer",
+                    display: "flex", alignItems: "center", gap: 6,
+                    background: activeFilter === f ? "rgba(14,124,138,0.1)" : "transparent",
+                    color: activeFilter === f ? "#0E7C8A" : "#7a848e",
+                    border: `1px solid ${activeFilter === f ? "rgba(14,124,138,0.3)" : "rgba(20,24,28,0.1)"}`
+                  }}
+                >
+                  {f}
+                  <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, fontWeight: 700, color: n ? tone : "#c7ccd1", background: n ? `${tone}18` : "transparent", padding: "1px 6px", borderRadius: 8, minWidth: 16, textAlign: "center" }}>{n}</span>
+                </button>
+              );
+            })}
           </div>
           
           <div style={{ display: "flex", background: "rgba(20,24,28,0.06)", borderRadius: 6, padding: 2 }}>
@@ -135,7 +150,7 @@ export default function MapScreen() {
         <div className={styles.mobileFullWidth} style={{ width: 344, flex: "none", borderLeft: "1px solid rgba(20,24,28,0.1)", overflowY: "auto", padding: 20, background: "#FCFBF9", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
             <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e" }}>
-              {clickedBuilding !== null ? `BUILDING SIGNALS · ${filteredCount}` : `ACTIVE SIGNALS · ${activeCount}`}
+              {activeFilter === "ALL" ? `ACTIVE SIGNALS · ${filteredCount}` : `${activeFilter} · ${filteredCount} OF ${activeCount}`}
             </div>
             <button 
               onClick={() => setIsPanelOpen(false)}

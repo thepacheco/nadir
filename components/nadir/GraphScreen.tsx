@@ -50,7 +50,7 @@ export default function GraphScreen() {
 
   const viewTabs = (
     <div style={{ display: "flex", gap: 2, padding: "8px 24px 0", background: "#F6F4EF", borderBottom: "1px solid rgba(20,24,28,0.08)", flex: "none" }}>
-      {([["process", "Process Overview"], ["model", "Object Model"]] as const).map(([id, label]) => (
+      {([["process", "Flow"], ["model", "Ontology"]] as const).map(([id, label]) => (
         <button
           key={id}
           onClick={() => setView(id)}
@@ -84,10 +84,10 @@ export default function GraphScreen() {
         <div style={{ position: "absolute", inset: 0, transform: child ? `scale(1.8)` : "none", transformOrigin: child ? `${child.x}% ${child.y}%` : "50% 50%", transition: "transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)" }}>
         <div style={{ position: "absolute", top: 18, left: 24, zIndex: 3 }}>
           <div style={{ fontSize: 16, fontWeight: 700 }}>
-            Fusion graph <span style={{ fontWeight: 400, color: "#9aa2ab", fontSize: 13 }}>· live model</span>
+            Ontology <span style={{ fontWeight: 400, color: "#9aa2ab", fontSize: 13 }}>· live object model</span>
           </div>
           <div style={{ fontSize: 12.5, color: "#5a646e", marginTop: 3 }}>
-            How {co.name} actually moves, inferred from {co.sources.length} systems. Click a node — a “+” chip unfolds its components.
+            The real-world objects of {co.name} and how they connect, inferred from {co.sources.length} systems. Click a node — a “+” chip unfolds its components.
           </div>
         </div>
         <div style={{ position: "absolute", bottom: 16, left: 24, zIndex: 3, display: "flex", gap: 16, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e" }}>

@@ -62,7 +62,7 @@ export default function PipelineDAG() {
       });
     });
     const lenses: [string, string][] = [
-      ["Ops map", "spatial lens"],
+      ["Map", "spatial lens"],
       ["Process explorer", "flow lens"],
       ["Dashboard", "metric lens"],
     ];

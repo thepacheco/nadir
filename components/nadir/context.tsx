@@ -118,6 +118,12 @@ export interface NadirCtxValue {
   msgSent: boolean;
   onSendMsg: () => void;
 
+  // inbox — real message store with edit/delete/read receipts
+  inboxSent: { id: string; text: string; at: string; edited: boolean; read: boolean }[];
+  sendInbox: (text: string) => void;
+  editInbox: (id: string, text: string) => void;
+  deleteInbox: (id: string) => void;
+
   // onboarding
   obStep: 1 | 2 | 3 | 4 | 5;
   obSrc: number;
@@ -187,7 +193,7 @@ export interface NadirCtxValue {
   notifPrefs: Record<string, boolean>;
   toggleNotifPref: (k: string) => void;
   resetDemo: () => void;
-  ingestedData: any[];
+  ingestedData: Record<string, string>[];
 
   activeRole: string;
   setActiveRole: (role: string) => void;

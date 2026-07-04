@@ -3,16 +3,17 @@ import type { NodeType } from "./types";
 export const RETICLE_CURSOR =
   "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"26\" height=\"26\" viewBox=\"0 0 26 26\"><path d=\"M5 2l16 9.5-7.2 1.4L18.5 22l-3.4 1.6-4.6-8.7L5 20z\" fill=\"%23FAF9F7\" stroke=\"%230E7C8A\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/></svg>') 5 2, default";
 
+// One-word, "one and done" names. Keys stay stable so nothing downstream breaks.
 export const SCREENS = [
-  { id: "chat", label: "Ask Nadir" },
-  { id: "map", label: "Ops map" },
-  { id: "graph", label: "Fusion graph" },
-  { id: "inbox", label: "Team inbox" },
-  { id: "tickets", label: "Ticketing system" },
-  { id: "depts", label: "Departments" },
-  { id: "plan", label: "Guidance plan" },
+  { id: "chat", label: "Ask" },
+  { id: "map", label: "Map" },
+  { id: "graph", label: "Flow" },
+  { id: "inbox", label: "Inbox" },
+  { id: "tickets", label: "Work" },
+  { id: "depts", label: "Org" },
+  { id: "plan", label: "Plan" },
   { id: "comp", label: "Compliance" },
-  { id: "sources", label: "Data sources" },
+  { id: "sources", label: "Ontology" },
   { id: "dash", label: "Dashboard" },
   { id: "settings", label: "Settings" },
 ] as const;

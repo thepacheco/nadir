@@ -13,7 +13,7 @@ export default function PlannerScreen() {
   return (
     <div style={{ flex: 1, overflowY: "auto", padding: "28px 32px" }}>
       <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 19, fontWeight: 700 }}>Guidance plan</div>
+        <div style={{ fontSize: 19, fontWeight: 700 }}>Plan</div>
         <div style={{ fontSize: 13.5, color: "#7a848e", marginTop: 4 }}>{plan.subtitle}</div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18, maxWidth: 1180 }}>

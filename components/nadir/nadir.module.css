@@ -100,3 +100,7 @@
 .navHover:hover {
   background: rgba(20,24,28,0.04);
 }
+
+.sentMsg:hover .msgTools {
+  opacity: 1 !important;
+}

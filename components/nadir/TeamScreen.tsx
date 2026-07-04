@@ -13,9 +13,14 @@ const STAGE_GATES: Record<string, { next: string; nextLabel: string; reqs: strin
 };
 
 export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
-  const { co, people, approver, ingestedData, selPersonView, thread, msgSent, onSendMsg, audit, notify, ticketChecks, toggleTicketCheck, ticketStatusOverride, advanceTicket } = useNadir();
+  const { co, people, approver, ingestedData, selPersonView, thread, audit, notify, ticketChecks, toggleTicketCheck, ticketStatusOverride, advanceTicket, inboxSent, sendInbox, editInbox, deleteInbox } = useNadir();
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
   const [selTicketId, setSelTicketId] = useState<string | null>(null);
+  const [draft, setDraft] = useState("");
+  const [editingMsg, setEditingMsg] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
+  const [showMention, setShowMention] = useState(false);
+  const [attachment, setAttachment] = useState<string | null>(null);
 
   // Ingested CSV rows are string→string maps (see /api/ingest).
   const safeData = (Array.isArray(ingestedData) ? ingestedData : []) as Record<string, string>[];
@@ -53,8 +58,8 @@ export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
       {/* LEFT: Org Tree */}
       <div style={{ width: 280, flex: "none", borderRight: "1px solid rgba(20,24,28,0.1)", overflowY: "auto", padding: 20, background: "#FCFBF9" }}>
-        <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 3 }}>{mode === "tickets" ? "Ticketing System" : "Team Inbox"}</div>
-        <div style={{ fontSize: 12.5, color: "#7a848e", marginBottom: 16 }}>{mode === "tickets" ? "Route and track tickets across departments." : "Communicate with your team."}</div>
+        <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 3 }}>{mode === "tickets" ? "Work" : "Inbox"}</div>
+        <div style={{ fontSize: 12.5, color: "#7a848e", marginBottom: 16 }}>{mode === "tickets" ? "Every ticket, task, and remediation — routed and tracked to done." : "Message your team, anchored to the work."}</div>
         
         <div style={{ display: "flex", flexDirection: "column", gap: 2, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11.5 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "3px 0" }}>
@@ -95,7 +100,7 @@ export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
           
           {mode === "inbox" && (
             <>
-              <div style={{ marginTop: 24, fontSize: 10, color: "#9aa2ab", fontWeight: 700, letterSpacing: "0.05em", paddingLeft: 12 }}>TEAM INBOX</div>
+              <div style={{ marginTop: 24, fontSize: 10, color: "#9aa2ab", fontWeight: 700, letterSpacing: "0.05em", paddingLeft: 12 }}>DIRECT MESSAGES</div>
               {people.map((p, i) => (
                 <button
                   key={p.name}
@@ -161,20 +166,75 @@ export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
                   </div>
                 </div>
               ))}
+              {/* real sent messages — editable, deletable, with read receipts */}
+              {inboxSent.map((m) => (
+                <div key={m.id} className={styles.sentMsg} style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4 }}>
+                  <div style={{ fontSize: 10, color: "#9aa2ab", fontWeight: 600 }}>You</div>
+                  {editingMsg === m.id ? (
+                    <div style={{ display: "flex", gap: 6, alignItems: "center", maxWidth: "80%" }}>
+                      <input
+                        autoFocus
+                        value={editText}
+                        onChange={(e) => setEditText(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter") { editInbox(m.id, editText); setEditingMsg(null); } if (e.key === "Escape") setEditingMsg(null); }}
+                        style={{ padding: "8px 12px", borderRadius: 10, border: "1.5px solid #0E7C8A", fontSize: 13, fontFamily: "inherit", minWidth: 200 }}
+                      />
+                      <button onClick={() => { editInbox(m.id, editText); setEditingMsg(null); }} style={{ fontFamily: "inherit", fontSize: 11, fontWeight: 700, color: "#0E7C8A", background: "transparent", border: "none", cursor: "pointer" }}>Save</button>
+                      <button onClick={() => setEditingMsg(null)} style={{ fontFamily: "inherit", fontSize: 11, color: "#9aa2ab", background: "transparent", border: "none", cursor: "pointer" }}>Cancel</button>
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, maxWidth: "80%" }}>
+                      <div className={styles.msgTools} style={{ display: "flex", gap: 4, opacity: 0, transition: "opacity 0.15s" }}>
+                        <button title="Edit" onClick={() => { setEditingMsg(m.id); setEditText(m.text); }} style={{ fontFamily: "inherit", fontSize: 11, color: "#7a848e", background: "transparent", border: "none", cursor: "pointer", padding: 2 }}>✎</button>
+                        <button title="Delete" onClick={() => deleteInbox(m.id)} style={{ fontFamily: "inherit", fontSize: 11, color: "#C7452F", background: "transparent", border: "none", cursor: "pointer", padding: 2 }}>🗑</button>
+                      </div>
+                      <div style={{ background: "#0E7C8A", color: "#FFFFFF", border: "1px solid #0E7C8A", padding: "10px 14px", borderRadius: "12px 12px 3px 12px", fontSize: 13, lineHeight: 1.5 }}>
+                        {m.text}
+                      </div>
+                    </div>
+                  )}
+                  <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 9.5, color: "#9aa2ab" }}>
+                    {m.at}{m.edited ? " · edited" : ""} · {m.read ? "✓✓ Seen" : "✓ Delivered"}
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div style={{ padding: 16, borderTop: "1px solid rgba(20,24,28,0.08)", background: "#FCFBF9", display: "flex", gap: 12 }}>
-              <input 
-                type="text" 
-                placeholder={msgSent ? "Message sent..." : `Reply to ${selPersonView.name.split(" ")[0]}...`} 
-                value={msgSent ? "" : selPersonView.draft} 
-                readOnly
-                style={{ flex: 1, padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(20,24,28,0.2)", fontSize: 13, fontFamily: "inherit" }} 
+            {attachment && (
+              <div style={{ padding: "8px 16px 0", display: "flex" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: 12, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 6, padding: "5px 10px" }}>
+                  📎 {attachment}
+                  <button onClick={() => setAttachment(null)} style={{ background: "none", border: "none", color: "#0E7C8A", cursor: "pointer", fontSize: 13 }}>×</button>
+                </span>
+              </div>
+            )}
+
+            <div style={{ padding: 16, borderTop: "1px solid rgba(20,24,28,0.08)", background: "#FCFBF9", display: "flex", gap: 8, alignItems: "center", position: "relative" }}>
+              <button title="Mention someone" onClick={() => setShowMention((s) => !s)} style={{ fontFamily: "inherit", fontSize: 15, fontWeight: 700, color: "#7a848e", background: "transparent", border: "1px solid rgba(20,24,28,0.14)", borderRadius: 8, width: 38, height: 38, cursor: "pointer", flex: "none" }}>@</button>
+              <button title="Attach a file" onClick={() => setAttachment("Q3_hire_packet.pdf")} style={{ fontFamily: "inherit", fontSize: 15, color: "#7a848e", background: "transparent", border: "1px solid rgba(20,24,28,0.14)", borderRadius: 8, width: 38, height: 38, cursor: "pointer", flex: "none" }}>📎</button>
+              {showMention && (
+                <div style={{ position: "absolute", bottom: 60, left: 16, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.14)", borderRadius: 8, boxShadow: "0 8px 24px -8px rgba(20,30,40,0.3)", padding: 6, zIndex: 20, minWidth: 180 }}>
+                  <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 9.5, color: "#9aa2ab", padding: "4px 8px" }}>MENTION</div>
+                  {people.map((pp) => (
+                    <button key={pp.name} onClick={() => { setDraft((d) => `${d}@${pp.name.split(" ")[0]} `); setShowMention(false); }} style={{ display: "flex", width: "100%", alignItems: "center", gap: 8, fontFamily: "inherit", textAlign: "left", padding: "6px 8px", background: "transparent", border: "none", borderRadius: 5, cursor: "pointer", fontSize: 12.5 }}>
+                      <span style={{ width: 18, height: 18, borderRadius: "50%", background: pp.avBg, color: pp.avFg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700 }}>{pp.name.charAt(0)}</span>
+                      {pp.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <input
+                type="text"
+                placeholder={`Message ${selPersonView.name.split(" ")[0]}…`}
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter" && draft.trim()) { sendInbox(attachment ? `${draft} 📎 ${attachment}` : draft); setDraft(""); setAttachment(null); } }}
+                style={{ flex: 1, padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(20,24,28,0.2)", fontSize: 13, fontFamily: "inherit" }}
               />
-              <button 
-                onClick={onSendMsg} 
-                disabled={msgSent}
-                style={{ padding: "0 24px", borderRadius: 8, border: "none", background: msgSent ? "#9aa2ab" : "#14181C", color: "#FFF", fontSize: 13, fontWeight: 600, cursor: msgSent ? "default" : "pointer" }}
+              <button
+                onClick={() => { if (draft.trim()) { sendInbox(attachment ? `${draft} 📎 ${attachment}` : draft); setDraft(""); setAttachment(null); } }}
+                disabled={!draft.trim()}
+                style={{ padding: "0 24px", height: 38, borderRadius: 8, border: "none", background: draft.trim() ? "#14181C" : "#c7ccd1", color: "#FFF", fontSize: 13, fontWeight: 600, cursor: draft.trim() ? "pointer" : "default", flex: "none" }}
               >
                 Send
               </button>
