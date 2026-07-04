@@ -9,7 +9,7 @@ import styles from "./nadir.module.css";
 const TONE: Record<string, string> = { red: "#C7452F", amber: "#B47614", ok: "#15854F" };
 
 export default function GraphScreen() {
-  const { co, gnodes, edges, selNodeView, childNodes, selChild, setSelChild, parentLabel, selNode } = useNadir();
+  const { co, gnodes, edges, selNodeView, childNodes, selChild, setSelChild, parentLabel, selNode, audit, notify } = useNadir();
   const childrenMap = PHASE2[co.id].children;
   const child = selChild !== null ? childNodes[selChild] : null;
 
@@ -36,6 +36,8 @@ export default function GraphScreen() {
     setTimeout(() => {
       setWebhookTerminal(prev => {
         if (!prev) return prev;
+        audit(`Executed Webhook Action: ${actionToRun} on ${selNodeView.label}`);
+        notify(`Webhook ${actionToRun} executed successfully`, "ok");
         return {
           ...prev,
           logs: [...prev.logs, `> 200 OK: Transaction 0x8F9B committed successfully.`, `> Audit trail entry created.`]
@@ -189,32 +191,32 @@ export default function GraphScreen() {
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>
           {selNodeView.type === "object" && (
             <>
-              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Linked Sources</button>
-              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Active Tasks</button>
-              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#B47614", background: "rgba(180,118,20,0.08)", border: "1px solid rgba(180,118,20,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Open Alerts</button>
+              <button onClick={() => { audit(`Queried local context: Linked Sources for ${selNodeView.label}`); notify(`Querying Linked Sources...`, "info"); }} style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Linked Sources</button>
+              <button onClick={() => { audit(`Queried local context: Active Tasks for ${selNodeView.label}`); notify(`Querying Active Tasks...`, "info"); }} style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Active Tasks</button>
+              <button onClick={() => { audit(`Queried local context: Open Alerts for ${selNodeView.label}`); notify(`Querying Open Alerts...`, "info"); }} style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#B47614", background: "rgba(180,118,20,0.08)", border: "1px solid rgba(180,118,20,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Open Alerts</button>
             </>
           )}
           {selNodeView.type === "source" && (
             <>
-              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Derived Objects</button>
-              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Ingestion Logs</button>
+              <button onClick={() => { audit(`Queried local context: Derived Objects for ${selNodeView.label}`); notify(`Querying Derived Objects...`, "info"); }} style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Derived Objects</button>
+              <button onClick={() => { audit(`Queried local context: Ingestion Logs for ${selNodeView.label}`); notify(`Querying Ingestion Logs...`, "info"); }} style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Ingestion Logs</button>
             </>
           )}
           {selNodeView.type === "process" && (
             <>
-              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#C7452F", background: "rgba(199,69,47,0.08)", border: "1px solid rgba(199,69,47,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Blocking Risks</button>
-              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Involved Objects</button>
+              <button onClick={() => { audit(`Queried local context: Blocking Risks for ${selNodeView.label}`); notify(`Querying Blocking Risks...`, "info"); }} style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#C7452F", background: "rgba(199,69,47,0.08)", border: "1px solid rgba(199,69,47,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Blocking Risks</button>
+              <button onClick={() => { audit(`Queried local context: Involved Objects for ${selNodeView.label}`); notify(`Querying Involved Objects...`, "info"); }} style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#0E7C8A", background: "rgba(14,124,138,0.08)", border: "1px solid rgba(14,124,138,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Involved Objects</button>
             </>
           )}
           {selNodeView.type === "risk" && (
             <>
-              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#C7452F", background: "rgba(199,69,47,0.08)", border: "1px solid rgba(199,69,47,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Affected Processes</button>
-              <button style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#B47614", background: "rgba(180,118,20,0.08)", border: "1px solid rgba(180,118,20,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Related Incidents</button>
+              <button onClick={() => { audit(`Queried local context: Affected Processes for ${selNodeView.label}`); notify(`Querying Affected Processes...`, "info"); }} style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#C7452F", background: "rgba(199,69,47,0.08)", border: "1px solid rgba(199,69,47,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Affected Processes</button>
+              <button onClick={() => { audit(`Queried local context: Related Incidents for ${selNodeView.label}`); notify(`Querying Related Incidents...`, "info"); }} style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 600, color: "#B47614", background: "rgba(180,118,20,0.08)", border: "1px solid rgba(180,118,20,0.2)", borderRadius: 100, padding: "4px 10px", cursor: "pointer" }}>[+] Related Incidents</button>
             </>
           )}
         </div>
 
-        {/* --- GOTHAM-INSPIRED TASK & ACTIONS PANEL --- */}
+{/* --- GOTHAM-INSPIRED TASK & ACTIONS PANEL --- */}
         <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 10 }}>ACTIVE TASKS & ACTIONS</div>
         <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 10, overflow: "hidden" }}>
           <div style={{ padding: 14, borderBottom: "1px solid rgba(20,24,28,0.08)" }}>
@@ -228,6 +230,7 @@ export default function GraphScreen() {
           </div>
           <div style={{ padding: 14, background: "#FCFBF9" }}>
             <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, letterSpacing: "0.08em", color: "#7a848e", marginBottom: 8 }}>EXECUTE WEBHOOK</div>
+
             <select 
               value={selectedAction}
               onChange={(e) => setSelectedAction(e.target.value)}

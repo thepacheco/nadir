@@ -27,9 +27,12 @@ export default function GenerativeOnboarding({ onComplete, onCancel }: { onCompl
 
   return (
     <div style={{ background: "#FFFFFF", padding: 32, borderRadius: 12, border: "1px solid rgba(20,24,28,0.1)", boxShadow: "0 8px 24px rgba(0,0,0,0.06)" }}>
-      <div style={{ fontSize: 22, fontWeight: 700, color: "#14181C", marginBottom: 8 }}>Generative AI Onboarding (No Database)</div>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+        <div style={{ fontSize: 22, fontWeight: 700, color: "#14181C" }}>Generative AI Onboarding (No Database)</div>
+        <div style={{ fontSize: 11, fontWeight: 700, background: "#f5e6cd", color: "#B47614", padding: "4px 8px", borderRadius: 4, letterSpacing: "0.04em" }}>[DEMO-ONLY]</div>
+      </div>
       <div style={{ fontSize: 14, color: "#5a646e", marginBottom: 32, lineHeight: 1.6 }}>
-        Don't have a 15TB database? Provide your website and dictate your standard operating procedures. Nadir will scrape your operations, pull your building outline via Google Maps, and auto-generate your local schema using low-cost LLMs.
+        Don&apos;t have a 15TB database? Provide your website and dictate your standard operating procedures. Nadir will scrape your operations, pull your building outline via Google Maps, and auto-generate your local schema using low-cost LLMs.
       </div>
 
       {status === "idle" && (

@@ -12,17 +12,16 @@ interface ActionModalProps {
 }
 
 export default function ActionModal({ title, steps, onComplete, onClose }: ActionModalProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [done, setDone] = useState(false);
+const [currentStep, setCurrentStep] = useState(0);
+  const done = currentStep >= steps.length;
 
   useEffect(() => {
-    let timer: any;
+    let timer: ReturnType<typeof setTimeout>;
     if (currentStep < steps.length) {
       timer = setTimeout(() => {
         setCurrentStep((s) => s + 1);
       }, 500); // 500ms per step
     } else {
-      setDone(true);
       timer = setTimeout(() => {
         onComplete();
         onClose();

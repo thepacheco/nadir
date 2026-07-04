@@ -14,7 +14,6 @@ import ComplianceScreen from "./ComplianceScreen";
 import SourcesScreen from "./SourcesScreen";
 import SettingsScreen from "./SettingsScreen";
 import DashboardScreen from "./DashboardScreen";
-import BiddingScreen from "./BiddingScreen";
 import EvidenceDrawer from "./EvidenceDrawer";
 import Toast from "./Toast";
 
@@ -270,20 +269,27 @@ export default function AppShell() {
               const red = ctx.departments.filter((d) => d.status === "red").length;
               if (red) badge = String(red);
             }
+            const locked = ctx.obStep < 5 && sc.id !== "sources" && sc.id !== "chat";
             return (
               <button
                 key={sc.id}
-                onClick={() => setScreen(sc.id)}
+                onClick={() => {
+                  if (!locked) setScreen(sc.id);
+                }}
                 className={styles.navItem}
                 style={{
                   display: "flex", alignItems: "center", gap: 12, fontFamily: "inherit", fontSize: 13.5, fontWeight: 600, textAlign: "left",
-                  padding: "10px 12px", borderRadius: 8, cursor: "pointer", background: active ? "rgba(14,124,138,0.1)" : "transparent",
-                  color: active ? "#14181C" : "#5a646e", border: "none", width: "100%",
+                  padding: "10px 12px", borderRadius: 8, cursor: locked ? "not-allowed" : "pointer", background: active ? "rgba(14,124,138,0.1)" : "transparent",
+                  color: active ? "#14181C" : locked ? "#c0c7cd" : "#5a646e", border: "none", width: "100%",
+                  opacity: locked ? 0.6 : 1
                 }}
               >
-                <NavIcon id={sc.id} color={active ? "#0E7C8A" : "#9aa2ab"} />
+                <NavIcon id={sc.id} color={active ? "#0E7C8A" : locked ? "#c0c7cd" : "#9aa2ab"} />
                 {sc.label}
-                {badge && (
+                {locked && (
+                  <span style={{ marginLeft: "auto", fontSize: 12, color: "#9aa2ab" }}>🔒</span>
+                )}
+                {!locked && badge && (
                   <span style={{ marginLeft: "auto", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, background: badgeBg, color: badgeFg, padding: "1px 7px", borderRadius: 20 }}>
                     {badge}
                   </span>
@@ -307,7 +313,6 @@ export default function AppShell() {
           {screen === "comp" && <ComplianceScreen />}
           {screen === "sources" && <SourcesScreen />}
           {screen === "dash" && <DashboardScreen />}
-          {screen === "bidding" && <BiddingScreen />}
           {screen === "settings" && <SettingsScreen />}
         </div>
       </div>

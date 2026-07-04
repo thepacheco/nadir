@@ -13,7 +13,6 @@ export const SCREENS = [
   { id: "comp", label: "Compliance" },
   { id: "sources", label: "Data sources" },
   { id: "dash", label: "Dashboard" },
-  { id: "bidding", label: "Predictive Bidding" },
   { id: "settings", label: "Settings" },
 ] as const;
 

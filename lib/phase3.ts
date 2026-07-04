@@ -41,9 +41,14 @@ export const WIRES: Record<CompanyId, Wire[]> = {
     { from: "sap_po_lines.lot_no", label: "sources", to: "Parts / BOM", conf: "97%" },
     { from: "jira_issues.signoff_id", label: "blocks", to: "Quality Records (NCRs)", conf: "90%" },
   ],
-  solo: [],
-  paper: [],
-  defense: [],
+  solo: [
+    { from: "QuickBooks", label: "bills", to: "Invoices", conf: "99%" },
+    { from: "Housecall Pro", label: "schedules", to: "Jobs", conf: "98%" }
+  ],
+  pulp: [
+    { from: "SAP HANA", label: "manages", to: "Materials", conf: "99%" },
+    { from: "ABB Ability", label: "controls", to: "Valves", conf: "98%" }
+  ]
 };
 
 // Phase 3 cost discipline, made visible: what actually costs money and what doesn't.

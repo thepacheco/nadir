@@ -455,62 +455,146 @@ export const COMPANIES: Company[] = [
   },
   {
     id: "solo",
-    name: "Independent Creator",
-    industry: "Solo operator · 1 employee",
-    nowMin: 400,
-    sources: [],
-    kpis: [],
-    alerts: [],
-    intro: "Minimal overhead setup.",
-    suggestions: [],
-    replies: [],
-    action: { title: "Growth Plan", desc: "Dependency tree for next steps" },
-    plan: { subtitle: "", why: "", cols: [] },
-    compliance: { tiles: [], findings: [], audit: [] },
-    people: [],
-    graph: { nodes: [], edges: [] },
-    obTables: [],
-    obMappings: [],
-    obDone: "Wired",
+    name: "Mike's Rooter & Plumbing",
+    industry: "Field Services · 1 Owner/Operator",
+    nowMin: 540,
+    sources: [
+      { name: "QuickBooks Online", meta: "Accounting", node: 0 },
+      { name: "Housecall Pro", meta: "Dispatch & CRM", node: 1 },
+      { name: "Home Depot Pro", meta: "Materials", node: 2 },
+    ],
+    kpis: [{ label: "OPEN JOBS", val: "4", color: "#14181C" }, { label: "UNINVOICED", val: "$1,850", color: "#C7452F" }, { label: "DRIVE TIME", val: "2.4 hrs", color: "#B47614" }],
+    alerts: [
+      { sev: "CRITICAL", color: "#C7452F", at: 0, time: "Now", title: "Unbilled Material: 80-Gal Water Heater", plain: "You bought a water heater this morning but didn't put it on the customer's invoice.", detail: "Home Depot Pro receipt for $845 matches the timestamp of the Smith job, but QuickBooks invoice #1042 only bills for labor.", loc: "Billing", q: "Add heater to Smith invoice" },
+      { sev: "WARNING", color: "#B47614", at: 0, time: "Tomorrow", title: "Schedule Conflict: Double Booking", plain: "You have two jobs scheduled at the same time tomorrow on opposite sides of town.", detail: "Housecall Pro job #8812 (10:00 AM) conflicts with a manual Google Calendar entry (10:30 AM).", loc: "Dispatch", q: "Fix tomorrow's schedule" },
+    ],
+    intro: `Morning Mike. I've synced QuickBooks, Housecall Pro, and your Home Depot account.
+
+1. You bought an $845 water heater this morning, but invoice #1042 only charges for labor. You're about to lose money.
+2. Tomorrow at 10 AM you're double-booked across town.
+
+Want me to fix the invoice?`,
+    suggestions: ["Add heater to Smith invoice", "Fix tomorrow's schedule", "Show my tax estimate"],
+    replies: [
+      { text: "Invoice #1042 updated. I added '80-Gal Rheem Water Heater' at cost + 15% markup ($971.75). The new total is sent to QuickBooks and ready for the customer.", cites: ["Home Depot Pro · Receipt #441", "QuickBooks · Inv #1042"] },
+      { text: "I've drafted a text to the 10:30 AM customer asking to push to 1:00 PM, factoring in the 45-minute drive from your 10:00 AM job. Want me to send it?", cites: ["Housecall Pro · Job #8812", "Google Calendar"] },
+      { text: "Based on QuickBooks YTD revenue and Home Depot material expenses, your estimated Q3 estimated tax payment is $4,200. I can draft the transfer to your tax savings account.", cites: ["QuickBooks · P&L"] },
+    ],
+    action: { title: "Invoice Ready", desc: "Updated Smith invoice with material markup. Ready to send via QuickBooks." },
+    plan: {
+      subtitle: "Protecting your margin.",
+      why: "You can't afford to eat $845 on a water heater. Billing comes first.",
+      cols: [
+        { title: "NOW", color: "#C7452F", items: [{ t: "Update Smith Invoice", d: "Add $971.75 material charge.", tag: "UNBLOCKS REVENUE" }] },
+        { title: "NEXT", color: "#B47614", items: [{ t: "Reschedule 10:30AM Job", d: "Push to 1:00 PM to fix double-booking.", tag: "PREVENT REPEAT" }] },
+        { title: "LATER", color: "#15854F", items: [{ t: "Automate material markup", d: "Auto-sync HD purchases to active jobs.", tag: "SYSTEMIZE" }] },
+      ]
+    },
+    compliance: {
+      tiles: [{ label: "OPEN FINDINGS", val: "1", color: "#B47614" }, { label: "HIGH SEVERITY", val: "0", color: "#C7452F" }, { label: "PASSED CHECKS", val: "4", color: "#15854F" }, { label: "LICENSES", val: "VALID", color: "#15854F" }],
+      findings: [
+        { sev: "MED", rule: "Vehicle Registration Renewal", detail: "Work van registration expires in 14 days.", status: "OPEN" },
+        { sev: "PASS", rule: "State Contractor License", detail: "Valid through 2028.", status: "CURRENT" },
+        { sev: "PASS", rule: "General Liability Insurance", detail: "Policy active.", status: "CURRENT" }
+      ],
+      audit: [
+        { time: "Today", text: "Cross-referenced Home Depot receipt with QuickBooks invoice #1042." },
+        { time: "Today", text: "Flagged schedule conflict between Housecall Pro and Calendar." }
+      ]
+    },
+    people: [
+      {
+        initials: "MH", name: "Mike Harris", dept: "OWNER", role: "Owner/Operator", email: "mike@mikesrooter.com", phone: "(555) 019-2834", status: "amber",
+        issue: "Unbilled material on Smith job.", unread: 1, manager: "",
+        thread: [{ from: "nadir", text: "Mike, you forgot to bill the Smiths for the water heater. Inv #1042 is just labor." }],
+        draft: "Update the invoice with a 15% markup and send it."
+      }
+    ],
+    graph: {
+      nodes: [
+        { label: "QuickBooks", type: "source", x: 10, y: 20, meta: "Accounting", derivation: [] },
+        { label: "Housecall Pro", type: "source", x: 10, y: 50, meta: "Dispatch", derivation: [] },
+        { label: "Home Depot", type: "source", x: 10, y: 80, meta: "Materials", derivation: [] },
+        { label: "Invoices", type: "object", x: 50, y: 20, meta: "Billing", derivation: [] },
+        { label: "Schedule", type: "process", x: 50, y: 50, meta: "Jobs", derivation: [] },
+        { label: "Missing Charge", type: "risk", x: 80, y: 35, meta: "Unbilled $845", derivation: [] }
+      ],
+      edges: [[0,3], [1,4], [2,3], [3,5]]
+    },
+    obTables: [{ name: "invoices", rows: "412" }, { name: "jobs", rows: "890" }, { name: "purchases", rows: "1,204" }],
+    obMappings: [{ table: "invoices", proposed: "Billing", conf: "99%" }, { table: "jobs", proposed: "Schedule", conf: "98%" }, { table: "purchases", proposed: "Materials", conf: "95%" }],
+    obDone: "3 systems synced. Ready to run."
   },
   {
-    id: "paper",
-    name: "Pacific Pulp",
-    industry: "Paper & pulp · 850 employees",
-    nowMin: 400,
-    sources: [],
-    kpis: [],
-    alerts: [],
-    intro: "Heavy machinery and continuous flow.",
-    suggestions: [],
-    replies: [],
-    action: { title: "Maintenance", desc: "Schedule downtime" },
-    plan: { subtitle: "", why: "", cols: [] },
-    compliance: { tiles: [], findings: [], audit: [] },
-    people: [],
-    graph: { nodes: [], edges: [] },
-    obTables: [],
-    obMappings: [],
-    obDone: "Wired",
-  },
-  {
-    id: "defense",
-    name: "Aegis Systems",
-    industry: "Air defense · 12,000 employees",
-    nowMin: 400,
-    sources: [],
-    kpis: [],
-    alerts: [],
-    intro: "High security, strict compliance.",
-    suggestions: [],
-    replies: [],
-    action: { title: "Audit", desc: "Prepare for inspection" },
-    plan: { subtitle: "", why: "", cols: [] },
-    compliance: { tiles: [], findings: [], audit: [] },
-    people: [],
-    graph: { nodes: [], edges: [] },
-    obTables: [],
-    obMappings: [],
-    obDone: "Wired",
+    id: "pulp",
+    name: "Cascadia Paper Mills",
+    industry: "Heavy Manufacturing · 1,200 employees",
+    nowMin: 480,
+    sources: [
+      { name: "SAP HANA", meta: "ERP & Supply Chain", node: 0 },
+      { name: "ABB Ability", meta: "DCS / Process Control", node: 1 },
+      { name: "Kronos", meta: "Time & Attendance", node: 2 },
+      { name: "LIMS", meta: "Lab Information Mgmt", node: 3 },
+    ],
+    kpis: [{ label: "ROLL YIELD", val: "94.2%", color: "#15854F" }, { label: "BOILER TEMP", val: "840°C", color: "#B47614" }, { label: "CHEM TANK 4", val: "92%", color: "#C7452F" }],
+    alerts: [
+      { sev: "CRITICAL", color: "#C7452F", at: 0, time: "Now", title: "Bleach Tank 4 Approaching Overfill", plain: "A chemical tank is about to overflow because a valve didn't close.", detail: "ABB DCS reports Tank 4 at 92% capacity. SAP shows no planned maintenance. High risk of environmental spill.", loc: "Digester · Area 2", q: "Shut off Tank 4 intake" },
+      { sev: "WARNING", color: "#B47614", at: 0, time: "10 mins ago", title: "Moisture Variance in Roll Batch A-99", plain: "Lab results show paper rolls are too wet, correlating with a boiler temperature drop.", detail: "LIMS reports 8% moisture (target 5%). ABB DCS shows Boiler 2 dropped 15°C during this batch run.", loc: "Paper Machine 1", q: "Adjust Boiler 2 parameters" }
+    ],
+    intro: `Cascadia Mill online. Reconciled SAP, ABB, Kronos, and LIMS.
+
+1. CRITICAL: Bleach Tank 4 is at 92% and rising. Valve V-102 appears stuck open.
+2. Roll Batch A-99 is out of spec (8% moisture) due to a temperature drop in Boiler 2.
+
+Action required immediately on Tank 4 to prevent an environmental spill.`,
+    suggestions: ["Shut off Tank 4 intake", "Adjust Boiler 2 parameters", "Check shift overtime"],
+    replies: [
+      { text: "Emergency halt signal sent to Valve V-102 via ABB DCS. Tank 4 level stabilized at 94%. Maintenance ticket dispatched to inspect the valve actuator.", cites: ["ABB Ability · Valve V-102", "SAP · Work Order generated"] },
+      { text: "Boiler 2 setpoint increased by 15°C to compensate for wet bark fuel. Batch A-100 moisture is trending back down to 5.2%.", cites: ["ABB Ability · Boiler 2", "LIMS · Batch A-100"] },
+      { text: "Kronos shows 14 operators approaching their union 12-hour limit in the next 45 minutes. Shift relief is scheduled but 3 are running late (gate badge logs).", cites: ["Kronos · Timecards", "Physical Security · Badge Swipes"] },
+    ],
+    action: { title: "Spill Prevented", desc: "Valve V-102 halted manually to prevent Tank 4 overfill." },
+    plan: {
+      subtitle: "Process stability and safety.",
+      why: "Environmental spills carry massive fines and safety risks. Quality variance is secondary.",
+      cols: [
+        { title: "NOW", color: "#C7452F", items: [{ t: "Halt Tank 4 Intake", d: "Force close V-102 via DCS.", tag: "PREVENTS OUTAGE" }] },
+        { title: "NEXT", color: "#B47614", items: [{ t: "Adjust Boiler 2", d: "Increase temp setpoint by 15°C.", tag: "QUALITY" }] },
+        { title: "LATER", color: "#15854F", items: [{ t: "Review Bark Fuel Moisture", d: "Wet fuel caused the boiler drop.", tag: "SYSTEMIZE" }] },
+      ]
+    },
+    compliance: {
+      tiles: [{ label: "OPEN FINDINGS", val: "2", color: "#B47614" }, { label: "HIGH SEVERITY", val: "1", color: "#C7452F" }, { label: "PASSED CHECKS", val: "84", color: "#15854F" }, { label: "EPA LIMITS", val: "AT RISK", color: "#C7452F" }],
+      findings: [
+        { sev: "HIGH", rule: "EPA Chemical Spill Risk", detail: "Tank 4 level exceeding 90% threshold.", status: "OPEN" },
+        { sev: "MED", rule: "Union Maximum Hours", detail: "14 operators approaching 12-hour limit.", status: "OPEN" },
+      ],
+      audit: [
+        { time: "Today", text: "Flagged Tank 4 overfill risk via DCS telemetry." },
+        { time: "Today", text: "Correlated LIMS moisture data with ABB boiler temps." }
+      ]
+    },
+    people: [
+      {
+        initials: "SJ", name: "Sarah Jenkins", dept: "OPERATIONS", role: "Shift Supervisor", email: "s.jenkins@cascadia.com", phone: "(555) 019-3321", status: "red",
+        issue: "Tank 4 overfill risk.", unread: 2, manager: "Mill Director",
+        thread: [{ from: "nadir", text: "Sarah, Tank 4 is at 92%. V-102 didn't close." }],
+        draft: "Force close V-102 from the control room immediately."
+      }
+    ],
+    graph: {
+      nodes: [
+        { label: "SAP HANA", type: "source", x: 10, y: 20, meta: "ERP", derivation: [] },
+        { label: "ABB Ability", type: "source", x: 10, y: 45, meta: "DCS", derivation: [] },
+        { label: "LIMS", type: "source", x: 10, y: 70, meta: "Quality", derivation: [] },
+        { label: "Tank 4", type: "object", x: 50, y: 25, meta: "Chemical Storage", derivation: [] },
+        { label: "Boiler 2", type: "object", x: 50, y: 65, meta: "Power", derivation: [] },
+        { label: "Spill Risk", type: "risk", x: 80, y: 25, meta: "Level > 90%", derivation: [] }
+      ],
+      edges: [[1,3], [1,4], [2,4], [3,5]]
+    },
+    obTables: [{ name: "mara_materials", rows: "45k" }, { name: "dcs_tags", rows: "12M" }, { name: "lims_batches", rows: "8,402" }],
+    obMappings: [{ table: "mara_materials", proposed: "Inventory", conf: "99%" }, { table: "dcs_tags", proposed: "Telemetry", conf: "98%" }, { table: "lims_batches", proposed: "Quality", conf: "97%" }],
+    obDone: "DCS and LIMS mapped to SAP processes."
   }
 ];

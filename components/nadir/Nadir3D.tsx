@@ -19,7 +19,8 @@ export default function Nadir3D({ onBuildingClick, clickedBuilding }: { onBuildi
   ];
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    const mountNode = mountRef.current;
+    if (!mountNode) return;
 
     // Scene setup
     const scene = new THREE.Scene();
@@ -30,7 +31,7 @@ export default function Nadir3D({ onBuildingClick, clickedBuilding }: { onBuildi
     sceneGroupRef.current = sceneGroup;
 
     // Isometric camera
-    const aspect = mountRef.current.clientWidth / mountRef.current.clientHeight;
+    const aspect = mountNode.clientWidth / mountNode.clientHeight;
     const d = 10;
     const camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
     camera.position.set(20, 20, 20);
@@ -38,8 +39,8 @@ export default function Nadir3D({ onBuildingClick, clickedBuilding }: { onBuildi
     cameraRef.current = camera;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
-    mountRef.current.appendChild(renderer.domElement);
+    renderer.setSize(mountNode.clientWidth, mountNode.clientHeight);
+    mountNode.appendChild(renderer.domElement);
 
     // Grid
     const gridHelper = new THREE.GridHelper(40, 40, "#d9d5cd", "#e3dfd7");
@@ -138,8 +139,8 @@ export default function Nadir3D({ onBuildingClick, clickedBuilding }: { onBuildi
     // Resize handler
     const handleResize = () => {
       if (!mountRef.current) return;
-      const width = mountRef.current.clientWidth;
-      const height = mountRef.current.clientHeight;
+      const width = mountNode.clientWidth;
+      const height = mountNode.clientHeight;
       const asp = width / height;
       camera.left = -d * asp;
       camera.right = d * asp;
@@ -153,12 +154,12 @@ export default function Nadir3D({ onBuildingClick, clickedBuilding }: { onBuildi
     return () => {
       cancelAnimationFrame(reqId);
       window.removeEventListener('resize', handleResize);
-      if (mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
+      if (mountNode) {
+        mountNode.removeChild(renderer.domElement);
       }
       renderer.dispose();
     };
-  }, [onBuildingClick]);
+  }, [onBuildingClick, buildings]);
 
   return <div ref={mountRef} data-clicked={clickedBuilding !== null ? clickedBuilding : 'null'} style={{ width: "100%", height: "100%" }} />;
 }

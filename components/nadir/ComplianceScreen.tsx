@@ -5,7 +5,7 @@ import { SEV_STYLES } from "@/lib/constants";
 import { useNadir } from "./context";
 
 export default function ComplianceScreen() {
-  const { co, auditMerged } = useNadir();
+  const { co, auditMerged, audit, notify } = useNadir();
   const { compliance } = co;
   const [resolved, setResolved] = useState<Record<string, boolean>>({});
   const [resolvingFinding, setResolvingFinding] = useState<string | null>(null);
@@ -74,11 +74,12 @@ export default function ComplianceScreen() {
                       </button>
                       <button 
                         disabled={!resolutionNotes.trim()}
-                        onClick={() => {
+onClick={() => {
                           setResolved(prev => ({ ...prev, [f.rule]: true }));
                           setResolvingFinding(null);
+                          audit(`Resolved compliance finding "${f.rule}" with notes: ${resolutionNotes}`);
+                          notify("Compliance finding resolved and audited", "ok");
                           setResolutionNotes("");
-                          // Ideally this pushes to auditMerged context
                         }}
                         style={{ padding: "6px 12px", background: resolutionNotes.trim() ? "#0E7C8A" : "rgba(20,24,28,0.1)", color: resolutionNotes.trim() ? "#FFFFFF" : "#9aa2ab", border: "none", borderRadius: 4, fontSize: 12, fontWeight: 600, cursor: resolutionNotes.trim() ? "pointer" : "default" }}
                       >

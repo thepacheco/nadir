@@ -266,21 +266,29 @@ export const PHASE2: Record<CompanyId, Phase2Data> = {
     ],
   },
   solo: {
-    approver: { name: "Self", reply: "" },
-    alerts: [],
     children: {},
-    departments: []
+    alerts: [
+      { owner: 0, evidence: [], suspect: { question: "Is this receipt billed?", wrongLabel: "Receipt unlinked", wrongResult: "Lost margin", correctLabel: "Material added to invoice", correctResult: "Invoice Updated" } },
+      { owner: 0, evidence: [], suspect: { question: "Is there a conflict?", wrongLabel: "Double booking", wrongResult: "Conflict", correctLabel: "Schedule moved", correctResult: "Resolved" } }
+    ],
+    approver: { name: "Mike Harris", reply: "Approved. Send it." },
+    departments: [
+      { name: "Field", head: "Mike", oversight: "Owner", status: "amber", kpis: [{ label: "Efficiency", val: "90%", color: "#15854F" }], note: "Field work" },
+      { name: "Office", head: "Mike", oversight: "Owner", status: "red", kpis: [{ label: "Backlog", val: "2", color: "#C7452F" }], note: "Office work" }
+    ]
   },
-  paper: {
-    approver: { name: "Manager", reply: "" },
-    alerts: [],
+  pulp: {
     children: {},
-    departments: []
-  },
-  defense: {
-    approver: { name: "Commander", reply: "" },
-    alerts: [],
-    children: {},
-    departments: []
+    alerts: [
+      { owner: 0, evidence: [], suspect: { question: "Is valve open?", wrongLabel: "Sensor error", wrongResult: "Stuck Open", correctLabel: "Valve closed", correctResult: "Closed" } },
+      { owner: 0, evidence: [], suspect: { question: "Is moisture high?", wrongLabel: "Lab error", wrongResult: "8% Moisture", correctLabel: "Boiler adjusted", correctResult: "Target 5%" } }
+    ],
+    approver: { name: "Mill Director", reply: "Approved. Executing." },
+    departments: [
+      { name: "Digester", head: "Sarah J.", oversight: "Mill Director", status: "red", kpis: [{ label: "Tank 4", val: "92%", color: "#C7452F" }], note: "Overfill risk" },
+      { name: "Paper Machine 1", head: "John D.", oversight: "Mill Director", status: "amber", kpis: [{ label: "Moisture", val: "8%", color: "#B47614" }], note: "Wet rolls" },
+      { name: "Shipping", head: "Amy C.", oversight: "Mill Director", status: "green", kpis: [{ label: "On Time", val: "100%", color: "#15854F" }], note: "Normal" }
+    ]
   }
+
 };

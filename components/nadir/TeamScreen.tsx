@@ -5,7 +5,7 @@ import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
 export default function TeamScreen() {
-  const { people, approver, ingestedData } = useNadir();
+  const { co, people, approver, ingestedData, selPersonView, thread, msgSent, onSendMsg, audit, notify } = useNadir();
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
 
   const safeData = Array.isArray(ingestedData) ? ingestedData : [];
@@ -26,6 +26,7 @@ export default function TeamScreen() {
 
   const [escalateTicket, setEscalateTicket] = useState<any | null>(null);
   const [showChecklistBuilder, setShowChecklistBuilder] = useState(false);
+  const [showInbox, setShowInbox] = useState(false);
 
   return (
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
@@ -42,11 +43,11 @@ export default function TeamScreen() {
           </div>
 
           <button 
-            onClick={() => setSelectedDept(null)}
+            onClick={() => { setSelectedDept(null); setShowInbox(false); }}
             style={{ 
               fontFamily: 'inherit', textAlign: 'left', padding: '6px 12px', marginTop: 12,
-              background: selectedDept === null ? 'rgba(14,124,138,0.1)' : 'transparent',
-              color: selectedDept === null ? '#0E7C8A' : '#5a646e', border: 'none', borderRadius: 4, cursor: 'pointer',
+              background: (selectedDept === null && !showInbox) ? 'rgba(14,124,138,0.1)' : 'transparent',
+              color: (selectedDept === null && !showInbox) ? '#0E7C8A' : '#5a646e', border: 'none', borderRadius: 4, cursor: 'pointer',
               fontWeight: 600
             }}
           >
@@ -56,14 +57,35 @@ export default function TeamScreen() {
           {departments.map((dept) => (
             <button 
               key={dept}
-              onClick={() => setSelectedDept(dept)}
+              onClick={() => { setSelectedDept(dept); setShowInbox(false); }}
               style={{ 
                 fontFamily: 'inherit', textAlign: 'left', padding: '6px 12px', 
-                background: selectedDept === dept ? 'rgba(14,124,138,0.1)' : 'transparent',
-                color: selectedDept === dept ? '#0E7C8A' : '#5a646e', border: 'none', borderRadius: 4, cursor: 'pointer'
+                background: (selectedDept === dept && !showInbox) ? 'rgba(14,124,138,0.1)' : 'transparent',
+                color: (selectedDept === dept && !showInbox) ? '#0E7C8A' : '#5a646e', border: 'none', borderRadius: 4, cursor: 'pointer'
               }}
             >
               └─ {dept}
+            </button>
+          ))}
+          
+          <div style={{ marginTop: 24, fontSize: 10, color: "#9aa2ab", fontWeight: 700, letterSpacing: "0.05em", paddingLeft: 12 }}>TEAM INBOX</div>
+          {people.map((p, i) => (
+            <button
+              key={p.name}
+              onClick={() => { p.onSelect(); setShowInbox(true); setSelectedDept(null); }}
+              style={{
+                display: "flex", alignItems: "center", gap: 8, fontFamily: 'inherit', textAlign: 'left', padding: '6px 12px',
+                background: (p.active && showInbox) ? 'rgba(14,124,138,0.1)' : 'transparent',
+                color: (p.active && showInbox) ? '#0E7C8A' : '#14181C', border: 'none', borderRadius: 4, cursor: 'pointer'
+              }}
+            >
+              <div style={{ width: 18, height: 18, borderRadius: "50%", background: p.avBg, color: p.avFg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700 }}>
+                {p.name.charAt(0)}
+              </div>
+              <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span>{p.name.split(" ")[0]}</span>
+                {(p.unread ?? 0) > 0 && <span style={{ background: "#C7452F", color: "#FFF", fontSize: 9, padding: "2px 6px", borderRadius: 10, fontWeight: 700 }}>{p.unread}</span>}
+              </div>
             </button>
           ))}
 
@@ -80,61 +102,112 @@ export default function TeamScreen() {
         </div>
       </div>
 
-      {/* RIGHT: Ticket Kanban */}
+      {/* RIGHT: Ticket Kanban or Inbox */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", minHeight: 0, background: "#F6F4EF", padding: 20 }}>
-        <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: '#14181C' }}>
-          {selectedDept ? `${selectedDept} Tickets` : "Global Ticket Board"}
-        </div>
         
-        <div style={{ display: 'flex', gap: 20, flex: 1, minHeight: 0 }}>
-          {/* Columns */}
-          {['OPEN', 'IN_PROGRESS', 'CLOSED'].map((status) => {
-            const colTickets = ticketsByStatus[status as keyof typeof ticketsByStatus];
-            return (
-              <div key={status} style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(20,24,28,0.03)', borderRadius: 8, padding: 12 }}>
-                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 700, color: "#7a848e", marginBottom: 12 }}>
-                  {status.replace('_', ' ')} ({colTickets.length})
+        {showInbox ? (
+          <div style={{ display: "flex", flexDirection: "column", flex: 1, background: "#FFFFFF", borderRadius: 12, border: "1px solid rgba(20,24,28,0.1)", overflow: "hidden", boxShadow: "0 10px 40px rgba(0,0,0,0.05)" }}>
+            <div style={{ padding: "16px 24px", borderBottom: "1px solid rgba(20,24,28,0.08)", background: "#FCFBF9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 36, height: 36, borderRadius: "50%", background: selPersonView.avBg, color: selPersonView.avFg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700 }}>
+                  {selPersonView.name.charAt(0)}
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto' }}>
-                  {colTickets.map(t => {
-                    const ticketPerson = people.find(p => p.name.includes(t.owner.split(' ')[0]));
-                    return (
-                      <div key={t.ticket_id} style={{ background: '#FFF', padding: 12, borderRadius: 6, border: '1px solid rgba(20,24,28,0.1)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                          <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: '#0E7C8A', background: 'rgba(14,124,138,0.1)', padding: '2px 6px', borderRadius: 4 }}>{t.ticket_id}</span>
-                          <span style={{ fontSize: 10, fontWeight: 700, color: t.priority === 'CRITICAL' ? '#C7452F' : t.priority === 'HIGH' ? '#B47614' : '#5a646e' }}>
-                            {t.priority}
-                          </span>
-                        </div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: '#14181C', marginBottom: 4 }}>{t.description}</div>
-                        <div style={{ fontSize: 11, color: '#7a848e', display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                          <span>Owner: {t.owner}</span>
-                          <span>{t.location}</span>
-                        </div>
-
-                        {/* System-Generated Spot Check Mock */}
-                        {t.priority === 'CRITICAL' && (
-                          <div style={{ background: "rgba(180,118,20,0.06)", borderLeft: "2px solid #B47614", padding: "6px 8px", fontSize: 10, marginBottom: 8, borderRadius: "0 4px 4px 0", color: "#8a5a10" }}>
-                            <strong>System Spot-Check:</strong> Verify actuator lock (based on prior anomaly).
-                          </div>
-                        )}
-
-                        {status !== 'CLOSED' && (
-                          <button
-                            onClick={() => setEscalateTicket({ ...t, manager: ticketPerson?.manager || approver.name })}
-                            style={{ width: "100%", padding: "4px 0", fontSize: 10, fontWeight: 700, color: "#C7452F", background: "rgba(199,69,47,0.05)", border: "1px solid rgba(199,69,47,0.1)", borderRadius: 4, cursor: "pointer" }}
-                          >
-                            Escalate ↑
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })}
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#14181C" }}>{selPersonView.name}</div>
+                  <div style={{ fontSize: 12, color: "#7a848e" }}>{selPersonView.role} · {selPersonView.manager ? `Manager: ${selPersonView.manager}` : "Leadership"}</div>
                 </div>
               </div>
-            )
-          })}
-        </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 600, color: selPersonView.statusColor, background: `${selPersonView.statusColor}15`, padding: "4px 8px", borderRadius: 4 }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: selPersonView.statusColor }} />
+                {selPersonView.pto ? "ON PTO" : "ACTIVE"}
+              </div>
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto", padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+              {thread.map((m, i) => (
+                <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: m.align, gap: 4 }}>
+                  <div style={{ fontSize: 10, color: "#9aa2ab", fontWeight: 600 }}>{m.who}</div>
+                  <div style={{ background: m.bg, color: m.fg, border: `1px solid ${m.bd}`, padding: "10px 14px", borderRadius: m.radius, fontSize: 13, lineHeight: 1.5, maxWidth: "70%" }}>
+                    {m.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ padding: 16, borderTop: "1px solid rgba(20,24,28,0.08)", background: "#FCFBF9", display: "flex", gap: 12 }}>
+              <input 
+                type="text" 
+                placeholder={msgSent ? "Message sent..." : `Reply to ${selPersonView.name.split(" ")[0]}...`} 
+                value={msgSent ? "" : selPersonView.draft} 
+                readOnly
+                style={{ flex: 1, padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(20,24,28,0.2)", fontSize: 13, fontFamily: "inherit" }} 
+              />
+              <button 
+                onClick={onSendMsg} 
+                disabled={msgSent}
+                style={{ padding: "0 24px", borderRadius: 8, border: "none", background: msgSent ? "#9aa2ab" : "#14181C", color: "#FFF", fontSize: 13, fontWeight: 600, cursor: msgSent ? "default" : "pointer" }}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 20, color: '#14181C' }}>
+              {selectedDept ? `${selectedDept} Tickets` : "Global Ticket Board"}
+            </div>
+            
+            <div style={{ display: 'flex', gap: 20, flex: 1, minHeight: 0 }}>
+              {/* Columns */}
+              {['OPEN', 'IN_PROGRESS', 'CLOSED'].map((status) => {
+                const colTickets = ticketsByStatus[status as keyof typeof ticketsByStatus];
+                return (
+                  <div key={status} style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(20,24,28,0.03)', borderRadius: 8, padding: 12 }}>
+                    <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 700, color: "#7a848e", marginBottom: 12 }}>
+                      {status.replace('_', ' ')} ({colTickets.length})
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto' }}>
+                      {colTickets.map(t => {
+                        const ticketPerson = people.find(p => p.name.includes(t.owner.split(' ')[0]));
+                        return (
+                          <div key={t.ticket_id} style={{ background: '#FFF', padding: 12, borderRadius: 6, border: '1px solid rgba(20,24,28,0.1)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                              <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: '#0E7C8A', background: 'rgba(14,124,138,0.1)', padding: '2px 6px', borderRadius: 4 }}>{t.ticket_id}</span>
+                              <span style={{ fontSize: 10, fontWeight: 700, color: t.priority === 'CRITICAL' ? '#C7452F' : t.priority === 'HIGH' ? '#B47614' : '#5a646e' }}>
+                                {t.priority}
+                              </span>
+                            </div>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: '#14181C', marginBottom: 4 }}>{t.description}</div>
+                            <div style={{ fontSize: 11, color: '#7a848e', display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                              <span>Owner: {t.owner}</span>
+                              <span>{t.location}</span>
+                            </div>
+
+                            {/* System-Generated Spot Check Mock */}
+                            {t.priority === 'CRITICAL' && (
+                              <div style={{ background: "rgba(180,118,20,0.06)", borderLeft: "2px solid #B47614", padding: "6px 8px", fontSize: 10, marginBottom: 8, borderRadius: "0 4px 4px 0", color: "#8a5a10" }}>
+                                <strong>System Spot-Check:</strong> Verify actuator lock (based on prior anomaly).
+                              </div>
+                            )}
+
+                            {status !== 'CLOSED' && (
+                              <button
+                                onClick={() => setEscalateTicket({ ...t, manager: ticketPerson?.manager || approver.name })}
+                                style={{ width: "100%", padding: "4px 0", fontSize: 10, fontWeight: 700, color: "#C7452F", background: "rgba(199,69,47,0.05)", border: "1px solid rgba(199,69,47,0.1)", borderRadius: 4, cursor: "pointer" }}
+                              >
+                                Escalate ↑
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Escalate Modal */}
@@ -180,7 +253,11 @@ export default function TeamScreen() {
             </div>
             <div style={{ padding: "16px 24px", background: "rgba(20,24,28,0.03)", borderTop: "1px solid rgba(20,24,28,0.06)", display: "flex", justifyContent: "flex-end", gap: 12 }}>
               <button onClick={() => setEscalateTicket(null)} style={{ padding: "8px 16px", borderRadius: 6, border: "1px solid rgba(20,24,28,0.15)", background: "#FFF", fontSize: 12, fontWeight: 600, cursor: "pointer", color: "#5a646e" }}>Cancel</button>
-              <button onClick={() => setEscalateTicket(null)} style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#C7452F", color: "#FFF", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Confirm Escalation</button>
+              <button onClick={() => {
+                audit(`Escalated Ticket ${escalateTicket.ticket_id} to ${escalateTicket.manager}`);
+                notify(`Ticket escalated successfully to ${escalateTicket.manager}`, "ok");
+                setEscalateTicket(null);
+              }} style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#C7452F", color: "#FFF", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Confirm Escalation</button>
             </div>
           </div>
         </div>
@@ -221,7 +298,11 @@ export default function TeamScreen() {
             </div>
             <div style={{ padding: "16px 24px", background: "rgba(20,24,28,0.03)", borderTop: "1px solid rgba(20,24,28,0.06)", display: "flex", justifyContent: "flex-end", gap: 12 }}>
               <button onClick={() => setShowChecklistBuilder(false)} style={{ padding: "8px 16px", borderRadius: 6, border: "1px solid rgba(20,24,28,0.15)", background: "#FFF", fontSize: 12, fontWeight: 600, cursor: "pointer", color: "#5a646e" }}>Cancel</button>
-              <button onClick={() => setShowChecklistBuilder(false)} style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#0E7C8A", color: "#FFF", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Save & Deploy</button>
+              <button onClick={() => {
+                audit(`Deployed new active checklist form for ${co.name} personnel.`);
+                notify("Checklist deployed and active", "ok");
+                setShowChecklistBuilder(false);
+              }} style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#0E7C8A", color: "#FFF", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>Save & Deploy</button>
             </div>
           </div>
         </div>

@@ -550,6 +550,8 @@ export default function Workspace() {
     markNotifsSeen: () => setNotifSeen(notifications.length),
 
     auditMerged: [...(runtimeAudit[co.id] || []), ...co.compliance.audit],
+    audit,
+    notify,
     notifPrefs,
     toggleNotifPref: (k: string) => setNotifPrefs((prev) => ({ ...prev, [k]: !prev[k] })),
     resetDemo,

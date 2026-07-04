@@ -182,6 +182,8 @@ export interface NadirCtxValue {
 
   // phase 2 — audit + settings
   auditMerged: AuditEntry[];
+  audit: (text: string) => void;
+  notify: (text: string, type: "info" | "ok" | "warn") => void;
   notifPrefs: Record<string, boolean>;
   toggleNotifPref: (k: string) => void;
   resetDemo: () => void;

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero, Section } from "@/components/site/PageShell";
-import { MapPin, Mail, Phone, Calendar, Globe, Send, ShieldAlert } from "lucide-react";
-import styles from "@/components/nadir/nadir.module.css";
+import { ContactForm } from "@/components/site/ContactForm";
+import { MapPin, Globe, Calendar, ShieldAlert } from "lucide-react";
 
 export const metadata: Metadata = { title: "Contact — Nadir" };
 
@@ -85,33 +85,7 @@ export default function ContactPage() {
           {/* Form Card */}
           <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, padding: "36px 32px", alignSelf: "start" }}>
             <h3 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 26, margin: "0 0 20px", color: "#14181C" }}>Send an Inquiry</h3>
-            <form style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <div>
-                <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>INQUIRY TYPE *</label>
-                <select style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", background: "#FFFFFF" }}>
-                  <option>Enterprise Evaluation (Pilot Request)</option>
-                  <option>Active Customer Support Ticket</option>
-                  <option>Security &amp; Compliance Audit Inquiry</option>
-                  <option>Strategic Partnership Proposals</option>
-                  <option>Press / Media Inquiry</option>
-                </select>
-              </div>
-              <div>
-                <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>WORK EMAIL *</label>
-                <input type="email" required style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", background: "#FFFFFF" }} placeholder="you@company.com" />
-              </div>
-              <div>
-                <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>COMPANY NAME / INDUSTRY *</label>
-                <input type="text" required style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", background: "#FFFFFF" }} placeholder="e.g. Acme Aerospace" />
-              </div>
-              <div>
-                <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>MESSAGE *</label>
-                <textarea rows={5} required style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", resize: "vertical", background: "#FFFFFF" }} placeholder="Please describe your legacy database setups and target operational outcomes." />
-              </div>
-              <button type="button" className={styles.btnDark} style={{ background: "#14181C", color: "#FFFFFF", padding: "14px 28px", fontSize: 15, fontWeight: 600, border: "none", borderRadius: 8, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                Submit Inquiry <Send size={15} />
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </div>
       </Section>

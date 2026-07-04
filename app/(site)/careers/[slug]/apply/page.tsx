@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ROLES } from "@/lib/roles";
 import { Section } from "@/components/site/PageShell";
 import { ArrowLeft, Upload, FileText, CheckCircle } from "lucide-react";
+import { CareerApplyForm } from "@/components/site/CareerApplyForm";
 import styles from "@/components/nadir/nadir.module.css";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -46,81 +47,7 @@ export default async function ApplyPage({ params }: { params: Promise<{ slug: st
         <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 64 }}>
           {/* Main Form */}
           <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, padding: "36px 32px" }}>
-            <form style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-              {/* Step 1: Basics */}
-              <div>
-                <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 16, borderBottom: "1px solid rgba(20,24,28,0.08)", paddingBottom: 8 }}>
-                  01 / PERSONAL DETAILS
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>FULL NAME *</label>
-                    <input type="text" required style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", background: "#FFFFFF" }} placeholder="Jane Doe" />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>EMAIL ADDRESS *</label>
-                    <input type="email" required style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", background: "#FFFFFF" }} placeholder="jane@company.com" />
-                  </div>
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 16 }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>PHONE NUMBER</label>
-                    <input type="tel" style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", background: "#FFFFFF" }} placeholder="+1 (555) 000-0000" />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>LINKEDIN OR PORTFOLIO *</label>
-                    <input type="url" required style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", background: "#FFFFFF" }} placeholder="https://linkedin.com/in/..." />
-                  </div>
-                </div>
-              </div>
-
-              {/* Step 2: Resume */}
-              <div>
-                <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 16, borderBottom: "1px solid rgba(20,24,28,0.08)", paddingBottom: 8 }}>
-                  02 / RÉSUMÉ UPLOAD
-                </div>
-                <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>ATTACH RÉSUMÉ (PDF, DOCX) *</label>
-                {/* Styled drag & drop file uploader */}
-                <div style={{
-                  border: "2px dashed rgba(20,24,28,0.15)", borderRadius: 8, padding: "32px 20px",
-                  textAlign: "center", cursor: "pointer", background: "#FAFAF8",
-                  display: "flex", flexDirection: "column", alignItems: "center", gap: 10,
-                }}>
-                  <Upload size={24} style={{ color: "#7a848e" }} />
-                  <div>
-                    <span style={{ fontSize: 14, fontWeight: 600, color: "#14181C" }}>Drag and drop your file here,</span>
-                    <span style={{ fontSize: 14, color: "#5a646e" }}> or click to browse</span>
-                  </div>
-                  <div style={{ fontSize: 11.5, color: "#7a848e" }}>Maximum size: 10MB</div>
-                  <input type="file" accept=".pdf,.docx,.doc" style={{ display: "none" }} id="resume-upload" />
-                </div>
-              </div>
-
-              {/* Step 3: Questions */}
-              <div>
-                <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 16, borderBottom: "1px solid rgba(20,24,28,0.08)", paddingBottom: 8 }}>
-                  03 / QUESTIONNAIRE
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>
-                      WHY DO YOU WANT TO WORK AT NADIR? *
-                    </label>
-                    <textarea rows={4} required style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", resize: "vertical", background: "#FFFFFF" }} placeholder="Tell us why you are interested in this specific role and team." />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontSize: 11.5, fontWeight: 600, marginBottom: 8, color: "#5a646e", letterSpacing: "0.04em" }}>
-                      DESCRIBE A COMPLEX DATA OR SCHEMA ISSUE YOU HAVE DEALT WITH. *
-                    </label>
-                    <textarea rows={4} required style={{ width: "100%", padding: "12px 14px", fontSize: 14, border: "1px solid rgba(20,24,28,0.15)", borderRadius: 6, outline: "none", resize: "vertical", background: "#FFFFFF" }} placeholder="We deal with legacy schemas and database configurations daily. Share your experience." />
-                  </div>
-                </div>
-              </div>
-
-              <button type="button" className={styles.btnDark} style={{ background: "#14181C", color: "#FFFFFF", padding: "15px 32px", fontSize: 15, fontWeight: 600, border: "none", borderRadius: 8, cursor: "pointer", alignSelf: "flex-start", marginTop: 8 }}>
-                Submit Application
-              </button>
-            </form>
+            <CareerApplyForm />
           </div>
 
           {/* Sidebar Info */}
