@@ -5,6 +5,7 @@ import { OB_LABELS, SRC_TYPES } from "@/lib/constants";
 import { useNadir } from "./context";
 import DragDropMapper from "./DragDropMapper";
 import GenerativeOnboarding from "./GenerativeOnboarding";
+import PipelineDAG from "./PipelineDAG";
 import styles from "./nadir.module.css";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -255,6 +256,7 @@ export default function SourcesScreen() {
                 Connect another source
               </button>
             </div>
+            <PipelineDAG />
           </div>
         )}
       </div>

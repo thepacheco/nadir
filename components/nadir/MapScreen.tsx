@@ -9,13 +9,14 @@ import styles from "./nadir.module.css";
 import SiteMapper from "./SiteMapper";
 import Nadir3D from "./Nadir3D";
 import PipelineMapper from "./PipelineMapper";
+import IsoZoneMap from "./IsoZoneMap";
 
 export default function MapScreen() {
   const { co, alertsFull, activeCount, clockLabel } = useNadir();
   const [clickedBuilding, setClickedBuilding] = useState<number | null>(null);
   const [isQuerying, setIsQuerying] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
-  const [viewMode, setViewMode] = useState<"2D" | "3D">("3D");
+  const [viewMode, setViewMode] = useState<"ISO" | "2D" | "3D">("ISO");
   const [activeFilter, setActiveFilter] = useState<"ALL" | "CRITICAL" | "MAINTENANCE" | "SECURITY">("ALL");
 
   // If a building is clicked, we filter the alerts to simulate focus
@@ -68,6 +69,12 @@ export default function MapScreen() {
             ) : (
               <>
                 <button
+                  onClick={() => setViewMode("ISO")}
+                  style={{ padding: "4px 12px", fontSize: 11, fontWeight: 700, borderRadius: 4, cursor: "pointer", border: "none", background: viewMode === "ISO" ? "#FFFFFF" : "transparent", color: viewMode === "ISO" ? "#14181C" : "#7a848e", boxShadow: viewMode === "ISO" ? "0 2px 4px rgba(0,0,0,0.05)" : "none" }}
+                >
+                  2.5D Zones
+                </button>
+                <button
                   onClick={() => setViewMode("2D")}
                   style={{ padding: "4px 12px", fontSize: 11, fontWeight: 700, borderRadius: 4, cursor: "pointer", border: "none", background: viewMode === "2D" ? "#FFFFFF" : "transparent", color: viewMode === "2D" ? "#14181C" : "#7a848e", boxShadow: viewMode === "2D" ? "0 2px 4px rgba(0,0,0,0.05)" : "none" }}
                 >
@@ -96,6 +103,8 @@ export default function MapScreen() {
           
           {co.id === "staffing" ? (
             <PipelineMapper onBuildingClick={handleBuildingClick} />
+          ) : viewMode === "ISO" ? (
+            <IsoZoneMap onZoneClick={(z) => handleBuildingClick(z ? 0 : null)} />
           ) : viewMode === "2D" ? (
             <SiteMapper onBuildingClick={handleBuildingClick} />
           ) : (

@@ -4,12 +4,14 @@ import React from "react";
 import { RETICLE_CURSOR } from "@/lib/constants";
 import { PHASE2 } from "@/lib/phase2";
 import { useNadir } from "./context";
+import ProcessExplorer from "./ProcessExplorer";
 import styles from "./nadir.module.css";
 
 const TONE: Record<string, string> = { red: "#C7452F", amber: "#B47614", ok: "#15854F" };
 
 export default function GraphScreen() {
   const { co, gnodes, edges, selNodeView, childNodes, selChild, setSelChild, parentLabel, selNode, audit, notify } = useNadir();
+  const [view, setView] = React.useState<"process" | "model">("process");
   const childrenMap = PHASE2[co.id].children;
   const child = selChild !== null ? childNodes[selChild] : null;
 
@@ -46,8 +48,38 @@ export default function GraphScreen() {
     }, 1500);
   };
 
+  const viewTabs = (
+    <div style={{ display: "flex", gap: 2, padding: "8px 24px 0", background: "#F6F4EF", borderBottom: "1px solid rgba(20,24,28,0.08)", flex: "none" }}>
+      {([["process", "Process Overview"], ["model", "Object Model"]] as const).map(([id, label]) => (
+        <button
+          key={id}
+          onClick={() => setView(id)}
+          style={{
+            fontFamily: "inherit", fontSize: 13, fontWeight: 600, padding: "9px 16px", cursor: "pointer",
+            background: "transparent", border: "none",
+            color: view === id ? "#0E7C8A" : "#7a848e",
+            borderBottom: `2.5px solid ${view === id ? "#0E7C8A" : "transparent"}`,
+          }}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+
+  if (view === "process") {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+        {viewTabs}
+        <ProcessExplorer />
+      </div>
+    );
+  }
+
   return (
-    <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
+    <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+      {viewTabs}
+      <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
       <div style={{ flex: 1, minWidth: 0, position: "relative", overflow: "hidden", background: "#F6F4EF", cursor: RETICLE_CURSOR }}>
         <div style={{ position: "absolute", inset: 0, transform: child ? `scale(1.8)` : "none", transformOrigin: child ? `${child.x}% ${child.y}%` : "50% 50%", transition: "transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)" }}>
         <div style={{ position: "absolute", top: 18, left: 24, zIndex: 3 }}>
@@ -291,6 +323,7 @@ export default function GraphScreen() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

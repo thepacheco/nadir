@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from "fs";
 import path from "path";
-import { csvToSchema } from "@/lib/engine/csv";
+import { csvToSchema, parseCsv } from "@/lib/engine/csv";
 import { mapSchema } from "@/lib/engine/mapper";
 import { llmAvailable, refineMapping } from "@/lib/engine/llm";
 
@@ -15,6 +15,11 @@ const MAX_BYTES = 10 * 1024 * 1024; // 10 MB per upload; bigger belongs in a dir
 async function runPipeline(fileName: string, text: string) {
   const schema = csvToSchema(fileName, text);
   const mapping = await refineMapping(schema, mapSchema(schema));
+  // Full parsed rows ride along for demo surfaces (ticket board) that render
+  // the file's records directly. Sampling still governs what reaches any model.
+  const grid = parseCsv(text);
+  const header = grid[0] ?? [];
+  const data = grid.slice(1).map((r) => Object.fromEntries(header.map((h, i) => [h, r[i] ?? ""])));
   return {
     status: "success" as const,
     engine: mapping.engine,
@@ -22,6 +27,7 @@ async function runPipeline(fileName: string, text: string) {
     schema,
     objects: mapping.objects,
     wires: mapping.wires,
+    data,
   };
 }
 

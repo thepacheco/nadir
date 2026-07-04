@@ -191,6 +191,13 @@ export interface NadirCtxValue {
 
   activeRole: string;
   setActiveRole: (role: string) => void;
+
+  // stage-gated tickets (ARCHITECTURE §9.4): checklist state + stage overrides
+  // live here so the board survives navigation; every gate passage is audited.
+  ticketChecks: Record<string, Record<string, boolean>>;
+  toggleTicketCheck: (ticketId: string, req: string) => void;
+  ticketStatusOverride: Record<string, string>;
+  advanceTicket: (ticketId: string, to: string, gateDesc: string) => void;
 }
 
 export const NadirContext = createContext<NadirCtxValue | null>(null);

@@ -99,6 +99,8 @@ export default function Workspace() {
   const [graphExpanded, setGraphExpanded] = useState(true);
   const [notifPrefs, setNotifPrefs] = useState<Record<string, boolean>>({ critical: true, digest: true, approvals: true, quality: true });
   const [activeRole, setActiveRole] = useState<string>("IT Ops");
+  const [ticketChecks, setTicketChecks] = useState<Record<string, Record<string, boolean>>>({});
+  const [ticketStatusOverride, setTicketStatusOverride] = useState<Record<string, string>>({});
   const approvalTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (approvalTimer.current) clearTimeout(approvalTimer.current); }, []);
 
@@ -576,6 +578,19 @@ export default function Workspace() {
 
     activeRole,
     setActiveRole,
+
+    ticketChecks,
+    toggleTicketCheck: (ticketId: string, req: string) => {
+      const nowChecked = !ticketChecks[ticketId]?.[req];
+      setTicketChecks((prev) => ({ ...prev, [ticketId]: { ...(prev[ticketId] || {}), [req]: nowChecked } }));
+      audit(`Ticket ${ticketId} — requirement ${nowChecked ? "completed" : "reopened"}: "${req}".`);
+    },
+    ticketStatusOverride,
+    advanceTicket: (ticketId: string, to: string, gateDesc: string) => {
+      setTicketStatusOverride((prev) => ({ ...prev, [ticketId]: to }));
+      audit(`Ticket ${ticketId} advanced to ${to.replace("_", " ")} — stage checklist complete (${gateDesc}).`);
+      notify(`Ticket ${ticketId} moved to ${to.replace("_", " ")}`, "ok");
+    },
   };
 
   return (

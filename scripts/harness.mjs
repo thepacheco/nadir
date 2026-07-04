@@ -61,6 +61,28 @@ ok(sm.objects[0].reasoning.some((r) => r.includes("empty")), "half-empty columns
 
 ok(valueOverlap(["a","b","c"], ["b","c","d"]) > 0.6 && valueOverlap(["a"], ["z"]) === 0, "valueOverlap sane");
 
+console.log("— process-flow engine (Process Explorer computation) —");
+const { generateEventLog, computeFlow, DEFAULT_EXPECTED_PATH } = await import("../lib/flow.ts");
+const log1 = generateEventLog("hartwell");
+const log2 = generateEventLog("hartwell");
+ok(JSON.stringify(log1) === JSON.stringify(log2), "event generation is deterministic (same company → same log)");
+const flow = computeFlow(log1, DEFAULT_EXPECTED_PATH);
+ok(flow.totalObjects === 180, `180 objects tracked (got ${flow.totalObjects})`);
+ok(flow.states.reduce((n, s) => n + s.current, 0) === flow.totalObjects, "every object is in exactly one current state");
+const outStates = [...new Set(flow.transitions.map((t) => t.from))];
+ok(outStates.every((s) => {
+  const outs = flow.transitions.filter((t) => t.from === s);
+  const totalPct = outs.reduce((n, t) => n + t.pct, 0);
+  return totalPct >= 97 && totalPct <= 103; // rounding tolerance
+}), "outgoing transition percentages sum to ~100% per state");
+ok(flow.states.filter((s) => s.isBottleneck).length === 1, "exactly one bottleneck is identified");
+ok(flow.states.find((s) => s.isBottleneck)?.id === "Assigned", "bottleneck is computed from dwell times (Assigned)");
+ok(flow.transitions.some((t) => t.from === "Open" && t.to === "Submitted" && t.expected), "expected-path edges are flagged");
+ok(flow.transitions.some((t) => !t.expected && t.to === "Cancelled"), "off-path cancellations are captured");
+ok(flow.deviationSentences.length > 0 && flow.deviationSentences[0].includes("bottleneck"), "plain-English deviation findings are computed");
+const flowNoAssign = computeFlow(log1, ["Open", "Submitted", "Dispositioned", "Closed"]);
+ok(flowNoAssign.transitions.find((t) => t.from === "Submitted" && t.to === "Assigned")?.expected === false, "changing the expected path reclassifies edges");
+
 console.log("— BOM / micro-costing engine (runs on a scratch copy of prisma/dev.db) —");
 const scratch = path.resolve("prisma/.harness.db");
 copyFileSync(path.resolve("prisma/dev.db"), scratch);

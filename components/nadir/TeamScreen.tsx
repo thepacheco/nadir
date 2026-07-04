@@ -4,27 +4,44 @@ import { useState } from "react";
 import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
-export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
-  const { co, people, approver, ingestedData, selPersonView, thread, msgSent, onSendMsg, audit, notify } = useNadir();
-  const [selectedDept, setSelectedDept] = useState<string | null>(null);
+// Stage gates (ARCHITECTURE §9.4): a ticket cannot advance until the
+// requirements for its current stage are checked off. Gates are per-stage,
+// evidence-style requirements; every check and every advancement is audited.
+const STAGE_GATES: Record<string, { next: string; nextLabel: string; reqs: string[] }> = {
+  OPEN: { next: "IN_PROGRESS", nextLabel: "IN PROGRESS", reqs: ["Owner confirmed on shift", "Evidence attached to ticket"] },
+  IN_PROGRESS: { next: "CLOSED", nextLabel: "CLOSED", reqs: ["Resolution notes written", "Supervisor sign-off"] },
+};
 
-  const safeData = Array.isArray(ingestedData) ? ingestedData : [];
+export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
+  const { co, people, approver, ingestedData, selPersonView, thread, msgSent, onSendMsg, audit, notify, ticketChecks, toggleTicketCheck, ticketStatusOverride, advanceTicket } = useNadir();
+  const [selectedDept, setSelectedDept] = useState<string | null>(null);
+  const [selTicketId, setSelTicketId] = useState<string | null>(null);
+
+  // Ingested CSV rows are string→string maps (see /api/ingest).
+  const safeData = (Array.isArray(ingestedData) ? ingestedData : []) as Record<string, string>[];
+  const effStatus = (t: Record<string, string>) => ticketStatusOverride[t.ticket_id] ?? t.status;
 
   // Derive unique departments from ingested data
   const departments = Array.from(new Set(safeData.map(d => d.department).filter(Boolean))) as string[];
-  
+
   // Filter tickets by selected department
-  const visibleTickets = selectedDept 
+  const visibleTickets = selectedDept
     ? safeData.filter(d => d.department === selectedDept)
     : safeData;
 
   const ticketsByStatus = {
-    OPEN: visibleTickets.filter(t => t.status === 'OPEN'),
-    IN_PROGRESS: visibleTickets.filter(t => t.status === 'IN_PROGRESS'),
-    CLOSED: visibleTickets.filter(t => t.status === 'CLOSED'),
+    OPEN: visibleTickets.filter(t => effStatus(t) === 'OPEN'),
+    IN_PROGRESS: visibleTickets.filter(t => effStatus(t) === 'IN_PROGRESS'),
+    CLOSED: visibleTickets.filter(t => effStatus(t) === 'CLOSED'),
   };
 
-  const [escalateTicket, setEscalateTicket] = useState<any | null>(null);
+  const selTicket = selTicketId ? safeData.find(t => t.ticket_id === selTicketId) ?? null : null;
+  const selStatus = selTicket ? effStatus(selTicket) : null;
+  const selGate = selStatus ? STAGE_GATES[selStatus] : null;
+  const selChecks = selTicket ? ticketChecks[selTicket.ticket_id] || {} : {};
+  const selDone = selGate ? selGate.reqs.filter(r => selChecks[r]).length : 0;
+
+  const [escalateTicket, setEscalateTicket] = useState<(Record<string, string> & { manager: string }) | null>(null);
   const [showChecklistBuilder, setShowChecklistBuilder] = useState(false);
   const [showInbox, setShowInbox] = useState(mode === "inbox");
 
@@ -169,20 +186,31 @@ export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
               {selectedDept ? `${selectedDept} Tickets` : "Global Ticket Board"}
             </div>
             
-            <div style={{ display: 'flex', gap: 20, flex: 1, minHeight: 0 }}>
+            <div style={{ display: 'flex', gap: 16, flex: 1, minHeight: 0 }}>
               {/* Columns */}
               {['OPEN', 'IN_PROGRESS', 'CLOSED'].map((status) => {
                 const colTickets = ticketsByStatus[status as keyof typeof ticketsByStatus];
+                const gate = STAGE_GATES[status];
                 return (
-                  <div key={status} style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'rgba(20,24,28,0.03)', borderRadius: 8, padding: 12 }}>
-                    <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 700, color: "#7a848e", marginBottom: 12 }}>
+                  <div key={status} style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', background: 'rgba(20,24,28,0.03)', borderRadius: 8, padding: 12 }}>
+                    <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, fontWeight: 700, color: "#7a848e", marginBottom: 4 }}>
                       {status.replace('_', ' ')} ({colTickets.length})
+                    </div>
+                    <div style={{ fontSize: 10, color: "#9aa2ab", marginBottom: 10, lineHeight: 1.4 }}>
+                      {gate ? `${gate.reqs.length} requirements gate the move to ${gate.nextLabel}` : "Terminal — audit trail retained"}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, overflowY: 'auto' }}>
                       {colTickets.map(t => {
                         const ticketPerson = people.find(p => p.name.includes(t.owner.split(' ')[0]));
+                        const checks = ticketChecks[t.ticket_id] || {};
+                        const done = gate ? gate.reqs.filter(r => checks[r]).length : 0;
+                        const sel = selTicketId === t.ticket_id;
                         return (
-                          <div key={t.ticket_id} style={{ background: '#FFF', padding: 12, borderRadius: 6, border: '1px solid rgba(20,24,28,0.1)', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                          <div
+                            key={t.ticket_id}
+                            onClick={() => setSelTicketId(sel ? null : t.ticket_id)}
+                            style={{ background: '#FFF', padding: 12, borderRadius: 6, border: `1.5px solid ${sel ? '#0E7C8A' : 'rgba(20,24,28,0.1)'}`, boxShadow: sel ? '0 6px 18px -6px rgba(14,124,138,0.4)' : '0 2px 8px rgba(0,0,0,0.04)', cursor: 'pointer' }}
+                          >
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                               <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: '#0E7C8A', background: 'rgba(14,124,138,0.1)', padding: '2px 6px', borderRadius: 4 }}>{t.ticket_id}</span>
                               <span style={{ fontSize: 10, fontWeight: 700, color: t.priority === 'CRITICAL' ? '#C7452F' : t.priority === 'HIGH' ? '#B47614' : '#5a646e' }}>
@@ -195,16 +223,20 @@ export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
                               <span>{t.location}</span>
                             </div>
 
-                            {/* System-Generated Spot Check Mock */}
-                            {t.priority === 'CRITICAL' && (
-                              <div style={{ background: "rgba(180,118,20,0.06)", borderLeft: "2px solid #B47614", padding: "6px 8px", fontSize: 10, marginBottom: 8, borderRadius: "0 4px 4px 0", color: "#8a5a10" }}>
-                                <strong>System Spot-Check:</strong> Verify actuator lock (based on prior anomaly).
+                            {gate && (
+                              <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
+                                {gate.reqs.map(r => (
+                                  <span key={r} title={r} style={{ width: 22, height: 5, borderRadius: 2, background: checks[r] ? "#15854F" : "rgba(20,24,28,0.12)" }} />
+                                ))}
+                                <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 9.5, color: done === gate.reqs.length ? "#15854F" : "#9aa2ab" }}>
+                                  {done}/{gate.reqs.length}
+                                </span>
                               </div>
                             )}
 
                             {status !== 'CLOSED' && (
                               <button
-                                onClick={() => setEscalateTicket({ ...t, manager: ticketPerson?.manager || approver.name })}
+                                onClick={(e) => { e.stopPropagation(); setEscalateTicket({ ...t, manager: ticketPerson?.manager || approver.name }); }}
                                 style={{ width: "100%", padding: "4px 0", fontSize: 10, fontWeight: 700, color: "#C7452F", background: "rgba(199,69,47,0.05)", border: "1px solid rgba(199,69,47,0.1)", borderRadius: 4, cursor: "pointer" }}
                               >
                                 Escalate ↑
@@ -217,6 +249,71 @@ export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
                   </div>
                 )
               })}
+
+              {/* Stage-gate detail panel */}
+              {selTicket && (
+                <div style={{ width: 300, flex: "none", background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 8, padding: 18, overflowY: "auto", animation: "nadirFadeUp 0.25s ease", alignSelf: "stretch" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                    <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#0E7C8A" }}>{selTicket.ticket_id}</span>
+                    <button onClick={() => setSelTicketId(null)} style={{ background: "none", border: "none", fontSize: 17, cursor: "pointer", color: "#9aa2ab" }}>×</button>
+                  </div>
+                  <div style={{ fontSize: 14.5, fontWeight: 700, marginBottom: 6, lineHeight: 1.35 }}>{selTicket.description}</div>
+                  <div style={{ fontSize: 11.5, color: "#7a848e", marginBottom: 14 }}>
+                    {selTicket.department} · {selTicket.location} · owner {selTicket.owner}
+                  </div>
+
+                  {selGate ? (
+                    <>
+                      <div style={{ background: "#FCFBF9", border: "1px solid rgba(20,24,28,0.08)", borderRadius: 8, padding: "10px 12px", marginBottom: 12 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                          <span style={{ fontSize: 12, fontWeight: 700 }}>Confirmation checklist</span>
+                          <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, color: selDone === selGate.reqs.length ? "#15854F" : "#B47614" }}>
+                            {selDone}/{selGate.reqs.length} complete
+                          </span>
+                        </div>
+                        <div style={{ fontSize: 11, color: "#7a848e", lineHeight: 1.45 }}>
+                          Complete the requirements to move this ticket to <strong style={{ color: "#0E7C8A" }}>{selGate.nextLabel}</strong>. Every check is written to the audit trail.
+                        </div>
+                      </div>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+                        {selGate.reqs.map(r => {
+                          const on = !!selChecks[r];
+                          return (
+                            <button
+                              key={r}
+                              onClick={() => toggleTicketCheck(selTicket.ticket_id, r)}
+                              style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: "inherit", textAlign: "left", padding: "10px 12px", background: on ? "rgba(21,133,79,0.06)" : "#FFFFFF", border: `1.5px solid ${on ? "rgba(21,133,79,0.45)" : "rgba(20,24,28,0.14)"}`, borderRadius: 8, cursor: "pointer" }}
+                            >
+                              <span style={{ width: 16, height: 16, borderRadius: 4, flex: "none", display: "flex", alignItems: "center", justifyContent: "center", background: on ? "#15854F" : "transparent", border: `1.5px solid ${on ? "#15854F" : "rgba(20,24,28,0.3)"}`, color: "#FFF", fontSize: 10, fontWeight: 700 }}>
+                                {on ? "✓" : ""}
+                              </span>
+                              <span style={{ fontSize: 12.5, fontWeight: 600, color: on ? "#0f6b3f" : "#14181C" }}>{r}</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <button
+                        disabled={selDone < selGate.reqs.length}
+                        onClick={() => { advanceTicket(selTicket.ticket_id, selGate.next, selGate.reqs.join("; ")); setSelTicketId(null); }}
+                        style={{
+                          width: "100%", fontFamily: "inherit", fontSize: 13, fontWeight: 700, padding: "11px 0", borderRadius: 8, border: "none",
+                          background: selDone === selGate.reqs.length ? "#0E7C8A" : "rgba(20,24,28,0.08)",
+                          color: selDone === selGate.reqs.length ? "#FFFFFF" : "#b7bec5",
+                          cursor: selDone === selGate.reqs.length ? "pointer" : "default",
+                        }}
+                      >
+                        {selDone === selGate.reqs.length ? `Advance to ${selGate.nextLabel} →` : `${selGate.reqs.length - selDone} requirement${selGate.reqs.length - selDone > 1 ? "s" : ""} remaining`}
+                      </button>
+                    </>
+                  ) : (
+                    <div style={{ fontSize: 12.5, color: "#15854F", background: "rgba(21,133,79,0.06)", border: "1px solid rgba(21,133,79,0.3)", borderRadius: 8, padding: "10px 12px" }}>
+                      ✓ Closed. The full checklist history and every gate passage is preserved in the audit trail.
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </>
         )}
