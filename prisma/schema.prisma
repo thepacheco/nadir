@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  industry  String
+  createdAt DateTime @default(now())
+  
+  // Relations
+  items     Item[]
+  bids      Bid[]
+}
+
+model Item {
+  id          String   @id @default(cuid())
+  companyId   String
+  company     Company  @relation(fields: [companyId], references: [id])
+  
+  name        String
+  type        String   // e.g. "FINISHED_GOOD", "RAW_MATERIAL", "LABOR", "PACKAGING"
+  baseCost    Float?   // Only applies if it's a raw material or labor (e.g., $0.50 per apple)
+  unit        String   // e.g. "slice", "hour", "unit"
+  
+  // For recursive BOM
+  components  BOM[]    @relation("ParentItem")
+  usedIn      BOM[]    @relation("ChildItem")
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model BOM {
+  id          String   @id @default(cuid())
+  
+  parentId    String
+  parent      Item     @relation("ParentItem", fields: [parentId], references: [id])
+  
+  childId     String
+  child       Item     @relation("ChildItem", fields: [childId], references: [id])
+  
+  quantity    Float    // How many units of child are needed for 1 unit of parent
+}
+
+model Bid {
+  id              String   @id @default(cuid())
+  companyId       String
+  company         Company  @relation(fields: [companyId], references: [id])
+  
+  clientName      String
+  description     String
+  
+  predictedCost   Float
+  appliedMargin   Float    // e.g. 0.20 for 20%
+  finalBidPrice   Float
+  
+  createdAt       DateTime @default(now())
+}

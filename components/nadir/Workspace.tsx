@@ -453,7 +453,7 @@ export default function Workspace() {
   });
 
   // ---- toast view ----
-  const toastView: DecoratedAlert | null = toast
+  const toastView: DecoratedAlert | null = (toast && obStep === 5)
     ? { ...decorateAlert(toast) }
     : null;
 
@@ -558,7 +558,13 @@ export default function Workspace() {
     ingestedData,
 
     toast: toastView,
-    dismissToast: () => { dismissCurrentToast(toast); setToast(null); },
+    dismissToast: () => {
+      dismissCurrentToast(toast);
+      if (toast) {
+        notify(`Alert dismissed: ${toast.title}`, "warn");
+      }
+      setToast(null);
+    },
     toastToMap: () => { dismissCurrentToast(toast); setScreen("map"); setToast(null); },
     toastToChat: () => {
       const q = toast?.q;

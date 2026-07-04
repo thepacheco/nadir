@@ -12,6 +12,7 @@ export default function Toast() {
         position: "absolute", left: 22, bottom: 22, width: 372, zIndex: 40, background: "#FFFFFF",
         border: "1px solid rgba(20,24,28,0.14)", borderLeft: `4px solid ${toast.color}`, borderRadius: 12,
         boxShadow: "0 24px 60px -20px rgba(20,30,40,0.4)", padding: "16px 18px", animation: "nadirToastIn 0.35s ease",
+        opacity: 0.9,
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 8 }}>

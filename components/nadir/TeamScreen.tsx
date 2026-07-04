@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
-export default function TeamScreen() {
+export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
   const { co, people, approver, ingestedData, selPersonView, thread, msgSent, onSendMsg, audit, notify } = useNadir();
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
 
@@ -26,14 +26,18 @@ export default function TeamScreen() {
 
   const [escalateTicket, setEscalateTicket] = useState<any | null>(null);
   const [showChecklistBuilder, setShowChecklistBuilder] = useState(false);
-  const [showInbox, setShowInbox] = useState(false);
+  const [showInbox, setShowInbox] = useState(mode === "inbox");
+
+  // Keep showInbox in sync if mode changes
+  if (mode === "inbox" && !showInbox) setShowInbox(true);
+  if (mode === "tickets" && showInbox) setShowInbox(false);
 
   return (
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
       {/* LEFT: Org Tree */}
       <div style={{ width: 280, flex: "none", borderRight: "1px solid rgba(20,24,28,0.1)", overflowY: "auto", padding: 20, background: "#FCFBF9" }}>
-        <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 3 }}>Unified Org Tree</div>
-        <div style={{ fontSize: 12.5, color: "#7a848e", marginBottom: 16 }}>Route and track tickets across departments.</div>
+        <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 3 }}>{mode === "tickets" ? "Ticketing System" : "Team Inbox"}</div>
+        <div style={{ fontSize: 12.5, color: "#7a848e", marginBottom: 16 }}>{mode === "tickets" ? "Route and track tickets across departments." : "Communicate with your team."}</div>
         
         <div style={{ display: "flex", flexDirection: "column", gap: 2, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11.5 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "3px 0" }}>
@@ -42,52 +46,60 @@ export default function TeamScreen() {
             <span style={{ fontSize: 9, color: "#8a5a10" }}>C-SUITE</span>
           </div>
 
-          <button 
-            onClick={() => { setSelectedDept(null); setShowInbox(false); }}
-            style={{ 
-              fontFamily: 'inherit', textAlign: 'left', padding: '6px 12px', marginTop: 12,
-              background: (selectedDept === null && !showInbox) ? 'rgba(14,124,138,0.1)' : 'transparent',
-              color: (selectedDept === null && !showInbox) ? '#0E7C8A' : '#5a646e', border: 'none', borderRadius: 4, cursor: 'pointer',
-              fontWeight: 600
-            }}
-          >
-            All Departments
-          </button>
+          {mode === "tickets" && (
+            <>
+              <button 
+                onClick={() => { setSelectedDept(null); setShowInbox(false); }}
+                style={{ 
+                  fontFamily: 'inherit', textAlign: 'left', padding: '6px 12px', marginTop: 12,
+                  background: (selectedDept === null && !showInbox) ? 'rgba(14,124,138,0.1)' : 'transparent',
+                  color: (selectedDept === null && !showInbox) ? '#0E7C8A' : '#5a646e', border: 'none', borderRadius: 4, cursor: 'pointer',
+                  fontWeight: 600
+                }}
+              >
+                All Departments
+              </button>
 
-          {departments.map((dept) => (
-            <button 
-              key={dept}
-              onClick={() => { setSelectedDept(dept); setShowInbox(false); }}
-              style={{ 
-                fontFamily: 'inherit', textAlign: 'left', padding: '6px 12px', 
-                background: (selectedDept === dept && !showInbox) ? 'rgba(14,124,138,0.1)' : 'transparent',
-                color: (selectedDept === dept && !showInbox) ? '#0E7C8A' : '#5a646e', border: 'none', borderRadius: 4, cursor: 'pointer'
-              }}
-            >
-              └─ {dept}
-            </button>
-          ))}
+              {departments.map((dept) => (
+                <button 
+                  key={dept}
+                  onClick={() => { setSelectedDept(dept); setShowInbox(false); }}
+                  style={{ 
+                    fontFamily: 'inherit', textAlign: 'left', padding: '6px 12px', 
+                    background: (selectedDept === dept && !showInbox) ? 'rgba(14,124,138,0.1)' : 'transparent',
+                    color: (selectedDept === dept && !showInbox) ? '#0E7C8A' : '#5a646e', border: 'none', borderRadius: 4, cursor: 'pointer'
+                  }}
+                >
+                  └─ {dept}
+                </button>
+              ))}
+            </>
+          )}
           
-          <div style={{ marginTop: 24, fontSize: 10, color: "#9aa2ab", fontWeight: 700, letterSpacing: "0.05em", paddingLeft: 12 }}>TEAM INBOX</div>
-          {people.map((p, i) => (
-            <button
-              key={p.name}
-              onClick={() => { p.onSelect(); setShowInbox(true); setSelectedDept(null); }}
-              style={{
-                display: "flex", alignItems: "center", gap: 8, fontFamily: 'inherit', textAlign: 'left', padding: '6px 12px',
-                background: (p.active && showInbox) ? 'rgba(14,124,138,0.1)' : 'transparent',
-                color: (p.active && showInbox) ? '#0E7C8A' : '#14181C', border: 'none', borderRadius: 4, cursor: 'pointer'
-              }}
-            >
-              <div style={{ width: 18, height: 18, borderRadius: "50%", background: p.avBg, color: p.avFg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700 }}>
-                {p.name.charAt(0)}
-              </div>
-              <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span>{p.name.split(" ")[0]}</span>
-                {(p.unread ?? 0) > 0 && <span style={{ background: "#C7452F", color: "#FFF", fontSize: 9, padding: "2px 6px", borderRadius: 10, fontWeight: 700 }}>{p.unread}</span>}
-              </div>
-            </button>
-          ))}
+          {mode === "inbox" && (
+            <>
+              <div style={{ marginTop: 24, fontSize: 10, color: "#9aa2ab", fontWeight: 700, letterSpacing: "0.05em", paddingLeft: 12 }}>TEAM INBOX</div>
+              {people.map((p, i) => (
+                <button
+                  key={p.name}
+                  onClick={() => { p.onSelect(); setShowInbox(true); setSelectedDept(null); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 8, fontFamily: 'inherit', textAlign: 'left', padding: '6px 12px',
+                    background: (p.active && showInbox) ? 'rgba(14,124,138,0.1)' : 'transparent',
+                    color: (p.active && showInbox) ? '#0E7C8A' : '#14181C', border: 'none', borderRadius: 4, cursor: 'pointer'
+                  }}
+                >
+                  <div style={{ width: 18, height: 18, borderRadius: "50%", background: p.avBg, color: p.avFg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700 }}>
+                    {p.name.charAt(0)}
+                  </div>
+                  <div style={{ flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span>{p.name.split(" ")[0]}</span>
+                    {(p.unread ?? 0) > 0 && <span style={{ background: "#C7452F", color: "#FFF", fontSize: 9, padding: "2px 6px", borderRadius: 10, fontWeight: 700 }}>{p.unread}</span>}
+                  </div>
+                </button>
+              ))}
+            </>
+          )}
 
           <button
             onClick={() => setShowChecklistBuilder(true)}

@@ -29,8 +29,10 @@ function NavIcon({ id, color }: { id: string; color: string }) {
       return <svg {...common}><path d="M8 14s4.5-4.2 4.5-7.5a4.5 4.5 0 1 0-9 0C3.5 9.8 8 14 8 14z" /><circle cx="8" cy="6.5" r="1.6" /></svg>;
     case "graph": // linked nodes
       return <svg {...common}><circle cx="3.5" cy="12.5" r="1.8" /><circle cx="8" cy="4" r="1.8" /><circle cx="12.5" cy="11" r="1.8" /><path d="M4.6 11.1 7 5.7M9.3 5.3l2.3 4.2M5.3 12.3l5.4-.9" /></svg>;
-    case "team": // two people
-      return <svg {...common}><circle cx="5.5" cy="5.5" r="2" /><path d="M1.8 13.5c0-2 1.7-3.4 3.7-3.4s3.7 1.4 3.7 3.4" /><circle cx="11.5" cy="6" r="1.6" /><path d="M10.5 10.4c2.1-.2 3.7 1.2 3.7 3.1" /></svg>;
+    case "inbox": // inbox envelope/tray
+      return <svg {...common}><polyline points="2 6 8 11 14 6"/><rect x="2" y="4" width="12" height="8" rx="1"/></svg>;
+    case "tickets": // ticket
+      return <svg {...common}><path d="M2 5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V5z"/></svg>;
     case "depts": // org chart
       return <svg {...common}><rect x="5.2" y="1.8" width="5.6" height="3.4" rx="0.8" /><rect x="1.2" y="10.8" width="5.2" height="3.4" rx="0.8" /><rect x="9.6" y="10.8" width="5.2" height="3.4" rx="0.8" /><path d="M8 5.2v2.6M8 7.8H3.8v3M8 7.8h4.2v3" /></svg>;
     case "plan": // kanban columns
@@ -264,12 +266,12 @@ export default function AppShell() {
             let badgeFg = "#C7452F";
             if (sc.id === "comp") badge = String(co.compliance.tiles[0].val);
             if (sc.id === "map") badge = String(co.alerts.length);
-            if (sc.id === "team" && unreadTotal) { badge = String(unreadTotal); badgeBg = "rgba(14,124,138,0.12)"; badgeFg = "#0E7C8A"; }
+            if (sc.id === "inbox" && unreadTotal) { badge = String(unreadTotal); badgeBg = "rgba(14,124,138,0.12)"; badgeFg = "#0E7C8A"; }
             if (sc.id === "depts") {
               const red = ctx.departments.filter((d) => d.status === "red").length;
               if (red) badge = String(red);
             }
-            const locked = ctx.obStep < 5 && sc.id !== "sources" && sc.id !== "chat";
+            const locked = false;
             return (
               <button
                 key={sc.id}
@@ -290,7 +292,7 @@ export default function AppShell() {
                   <span style={{ marginLeft: "auto", fontSize: 12, color: "#9aa2ab" }}>🔒</span>
                 )}
                 {!locked && badge && (
-                  <span style={{ marginLeft: "auto", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, background: badgeBg, color: badgeFg, padding: "1px 7px", borderRadius: 20 }}>
+                  <span style={{ marginLeft: "auto", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, background: badgeBg, color: badgeFg, padding: "1px 7px", borderRadius: 20, animation: "nadirBadgePop 0.4s ease-out" }}>
                     {badge}
                   </span>
                 )}
@@ -307,7 +309,8 @@ export default function AppShell() {
           {screen === "chat" && <ChatScreen />}
           {screen === "map" && <MapScreen />}
           {screen === "graph" && <GraphScreen />}
-          {screen === "team" && <TeamScreen />}
+          {screen === "inbox" && <TeamScreen mode="inbox" />}
+          {screen === "tickets" && <TeamScreen mode="tickets" />}
           {screen === "depts" && <DepartmentsScreen />}
           {screen === "plan" && <PlannerScreen />}
           {screen === "comp" && <ComplianceScreen />}
