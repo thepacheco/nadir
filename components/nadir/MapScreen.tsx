@@ -7,12 +7,16 @@ import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
 import SiteMapper from "./SiteMapper";
+import Nadir3D from "./Nadir3D";
+import PipelineMapper from "./PipelineMapper";
 
 export default function MapScreen() {
   const { co, alertsFull, activeCount, clockLabel } = useNadir();
   const [clickedBuilding, setClickedBuilding] = useState<number | null>(null);
   const [isQuerying, setIsQuerying] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
+  const [viewMode, setViewMode] = useState<"2D" | "3D">("3D");
+  const [activeFilter, setActiveFilter] = useState<"ALL" | "CRITICAL" | "MAINTENANCE" | "SECURITY">("ALL");
 
   // If a building is clicked, we filter the alerts to simulate focus
   const handleBuildingClick = (idx: number | null) => {
@@ -22,15 +26,64 @@ export default function MapScreen() {
     }
     setClickedBuilding(idx);
   };
-  const filteredAlerts = clickedBuilding !== null 
+  
+  const filteredAlerts = (clickedBuilding !== null 
     ? alertsFull.slice(0, 1) // Just mock filtering to 1 alert for the demo
-    : alertsFull;
+    : alertsFull
+  ).filter(a => activeFilter === "ALL" || (activeFilter === "CRITICAL" && a.color === "#C7452F") || (activeFilter === "MAINTENANCE" && a.title.includes("Maintenance")) || (activeFilter === "SECURITY" && a.title.includes("Security")));
 
   const filteredCount = clickedBuilding !== null ? filteredAlerts.length : activeCount;
 
   return (
     <div className={styles.mobileStack} style={{ display: "flex", flex: 1, minHeight: 0 }}>
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", minHeight: 0, position: "relative" }}>
+        
+        {/* FILTERS & TOGGLES */}
+        <div style={{ padding: "12px 16px", background: "#FCFBF9", borderBottom: "1px solid rgba(20,24,28,0.1)", display: "flex", gap: 16, alignItems: "center", flex: "none" }}>
+          <div style={{ display: "flex", gap: 8, flex: 1 }}>
+            {["ALL", "CRITICAL", "MAINTENANCE", "SECURITY"].map((f) => (
+              <button
+                key={f}
+                onClick={() => setActiveFilter(f as any)}
+                style={{
+                  fontFamily: "inherit", fontSize: 11, fontWeight: 700, padding: "6px 12px", borderRadius: 20, cursor: "pointer",
+                  background: activeFilter === f ? "rgba(14,124,138,0.1)" : "transparent",
+                  color: activeFilter === f ? "#0E7C8A" : "#7a848e",
+                  border: `1px solid ${activeFilter === f ? "rgba(14,124,138,0.3)" : "rgba(20,24,28,0.1)"}`
+                }}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+          
+          <div style={{ display: "flex", background: "rgba(20,24,28,0.06)", borderRadius: 6, padding: 2 }}>
+            {co.id === "staffing" ? (
+              <button
+                onClick={() => setViewMode("2D")} // We can just overload 2D mode to be pipeline for now
+                style={{ padding: "4px 12px", fontSize: 11, fontWeight: 700, borderRadius: 4, cursor: "pointer", border: "none", background: "#FFFFFF", color: "#14181C", boxShadow: "0 2px 4px rgba(0,0,0,0.05)" }}
+              >
+                Pipeline View
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => setViewMode("2D")}
+                  style={{ padding: "4px 12px", fontSize: 11, fontWeight: 700, borderRadius: 4, cursor: "pointer", border: "none", background: viewMode === "2D" ? "#FFFFFF" : "transparent", color: viewMode === "2D" ? "#14181C" : "#7a848e", boxShadow: viewMode === "2D" ? "0 2px 4px rgba(0,0,0,0.05)" : "none" }}
+                >
+                  2D Blueprint
+                </button>
+                <button
+                  onClick={() => setViewMode("3D")}
+                  style={{ padding: "4px 12px", fontSize: 11, fontWeight: 700, borderRadius: 4, cursor: "pointer", border: "none", background: viewMode === "3D" ? "#FFFFFF" : "transparent", color: viewMode === "3D" ? "#14181C" : "#7a848e", boxShadow: viewMode === "3D" ? "0 2px 4px rgba(0,0,0,0.05)" : "none" }}
+                >
+                  3D Site
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "rgba(20,24,28,0.08)", borderBottom: "1px solid rgba(20,24,28,0.08)", flex: "none" }}>
           {co.kpis.map((k) => (
             <div key={k.label} style={{ background: "#FFFFFF", padding: "10px 14px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
@@ -40,7 +93,14 @@ export default function MapScreen() {
           ))}
         </div>
         <div style={{ flex: 1, minHeight: 0, position: "relative", background: "#F3F1EC", cursor: RETICLE_CURSOR }}>
-          <SiteMapper onBuildingClick={handleBuildingClick} />
+          
+          {co.id === "staffing" ? (
+            <PipelineMapper onBuildingClick={handleBuildingClick} />
+          ) : viewMode === "2D" ? (
+            <SiteMapper onBuildingClick={handleBuildingClick} />
+          ) : (
+            <Nadir3D onBuildingClick={handleBuildingClick} clickedBuilding={clickedBuilding} />
+          )}
           
           {!isPanelOpen && (
             <button

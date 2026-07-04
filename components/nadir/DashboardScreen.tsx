@@ -6,17 +6,19 @@ import styles from "./nadir.module.css";
 export default function DashboardScreen() {
   const { ingestedData } = useNadir();
 
-  const totalTickets = ingestedData.length;
-  const openTickets = ingestedData.filter(d => d.status === 'OPEN').length;
-  const closedTickets = ingestedData.filter(d => d.status === 'CLOSED').length;
-  const criticalTickets = ingestedData.filter(d => d.priority === 'CRITICAL').length;
+  const safeData = Array.isArray(ingestedData) ? ingestedData : [];
+
+  const totalTickets = safeData.length;
+  const openTickets = safeData.filter(d => d.status === 'OPEN').length;
+  const closedTickets = safeData.filter(d => d.status === 'CLOSED').length;
+  const criticalTickets = safeData.filter(d => d.priority === 'CRITICAL').length;
 
   // Group by department
-  const depts = Array.from(new Set(ingestedData.map(d => d.department).filter(Boolean))) as string[];
+  const depts = Array.from(new Set(safeData.map(d => d.department).filter(Boolean))) as string[];
   const ticketsByDept = depts.map(dept => {
     return {
       dept,
-      count: ingestedData.filter(d => d.department === dept).length
+      count: safeData.filter(d => d.department === dept).length
     };
   }).sort((a, b) => b.count - a.count);
 
@@ -68,7 +70,7 @@ export default function DashboardScreen() {
         <div style={{ flex: 1, background: "#FFFFFF", padding: 24, borderRadius: 12, border: "1px solid rgba(20,24,28,0.1)", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
           <div style={{ fontSize: 16, fontWeight: 600, color: "#14181C", marginBottom: 24 }}>Recent Ticket Flow</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {ingestedData.slice(0, 5).map(t => (
+            {safeData.slice(0, 5).map(t => (
               <div key={t.ticket_id} style={{ display: "flex", alignItems: "flex-start", gap: 12, paddingBottom: 12, borderBottom: "1px solid rgba(20,24,28,0.06)" }}>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: t.status === 'CLOSED' ? "#15854F" : "#B47614", marginTop: 6, flex: "none" }} />
                 <div style={{ flex: 1 }}>

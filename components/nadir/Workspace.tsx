@@ -98,6 +98,7 @@ export default function Workspace() {
   const [selChild, setSelChild] = useState<number | null>(null);
   const [graphExpanded, setGraphExpanded] = useState(true);
   const [notifPrefs, setNotifPrefs] = useState<Record<string, boolean>>({ critical: true, digest: true, approvals: true, quality: true });
+  const [activeRole, setActiveRole] = useState<string>("IT Ops");
   const approvalTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (approvalTimer.current) clearTimeout(approvalTimer.current); }, []);
 
@@ -564,6 +565,9 @@ export default function Workspace() {
       setToast(null);
       if (q) send(q);
     },
+
+    activeRole,
+    setActiveRole,
   };
 
   return (

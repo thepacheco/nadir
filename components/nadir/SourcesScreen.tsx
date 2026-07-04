@@ -4,6 +4,7 @@ import { useState } from "react";
 import { OB_LABELS, SRC_TYPES } from "@/lib/constants";
 import { useNadir } from "./context";
 import DragDropMapper from "./DragDropMapper";
+import GenerativeOnboarding from "./GenerativeOnboarding";
 import styles from "./nadir.module.css";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -11,6 +12,7 @@ const MONO = "var(--font-ibm-plex-mono), monospace";
 export default function SourcesScreen() {
   const { co, obStep, obSrc, setObSrc, obNext, obConfirmed, onConfirmMapping, onConfirmAll, allConfirmed, obRestart, goMap, objectName, renameObject, wires, retargetWire, relabelWire, addWire, rewiredCount } = useNadir();
   const [editingName, setEditingName] = useState<number | null>(null);
+  const [showGenOnboarding, setShowGenOnboarding] = useState(false);
   const [newFrom, setNewFrom] = useState("");
   const [newLabel, setNewLabel] = useState("");
   const [newTo, setNewTo] = useState("");
@@ -58,36 +60,56 @@ export default function SourcesScreen() {
         </div>
 
         {obStep === 1 && (
-          <>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
-              {SRC_TYPES.map((os, i) => {
-                const sel = obSrc === i;
-                return (
-                  <button
-                    key={os.name}
-                    onClick={() => setObSrc(i)}
-                    className={styles.obSourceCard}
-                    style={{
-                      fontFamily: "inherit", textAlign: "left", padding: "20px 18px", background: sel ? "rgba(14,124,138,0.07)" : "#FFFFFF",
-                      border: `1.5px solid ${sel ? "rgba(14,124,138,0.6)" : "rgba(20,24,28,0.1)"}`, borderRadius: 12, cursor: "pointer", color: "#14181C",
-                    }}
-                  >
-                    <span style={{ display: "block", width: 12, height: 12, borderRadius: os.shape, background: os.dot, marginBottom: 12 }} />
-                    <span style={{ display: "block", fontSize: 14.5, fontWeight: 700, marginBottom: 4 }}>{os.name}</span>
-                    <span style={{ display: "block", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#9aa2ab" }}>{os.kind}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 22 }}>
-              <button
-                onClick={obNext}
-                style={{ fontFamily: "inherit", fontSize: 14, fontWeight: 700, padding: "12px 26px", background: obSrc >= 0 ? "#0E7C8A" : "rgba(20,24,28,0.1)", color: obSrc >= 0 ? "#FFFFFF" : "#b7bec5", border: "none", borderRadius: 8, cursor: obSrc >= 0 ? "pointer" : "default" }}
-              >
-                Connect →
-              </button>
-            </div>
-          </>
+          showGenOnboarding ? (
+            <GenerativeOnboarding 
+              onComplete={() => {
+                setShowGenOnboarding(false);
+                goMap();
+              }} 
+              onCancel={() => setShowGenOnboarding(false)} 
+            />
+          ) : (
+            <>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+                {SRC_TYPES.map((os, i) => {
+                  const sel = obSrc === i;
+                  return (
+                    <button
+                      key={os.name}
+                      onClick={() => setObSrc(i)}
+                      className={styles.obSourceCard}
+                      style={{
+                        fontFamily: "inherit", textAlign: "left", padding: "20px 18px", background: sel ? "rgba(14,124,138,0.07)" : "#FFFFFF",
+                        border: `1.5px solid ${sel ? "rgba(14,124,138,0.6)" : "rgba(20,24,28,0.1)"}`, borderRadius: 12, cursor: "pointer", color: "#14181C",
+                      }}
+                    >
+                      <span style={{ display: "block", width: 12, height: 12, borderRadius: os.shape, background: os.dot, marginBottom: 12 }} />
+                      <span style={{ display: "block", fontSize: 14.5, fontWeight: 700, marginBottom: 4 }}>{os.name}</span>
+                      <span style={{ display: "block", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#9aa2ab" }}>{os.kind}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
+                <button
+                  onClick={() => setShowGenOnboarding(true)}
+                  style={{ fontFamily: "inherit", fontSize: 13, fontWeight: 600, padding: "10px 20px", background: "transparent", color: "#0E7C8A", border: "1px dashed rgba(14,124,138,0.5)", borderRadius: 8, cursor: "pointer" }}
+                >
+                  Or use Generative AI Onboarding (No DB)
+                </button>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 22 }}>
+                <button
+                  onClick={obNext}
+                  style={{ fontFamily: "inherit", fontSize: 14, fontWeight: 700, padding: "12px 26px", background: obSrc >= 0 ? "#0E7C8A" : "rgba(20,24,28,0.1)", color: obSrc >= 0 ? "#FFFFFF" : "#b7bec5", border: "none", borderRadius: 8, cursor: obSrc >= 0 ? "pointer" : "default" }}
+                >
+                  Connect →
+                </button>
+              </div>
+            </>
+          )
         )}
 
         {obStep === 2 && (
@@ -194,7 +216,19 @@ export default function SourcesScreen() {
               <span style={{ fontFamily: MONO, fontSize: 11, color: rewiredCount ? "#0E7C8A" : "#9aa2ab" }}>
                 {rewiredCount ? `${rewiredCount} connection${rewiredCount > 1 ? "s" : ""} customized by you` : "Nadir’s inference, untouched — edit anything above"}
               </span>
-              <button onClick={obNext} style={{ fontFamily: "inherit", fontSize: 14, fontWeight: 700, padding: "12px 26px", background: "#0E7C8A", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}>
+              <button 
+                onClick={() => {
+                  // Fake check for schema violations
+                  const hasViolation = wires.some(w => (w.from.includes("id") && !w.label.includes("relates to")) || (w.from.includes("amount") && w.label.includes("date")));
+                  if (hasViolation) {
+                    if (!confirm("WARNING: Schema violations detected in your manual wiring. Building the graph with invalid types may cause ingestion errors. Do you want to proceed anyway?")) {
+                      return;
+                    }
+                  }
+                  obNext();
+                }} 
+                style={{ fontFamily: "inherit", fontSize: 14, fontWeight: 700, padding: "12px 26px", background: "#0E7C8A", color: "#FFFFFF", border: "none", borderRadius: 8, cursor: "pointer" }}
+              >
                 Build the graph →
               </button>
             </div>

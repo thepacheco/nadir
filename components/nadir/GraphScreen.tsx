@@ -131,6 +131,27 @@ export default function GraphScreen() {
           Nadir inspected the raw schema, proposed what each table represents, and a human confirmed it once. Relationships were inferred from keys, timestamps, and usage.
         </div>
 
+        {/* --- NODE PROPERTIES DEEP DIVE --- */}
+        <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 10 }}>PROPERTIES & METADATA</div>
+        <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 10, padding: 14, marginBottom: 24, fontSize: 12.5, color: "#14181C" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid rgba(20,24,28,0.06)", paddingBottom: 8, marginBottom: 8 }}>
+            <span style={{ color: "#7a848e" }}>Data Source</span>
+            <span style={{ fontWeight: 600 }}>{co.sources[0]?.name || "Local Postgres"}</span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid rgba(20,24,28,0.06)", paddingBottom: 8, marginBottom: 8 }}>
+            <span style={{ color: "#7a848e" }}>Last Synced</span>
+            <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11 }}>2 mins ago</span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid rgba(20,24,28,0.06)", paddingBottom: 8, marginBottom: 8 }}>
+            <span style={{ color: "#7a848e" }}>Owner</span>
+            <span style={{ fontWeight: 600 }}>IT Ops Team</span>
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <span style={{ color: "#7a848e" }}>Conf Level</span>
+            <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#15854F" }}>99.9% (Confirmed)</span>
+          </div>
+        </div>
+
         {/* --- GOTHAM-INSPIRED SEARCH AROUND --- */}
         <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 10 }}>SEARCH AROUND</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 24 }}>

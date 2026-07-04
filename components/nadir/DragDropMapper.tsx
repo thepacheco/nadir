@@ -166,10 +166,16 @@ export default function DragDropMapper() {
                       style={{ fontFamily: MONO, fontSize: 11, color: "#0E7C8A", background: "rgba(14,124,138,0.06)", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 5, padding: "3px 8px", width: 110, outline: "none", textAlign: "center" }}
                     />
                     {/* Fake mismatch warning logic for demo */}
-                    {w.from.includes("date") && !w.label.includes("time") && (
-                      <span style={{ fontSize: 11, color: "#B47614", marginLeft: "auto", display: "flex", alignItems: "center", gap: 4 }} title="Possible type mismatch">
-                        <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#B47614", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9 }}>!</span>
-                        Mismatch
+                    {w.from.includes("id") && !w.label.includes("relates to") && (
+                      <span style={{ fontSize: 11, color: "#C7452F", marginLeft: "auto", display: "flex", alignItems: "center", gap: 4 }} title="Foreign Key violation detected">
+                        <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#C7452F", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9 }}>!</span>
+                        Schema Violation: FK Mismatch
+                      </span>
+                    )}
+                    {w.from.includes("amount") && w.label.includes("date") && (
+                      <span style={{ fontSize: 11, color: "#C7452F", marginLeft: "auto", display: "flex", alignItems: "center", gap: 4 }} title="Data type mismatch">
+                        <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#C7452F", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9 }}>!</span>
+                        Type Mismatch (Int → DateTime)
                       </span>
                     )}
                   </div>

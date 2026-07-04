@@ -29,7 +29,7 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
 }
 
 export default function SettingsScreen() {
-  const { co, notifPrefs, toggleNotifPref, resetDemo, approver } = useNadir();
+  const { co, notifPrefs, toggleNotifPref, resetDemo, approver, activeRole, setActiveRole } = useNadir();
   const [activeTab, setActiveTab] = useState("users");
 
   const TABS = [
@@ -98,6 +98,25 @@ export default function SettingsScreen() {
               </div>
               <span style={{ fontFamily: MONO, fontSize: 10, letterSpacing: "0.06em", color: "#8a5a10", background: "rgba(180,118,20,0.1)", border: "1px solid rgba(180,118,20,0.35)", padding: "3px 9px", borderRadius: 5, flex: "none" }}>APPROVER</span>
             </div>
+            
+            {/* RBAC SIMULATION */}
+            <div style={{ padding: "14px 18px", borderTop: "1px solid rgba(20,24,28,0.1)", background: "#FCFBF9" }}>
+              <div style={{ fontFamily: MONO, fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 12 }}>YOUR ACTIVE ROLE (SIMULATION)</div>
+              <div style={{ fontSize: 13, color: "#5a646e", marginBottom: 12, lineHeight: 1.5 }}>
+                Switch your role to see how Nadir restricts access to compliance, operations, and billing based on your department.
+              </div>
+              <select 
+                value={activeRole}
+                onChange={(e) => setActiveRole(e.target.value)}
+                style={{ width: "100%", padding: "10px 14px", borderRadius: 8, border: "1px solid rgba(20,24,28,0.2)", fontSize: 13.5, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", appearance: "none", background: "#FFFFFF" }}
+              >
+                <option value="Admin">Global Administrator (Full Access)</option>
+                <option value="IT Ops">IT Operations (System & Schema focus)</option>
+                <option value="Floor Manager">Floor Manager (Process & Team focus)</option>
+                <option value="Line Worker">Line Worker (Task execution only)</option>
+              </select>
+            </div>
+
           </div>
         )}
 

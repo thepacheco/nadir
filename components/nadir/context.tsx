@@ -186,6 +186,9 @@ export interface NadirCtxValue {
   toggleNotifPref: (k: string) => void;
   resetDemo: () => void;
   ingestedData: any[];
+
+  activeRole: string;
+  setActiveRole: (role: string) => void;
 }
 
 export const NadirContext = createContext<NadirCtxValue | null>(null);

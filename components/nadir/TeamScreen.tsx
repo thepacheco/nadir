@@ -8,13 +8,15 @@ export default function TeamScreen() {
   const { people, approver, ingestedData } = useNadir();
   const [selectedDept, setSelectedDept] = useState<string | null>(null);
 
+  const safeData = Array.isArray(ingestedData) ? ingestedData : [];
+
   // Derive unique departments from ingested data
-  const departments = Array.from(new Set(ingestedData.map(d => d.department).filter(Boolean))) as string[];
+  const departments = Array.from(new Set(safeData.map(d => d.department).filter(Boolean))) as string[];
   
   // Filter tickets by selected department
   const visibleTickets = selectedDept 
-    ? ingestedData.filter(d => d.department === selectedDept)
-    : ingestedData;
+    ? safeData.filter(d => d.department === selectedDept)
+    : safeData;
 
   const ticketsByStatus = {
     OPEN: visibleTickets.filter(t => t.status === 'OPEN'),
