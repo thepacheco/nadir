@@ -239,6 +239,49 @@ The path to conglomerate scale is not more features. It's this spine, made real,
 7. **Identity & lifecycle** (Part 5): auth, reset, invite, roles server-side, offboarding.
 8. **Then** the polish: No-Database Mode, Bid Intelligence, custom dashboards, 3D map.
 
+## PART 9 — REFERENCE TEARDOWN (the four screenshots, translated into build specs)
+
+The founder supplied four reference screenshots (2026-07-04): a Celonis-style Process Explorer (light and dark variants), a WRLD indoor 2.5D building map, a Palantir Foundry pipeline DAG, and a Gotham-style stage-gated board. Here is exactly what each one teaches and which Nadir surface inherits it. These refine Parts 4.1, 4.2, 4.8, and 4.3 — they don't replace them.
+
+### 9.1 Fusion Graph v2 = a process-state graph (from the Process Explorer shots)
+
+The single biggest lesson: the graph's nodes are not tables — **they are the states a work object moves through** (Open → Submitted → Assigned → Dispositioned → Closed, plus terminals like Cancelled). What makes it a diagnosis tool:
+
+- **Node cards carry computed numbers:** count of objects currently in the state, average time in state, and — for cost-bearing flows — average cost/revenue. Color is semantic: green = on the expected path, red = the current bottleneck or violation hotspot, gray = terminal.
+- **Edges carry transition percentages** ("70% go Open→Submitted; 16% go Open→Cancelled"). Rare paths render dashed. Every number is arithmetic over transition events — no LLM anywhere in this lens.
+- **The expected-vs-full slider is the product.** Default view shows the *expected path* (the SOP the customer confirmed). Dragging the slider progressively reveals rarer real transitions. The gap between expected and actual IS the finding: "16% of non-conformities jump straight from Open to Cancelled" is a sentence a COO pays for.
+- **"Change Expected Path" is an editable declaration:** the user states the intended flow; the deterministic rule engine flags deviations from it. Expected paths are config (Part 2.3), per object type.
+- **Lens → action in one motion:** selecting a node or edge opens the actual object rows beneath the graph (the dark screenshot's order table), with action buttons — Add Staff, Alert Facility, Deprioritize — each of which creates a Work item or state change, audited.
+- **Data requirement this creates:** the Graph Store needs an `events` table — object id, state, entered_at, left_at — written during ingestion/refresh. Counts, durations, and transition frequencies all derive from it. Build the events table with the SQL extractor; the CSV path can synthesize events from status + timestamp columns where they exist.
+
+### 9.2 Ops Map target = the WRLD look, built in the right order
+
+The WRLD shot is the visual bar: an isometric 2.5D interior of *the customer's actual building*, with zones (their green desk clusters) lit by live status. How we get there without faking it:
+
+1. Address → building footprint (OpenStreetMap first, Google fallback).
+2. Bird's-eye 2D canvas where the user **draws their own zones** — apartment-layout style drag and drop, because no two floors are alike (this is the onboarding moment).
+3. Zones are polygons in config; objects and signals attach to zones (`object:Crew`, `filter: status = OPEN` layers per Part 2.1).
+4. Extrude to 2.5D isometric rendering with zone highlight colors, IoT/live signals blinking *on the zone they belong to*, click-through to the objects there and a task-assignment popup.
+
+The data model (zones as polygons with attached objects/signals) comes first; the pretty extrusion is a renderer over it. 3D-for-3D's-sake stays cut.
+
+### 9.3 Data Sources v2 = a pipeline DAG with change tracking (from the Foundry shot)
+
+The ingestion control panel should read left-to-right as a dataflow: **raw sources → cleaning/mapping transforms → derived object types → the lenses that consume them**, each node showing its column/row counts. The two Foundry behaviors worth copying exactly:
+
+- **A "Changes" panel** listing what an edit or a re-scan added/modified (transform added, input modified), with affected edges highlighted red/green. When schema fingerprinting (Part 3.2 step 8) detects a source changed, this is how the user sees the blast radius *before* re-confirming the mapping.
+- **Branches:** a proposed mapping change renders as a branch next to Main until confirmed — mapping versions, not mapping overwrites. Correction memory (the Learning Store) hangs off the diffs between branches.
+
+### 9.4 Stage-gated Work board (from the Gotham board — pattern only, never the domain)
+
+We take the interaction pattern, not the subject matter: Nadir has no targets and no weaponeering. The pattern: **kanban columns are stages of a governed workflow, and a card physically cannot advance until its checklist for that stage is complete.** The right-hand panel shows the object's detail with its confirmation checklist ("2/3 complete — Has submitter identity ✓, Location verified ✓, sign-off pending"), each requirement evidence-linked.
+
+Applied to Nadir: compliance remediation flows Found → Owner assigned → Evidence attached → Sign-off → Closed; work orders flow their own stages. Per-stage required checklists are department-configurable (Part 2.3), satisfy README §4.7's "closing requires notes," and every gate passage writes the audit entry. This is what makes the board a control, not a to-do list.
+
+**Build order for all four:** 9.1 first (deterministic, needs only the events table, and it's the demo moment), then 9.3 (it strengthens the already-real ingestion pipeline), then 9.4 (rides the Work object build in Phase 3), then 9.2's drawn-zone canvas (its data model early in Phase 3, the isometric renderer later).
+
+---
+
 **Founder action list (only you can do these):**
 - ~~Make the repo **private**~~ — done 2026-07-03, flipped via GitHub API.
 - Provision Postgres (managed, ~$10–20/mo to start) and an Anthropic API key (Claude Console). The key unlocks the already-built LLM mapping pass in `lib/engine/llm.ts`; without it the mapper runs deterministic-only.
