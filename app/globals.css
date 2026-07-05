@@ -80,6 +80,11 @@ body {
   100% { transform: scale(1); opacity: 1; }
 }
 
+@keyframes nadirTicker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;

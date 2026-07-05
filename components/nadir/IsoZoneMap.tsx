@@ -8,29 +8,11 @@
 // audit trail like every other mutation.
 
 import { useMemo, useState } from "react";
+import { floorFor } from "@/lib/floor";
 import { useNadir } from "./context";
 import ZoneInterior from "./ZoneInterior";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
-
-interface Zone {
-  label: string;
-  gx: number; // grid cell x
-  gy: number; // grid cell y
-  w: number; // cells wide
-  d: number; // cells deep
-  h: number; // extrusion height (px)
-}
-
-// Same zone vocabulary as the 2D blueprint so alert/ticket locations resolve.
-const ZONES: Zone[] = [
-  { label: "HQ Office", gx: 0, gy: 0, w: 3, d: 2, h: 34 },
-  { label: "Midtown Kitchen", gx: 4, gy: 0, w: 3, d: 3, h: 26 },
-  { label: "Midtown Storage", gx: 4, gy: 4, w: 2, d: 2, h: 20 },
-  { label: "Line 3", gx: 8, gy: 1, w: 4, d: 2, h: 22 },
-  { label: "Receiving Dock", gx: 0, gy: 3, w: 2, d: 3, h: 16 },
-  { label: "Substation 4", gx: 9, gy: 4, w: 2, d: 2, h: 28 },
-];
 
 const CELL = 34;
 const ISO_X = 0.866; // cos 30°
@@ -55,6 +37,7 @@ export default function IsoZoneMap({ onZoneClick }: { onZoneClick?: (label: stri
   const [assigned, setAssigned] = useState<Record<string, { to: string; note: string }[]>>({});
 
   const tickets = Array.isArray(ingestedData) ? ingestedData : [];
+  const ZONES = floorFor(co.id);
 
   const zoneSignals = useMemo(() => {
     const m: Record<string, { alerts: typeof alertsFull; tickets: typeof tickets }> = {};
@@ -133,8 +116,14 @@ export default function IsoZoneMap({ onZoneClick }: { onZoneClick?: (label: stri
               {/* top face */}
               <path d={facePath([a0, a1, a2, a3])} fill="#FFFFFF" stroke={isSel ? "#0E7C8A" : "rgba(20,24,28,0.24)"} strokeWidth={isSel ? 2 : 1} />
               <path d={facePath([a0, a1, a2, a3])} fill={topTint} />
-              {/* label */}
-              <text x={lx} y={ly + 3} textAnchor="middle" style={{ fontSize: 11, fontWeight: 700, fill: "#14181C", fontFamily: "inherit", pointerEvents: "none" }}>{z.label}</text>
+              {/* label + live metric */}
+              <text x={lx} y={ly} textAnchor="middle" style={{ fontSize: 11, fontWeight: 700, fill: "#14181C", fontFamily: "inherit", pointerEvents: "none" }}>{z.label}</text>
+              <text x={lx} y={ly + 12} textAnchor="middle" style={{ fontSize: 8.5, fill: tone === "#15854F" ? "#5a646e" : tone, fontFamily: MONO, pointerEvents: "none" }}>{z.metric}</text>
+              {z.present > 0 && (
+                <text x={lx} y={ly + 23} textAnchor="middle" style={{ fontSize: 8, fill: z.calledOut > 0 ? "#C7452F" : "#9aa2ab", fontFamily: MONO, pointerEvents: "none" }}>
+                  {"●"} {z.present} on floor{z.calledOut > 0 ? ` · ${z.calledOut} short` : ""}
+                </text>
+              )}
               {/* transparent hit target over the top face so the whole zone is clickable */}
               <path d={facePath([a0, a1, a2, a3])} fill="transparent" />
               {/* signal beacon */}
@@ -231,6 +220,7 @@ export default function IsoZoneMap({ onZoneClick }: { onZoneClick?: (label: stri
       {insideZone && (
         <ZoneInterior
           label={insideZone}
+          zone={ZONES.find((z) => z.label === insideZone)}
           alerts={zoneSignals[insideZone]?.alerts ?? []}
           tickets={zoneSignals[insideZone]?.tickets ?? []}
           people={people}

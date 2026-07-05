@@ -11,6 +11,7 @@
 // like every other mutation. It is not decorative animation.
 
 import { useState } from "react";
+import type { FloorZone } from "@/lib/floor";
 import type { DecoratedAlert, DecoratedPerson } from "./context";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -126,19 +127,34 @@ function spec(kind: Kind): { stations: Station[]; workers: [number, number][]; f
   }
 }
 
-// tiny top-down worker glyph
-function Worker({ x, y, i, busy }: { x: number; y: number; i: number; busy: boolean }) {
+// A worker that actually walks a loop around the floor (the "Good Job" feel).
+// The whole glyph rides an <animateMotion> path; a subtle bob sells the stride.
+const WALK_LOOPS = [
+  "M 120 130 H 380 V 380 H 120 Z",
+  "M 440 130 H 720 V 380 H 440 Z",
+  "M 200 220 H 620 V 360 H 200 Z",
+];
+function WalkingWorker({ i, busy }: { i: number; busy: boolean }) {
+  const loop = WALK_LOOPS[i % WALK_LOOPS.length];
+  const dur = 13 + (i % 5) * 2; // seconds per lap, varied so they don't march in step
+  const begin = `-${(i * 1.7).toFixed(1)}s`;   // spread them around the loop
+  const body = busy ? "#0E7C8A" : "#9aa2ab";
+  const head = busy ? "#0b5d68" : "#7a848e";
   return (
-    <g style={{ animation: `nadirBob ${3 + (i % 3)}s ease-in-out ${i * 0.3}s infinite` }}>
-      <ellipse cx={x} cy={y + 9} rx={9} ry={4} fill="rgba(20,24,28,0.12)" />
-      <circle cx={x} cy={y} r={5.5} fill={busy ? "#0E7C8A" : "#9aa2ab"} />
-      <circle cx={x} cy={y - 7} r={3.6} fill={busy ? "#0b5d68" : "#7a848e"} />
+    <g>
+      <g style={{ animation: `nadirBob ${1.1 + (i % 3) * 0.2}s ease-in-out infinite` }}>
+        <ellipse cx={0} cy={9} rx={8} ry={3.5} fill="rgba(20,24,28,0.12)" />
+        <circle cx={0} cy={0} r={5} fill={body} />
+        <circle cx={0} cy={-6.5} r={3.3} fill={head} />
+      </g>
+      <animateMotion dur={`${dur}s`} begin={begin} repeatCount="indefinite" path={loop} rotate="0" />
     </g>
   );
 }
 
 export default function ZoneInterior({
   label,
+  zone,
   alerts,
   tickets,
   people,
@@ -146,14 +162,19 @@ export default function ZoneInterior({
   onAssign,
 }: {
   label: string;
+  zone?: FloorZone;
   alerts: DecoratedAlert[];
   tickets: Record<string, string>[];
   people: DecoratedPerson[];
   onClose: () => void;
   onAssign: (assignee: string, note: string, station: string) => void;
 }) {
-  const kind = kindOf(label);
-  const { stations, workers, flow, workLabel } = spec(kind);
+  const kind = zone?.kind ?? kindOf(label);
+  const { stations, flow, workLabel } = spec(kind);
+  // How many people are actually on this floor right now (from the schedule
+  // reconciliation), capped for legibility.
+  const present = zone?.present ?? 6;
+  const workerCount = Math.min(present, 16);
   const crit = alerts.find((a) => a.color === "#C7452F");
   const warn = alerts.find((a) => a.color !== "#C7452F");
 
@@ -187,7 +208,7 @@ export default function ZoneInterior({
         <div>
           <div style={{ fontSize: 15.5, fontWeight: 700 }}>{label} <span style={{ fontWeight: 400, color: "#9aa2ab", fontSize: 12.5 }}>· inside the space</span></div>
           <div style={{ fontFamily: MONO, fontSize: 10.5, color: "#7a848e" }}>
-            live · {workers.length} on shift · {stations.length} {workLabel}{alertTone ? ` · 1 flagged` : " · all nominal"}
+            live · {present} {zone?.role.toLowerCase() ?? "worker"}s on the floor · {stations.length} {workLabel}{alertTone ? ` · 1 flagged` : " · all nominal"}
           </div>
         </div>
       </div>
@@ -239,23 +260,62 @@ export default function ZoneInterior({
               );
             })}
 
-            {/* workers */}
-            {workers.map(([x, y], i) => (
-              <Worker key={i} x={x} y={y} i={i} busy={i % 3 !== 0} />
+            {/* workers walking the floor — one per person actually present */}
+            {Array.from({ length: workerCount }).map((_, i) => (
+              <WalkingWorker key={i} i={i} busy={i % 4 !== 0} />
             ))}
           </svg>
 
           <div style={{ position: "absolute", left: 18, bottom: 12, fontFamily: MONO, fontSize: 10, color: "#9aa2ab", pointerEvents: "none" }}>
-            schematic interior · workers and stations reflect this zone&apos;s live roster and signals
+            live floor · each figure is a {zone?.role.toLowerCase() ?? "worker"} on shift right now
           </div>
         </div>
 
-        {/* right rail: what's happening here + assign */}
+        {/* right rail: workforce reconciliation + what's happening here + assign */}
         <div style={{ width: 300, flex: "none", borderLeft: "1px solid rgba(20,24,28,0.1)", background: "#FCFBF9", padding: 16, overflowY: "auto" }}>
+          {zone && zone.scheduled > 0 && (
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: "0.1em", color: "#7a848e", marginBottom: 8 }}>WORKFORCE · NOW</div>
+              <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+                {[
+                  { k: "On floor", v: zone.present, c: "#14181C" },
+                  { k: "Scheduled", v: zone.scheduled, c: "#5a646e" },
+                  { k: "Called out", v: zone.calledOut, c: zone.calledOut > 0 ? "#C7452F" : "#15854F" },
+                ].map((s) => (
+                  <div key={s.k} style={{ flex: 1, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 8, padding: "8px 6px", textAlign: "center" }}>
+                    <div style={{ fontFamily: MONO, fontSize: 18, fontWeight: 700, color: s.c }}>{s.v}</div>
+                    <div style={{ fontFamily: MONO, fontSize: 8.5, color: "#9aa2ab", letterSpacing: "0.04em" }}>{s.k.toUpperCase()}</div>
+                  </div>
+                ))}
+              </div>
+              {(() => {
+                const gap = zone.present - zone.scheduled;
+                if (zone.calledOut > 0 && gap < 0) {
+                  return (
+                    <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "#8f3322", background: "rgba(199,69,47,0.07)", border: "1px solid rgba(199,69,47,0.3)", borderRadius: 8, padding: "9px 11px" }}>
+                      <strong>Nadir flagged this.</strong> {zone.calledOut} scheduled {zone.role.toLowerCase()}{zone.calledOut > 1 ? "s" : ""} never clocked in — you&apos;re {Math.abs(gap)} short of plan on this floor. It matched the schedule against clock-in before anyone noticed the line was thin.
+                    </div>
+                  );
+                }
+                if (gap > 0) {
+                  return (
+                    <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "#8a5a10", background: "rgba(180,118,20,0.07)", border: "1px solid rgba(180,118,20,0.3)", borderRadius: 8, padding: "9px 11px" }}>
+                      <strong>Nadir noticed.</strong> {gap} more on the floor than the schedule called for — unplanned labor Nadir caught against the roster.
+                    </div>
+                  );
+                }
+                return (
+                  <div style={{ fontSize: 11.5, lineHeight: 1.5, color: "#0f6b3f", background: "rgba(21,133,79,0.06)", border: "1px solid rgba(21,133,79,0.3)", borderRadius: 8, padding: "9px 11px" }}>
+                    ✓ Floor matches the schedule — {zone.present} of {zone.scheduled} {zone.role.toLowerCase()}s clocked in.
+                  </div>
+                );
+              })()}
+            </div>
+          )}
           <div style={{ fontFamily: MONO, fontSize: 10.5, letterSpacing: "0.1em", color: "#7a848e", marginBottom: 10 }}>WHAT&apos;S HAPPENING HERE</div>
           {alerts.length === 0 && tickets.length === 0 && (
             <div style={{ fontSize: 12.5, color: "#15854F", background: "rgba(21,133,79,0.06)", border: "1px solid rgba(21,133,79,0.3)", borderRadius: 8, padding: "9px 11px", marginBottom: 12 }}>
-              ✓ All {workLabel} nominal. {workers.length} people on shift, nothing flagged.
+              ✓ All {workLabel} nominal, nothing flagged here.
             </div>
           )}
           {alerts.map((a) => (

@@ -10,6 +10,7 @@ import SiteMapper from "./SiteMapper";
 import Nadir3D from "./Nadir3D";
 import PipelineMapper from "./PipelineMapper";
 import IsoZoneMap from "./IsoZoneMap";
+import PrioritiesTicker from "./PrioritiesTicker";
 
 export default function MapScreen() {
   const { co, alertsFull, activeCount, clockLabel } = useNadir();
@@ -106,6 +107,7 @@ export default function MapScreen() {
           </div>
         </div>
 
+        <PrioritiesTicker />
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "rgba(20,24,28,0.08)", borderBottom: "1px solid rgba(20,24,28,0.08)", flex: "none" }}>
           {co.kpis.map((k) => (
             <div key={k.label} style={{ background: "#FFFFFF", padding: "10px 14px", display: "flex", flexDirection: "column", justifyContent: "center" }}>

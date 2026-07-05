@@ -199,10 +199,10 @@ export const COMPANIES: Company[] = [
       { name: "Gusto", meta: "Payroll · 9 records", node: 2 },
       { name: "Notion", meta: "Docs · 86 pages", node: 3 },
     ],
-    kpis: [{ label: "RUNWAY", val: "4.2 mo", color: "#B47614" }, { label: "PIPELINE", val: "$86k", color: "#14181C" }, { label: "PLACED", val: "7", color: "#15854F" }, { label: "OVERDUE INVOICES", val: "1", color: "#C7452F" }],
+    kpis: [{ label: "MONTHS OF CASH", val: "4.2 mo", color: "#B47614" }, { label: "PIPELINE", val: "$86k", color: "#14181C" }, { label: "PLACED", val: "7", color: "#15854F" }, { label: "OVERDUE INVOICES", val: "1", color: "#C7452F" }],
     alerts: [
       { sev: "CRITICAL", color: "#C7452F", at: 0, time: "Now", title: "No signed MSA template — blocking 2 pending clients", plain: "Two clients are ready to sign, but you have no standard contract to send them.", detail: "Both deals in HubSpot are stalled at “contract” stage. There is no master services agreement anywhere in Notion or Drive.", loc: "Legal · contracts", q: "How do I get an MSA?" },
-      { sev: "WARNING", color: "#B47614", at: 0, time: "Now", title: "Runway 4.2 months at current burn", plain: "At current spending you have about four months of cash left.", detail: "Gusto payroll plus recurring spend against the bank feed. One more placement extends it to 5.8.", loc: "Finance", q: "How do I extend runway?" },
+      { sev: "WARNING", color: "#B47614", at: 0, time: "Now", title: "Only 4.2 months of cash left at current spend", plain: "At current spending you have about four months of cash to make payroll.", detail: "Gusto payroll plus recurring spend against the bank feed. One more placement pushes it to 5.8 months.", loc: "Finance", q: "How do I free up cash?" },
       { sev: "WARNING", color: "#B47614", at: 0, time: "12 d", title: "Invoice #0007 overdue — $9,400", plain: "A client owes you $9,400 and nobody has reminded them yet.", detail: "Sent 12 days ago, no payment, no follow-up email on record in HubSpot.", loc: "AR", q: "Draft the invoice follow-up" },
     ],
     intro: "I've read your pipeline sheet, HubSpot, Gusto, and Notion. You're earlier-stage than the other companies in this demo, so the guidance is more zero-to-one.\n\n1. Two clients are stuck at contract stage because you don't have an MSA. This is your bottleneck — not sales.\n2. Invoice #0007 ($9,400) is 12 days overdue and nobody has followed up.\n3. Runway is 4.2 months. One placement extends it to 5.8.\n\nThe MSA is the highest-leverage fix. Want the plan?",
