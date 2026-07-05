@@ -5,15 +5,15 @@ export const RETICLE_CURSOR =
 
 // One-word, "one and done" names. Keys stay stable so nothing downstream breaks.
 export const SCREENS = [
-  { id: "chat", label: "Ask" },
-  { id: "map", label: "Map" },
+  { id: "chat", label: "Nadir" },
+  { id: "map", label: "Layout" },
   { id: "graph", label: "Flow" },
   { id: "inbox", label: "Inbox" },
-  { id: "tickets", label: "Work" },
+  { id: "tickets", label: "Assignments" },
   { id: "depts", label: "Org" },
   { id: "plan", label: "Plan" },
   { id: "comp", label: "Compliance" },
-  { id: "sources", label: "Ontology" },
+  { id: "sources", label: "Connections" },
   { id: "dash", label: "Dashboard" },
   { id: "settings", label: "Settings" },
 ] as const;

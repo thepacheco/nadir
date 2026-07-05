@@ -15,6 +15,18 @@ const MONO = "var(--font-ibm-plex-mono), monospace";
 
 const BOOT_LINES = ["Connecting to live systems", "Mapping schema → objects", "Fusing operational graph", "Live"];
 
+// What Nadir (the AI) has already done for a company — seeds the notification
+// bell so the "AI is working" activity is visible on arrival, and every user
+// action visibly adds to it.
+function seedNotifs(c: (typeof COMPANIES)[number]): NotifItem[] {
+  const crit = c.alerts.filter((a) => a.color === "#C7452F").length;
+  return [
+    { time: fmtClock(c.nowMin), text: `Nadir detected ${c.alerts.length} live signals — ${crit} critical — while watching ${c.sources.length} systems.`, kind: crit ? "warn" : "info" },
+    { time: fmtClock(Math.max(0, c.nowMin - 6)), text: `Nadir sampled ${c.obTables.length} tables (a few rows each, not the whole database) and confirmed how they connect.`, kind: "ok" },
+    { time: fmtClock(Math.max(0, c.nowMin - 19)), text: `Nadir wrote the morning briefing and routed the highest-risk item for approval.`, kind: "info" },
+  ];
+}
+
 function BootOverlay({ companyName, sourceCount, stage }: { companyName: string; sourceCount: number; stage: number }) {
   return (
     <div
@@ -98,7 +110,7 @@ export default function Workspace() {
   const [inbox, setInbox] = useState<Record<string, InboxMsg[]>>({});
   const readTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   useEffect(() => () => { readTimers.current.forEach(clearTimeout); }, []);
-  const [notifications, setNotifications] = useState<NotifItem[]>([]);
+  const [notifications, setNotifications] = useState<NotifItem[]>(() => seedNotifs(COMPANIES[0]));
   const [notifSeen, setNotifSeen] = useState(0);
   const [runtimeAudit, setRuntimeAudit] = useState<Record<string, { time: string; text: string }[]>>({});
   const [selChild, setSelChild] = useState<number | null>(null);
@@ -156,6 +168,7 @@ export default function Workspace() {
     return () => cancelAnimationFrame(id);
   }, [chats, co.id, typing]);
 
+
   function applyClockChange(prevClock: number, newMin: number) {
     const company = coRef.current;
     if (newMin > prevClock) {
@@ -200,6 +213,8 @@ export default function Workspace() {
     setPlaying(false);
     setEvidenceIdx(null);
     setSelChild(null);
+    setNotifications(seedNotifs(c));
+    setNotifSeen(0);
     setToast(crit && !toastDismissed[alertKey(c, crit)] ? crit : null);
   }
 
@@ -261,7 +276,7 @@ export default function Workspace() {
     setDecisions({});
     setThreadExtras({});
     setInbox({});
-    setNotifications([]);
+    setNotifications(seedNotifs(coRef.current));
     setNotifSeen(0);
     setRuntimeAudit({});
     setSnapshotSent({});
@@ -523,9 +538,12 @@ export default function Workspace() {
       const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
       setInbox((prev) => ({ ...prev, [inboxKey]: [...(prev[inboxKey] || []), { id, text: t, at: fmtClock(clockRef.current), edited: false, read: false }] }));
       audit(`Message sent to ${sp.name} in Inbox.`);
-      // read receipt flips after a short, deterministic delay
+      notify(`Message sent to ${sp.name}`, "info");
+      // read receipt flips after a short, deterministic delay; when it does,
+      // the bell shows that they've seen it — visible, changing state.
       const timer = setTimeout(() => {
         setInbox((prev) => ({ ...prev, [inboxKey]: (prev[inboxKey] || []).map((m) => (m.id === id ? { ...m, read: true } : m)) }));
+        notify(`${sp.name.split(" ")[0]} read your message`, "ok");
       }, 1800);
       readTimers.current.push(timer);
     },

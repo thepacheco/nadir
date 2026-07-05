@@ -25,8 +25,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nadir — Operational Intelligence & Compliance Fusion",
-  description: "We map the floor. AI tells you what it means.",
+  title: "Nadir — The Operational AI for Your Whole Company",
+  description: "Nadir is an AI that learns how your business runs. Point it at your systems — it makes the connections, watches everything live, and tells you what needs you.",
 };
 
 export default function RootLayout({

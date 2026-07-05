@@ -5,13 +5,14 @@ import { RETICLE_CURSOR } from "@/lib/constants";
 import { PHASE2 } from "@/lib/phase2";
 import { useNadir } from "./context";
 import ProcessExplorer from "./ProcessExplorer";
+import AIGraph from "./AIGraph";
 import styles from "./nadir.module.css";
 
 const TONE: Record<string, string> = { red: "#C7452F", amber: "#B47614", ok: "#15854F" };
 
 export default function GraphScreen() {
   const { co, gnodes, edges, selNodeView, childNodes, selChild, setSelChild, parentLabel, selNode, audit, notify } = useNadir();
-  const [view, setView] = React.useState<"process" | "model">("process");
+  const [view, setView] = React.useState<"web" | "model" | "process">("web");
   const childrenMap = PHASE2[co.id].children;
   const child = selChild !== null ? childNodes[selChild] : null;
 
@@ -50,7 +51,7 @@ export default function GraphScreen() {
 
   const viewTabs = (
     <div style={{ display: "flex", gap: 2, padding: "8px 24px 0", background: "#F6F4EF", borderBottom: "1px solid rgba(20,24,28,0.08)", flex: "none" }}>
-      {([["process", "Flow"], ["model", "Ontology"]] as const).map(([id, label]) => (
+      {([["web", "Flow"], ["model", "Objects"], ["process", "Timeline"]] as const).map(([id, label]) => (
         <button
           key={id}
           onClick={() => setView(id)}
@@ -66,6 +67,15 @@ export default function GraphScreen() {
       ))}
     </div>
   );
+
+  if (view === "web") {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0 }}>
+        {viewTabs}
+        <AIGraph />
+      </div>
+    );
+  }
 
   if (view === "process") {
     return (
@@ -84,7 +94,7 @@ export default function GraphScreen() {
         <div style={{ position: "absolute", inset: 0, transform: child ? `scale(1.8)` : "none", transformOrigin: child ? `${child.x}% ${child.y}%` : "50% 50%", transition: "transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)" }}>
         <div style={{ position: "absolute", top: 18, left: 24, zIndex: 3 }}>
           <div style={{ fontSize: 16, fontWeight: 700 }}>
-            Ontology <span style={{ fontWeight: 400, color: "#9aa2ab", fontSize: 13 }}>· live object model</span>
+            Objects <span style={{ fontWeight: 400, color: "#9aa2ab", fontSize: 13 }}>· the model Nadir built</span>
           </div>
           <div style={{ fontSize: 12.5, color: "#5a646e", marginTop: 3 }}>
             The real-world objects of {co.name} and how they connect, inferred from {co.sources.length} systems. Click a node — a “+” chip unfolds its components.

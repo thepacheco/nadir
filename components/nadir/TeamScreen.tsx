@@ -58,7 +58,7 @@ export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
       {/* LEFT: Org Tree */}
       <div style={{ width: 280, flex: "none", borderRight: "1px solid rgba(20,24,28,0.1)", overflowY: "auto", padding: 20, background: "#FCFBF9" }}>
-        <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 3 }}>{mode === "tickets" ? "Work" : "Inbox"}</div>
+        <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 3 }}>{mode === "tickets" ? "Assignments" : "Inbox"}</div>
         <div style={{ fontSize: 12.5, color: "#7a848e", marginBottom: 16 }}>{mode === "tickets" ? "Every ticket, task, and remediation — routed and tracked to done." : "Message your team, anchored to the work."}</div>
         
         <div style={{ display: "flex", flexDirection: "column", gap: 2, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11.5 }}>

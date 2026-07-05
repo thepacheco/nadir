@@ -49,7 +49,7 @@ export default function SiteFooter() {
               <span style={{ fontWeight: 700, fontSize: 17, letterSpacing: "0.06em" }}>NADIR</span>
             </div>
             <div style={{ fontSize: 13.5, lineHeight: 1.6, color: "#5a646e", maxWidth: 240, marginBottom: 18 }}>
-              Operational intelligence &amp; compliance fusion. We map the floor — AI tells you what it means.
+              The operational AI for your entire company. Point it at your systems — Nadir makes the connections and tells you what needs you.
             </div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#15854F", border: "1px solid rgba(21,133,79,0.3)", padding: "5px 12px", borderRadius: 100, background: "rgba(255,255,255,0.6)" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#15854F" }} />
@@ -70,7 +70,7 @@ export default function SiteFooter() {
           ))}
         </div>
         <div style={{ borderTop: "1px solid rgba(20,24,28,0.1)", paddingTop: 24, display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13, color: "#7a848e", flexWrap: "wrap", gap: 12 }}>
-          <div>© 2026 Nadir Intelligence, Inc. · We map the floor.</div>
+          <div>© 2026 Nadir Intelligence, Inc. · Control of your whole operation.</div>
           <div style={{ display: "flex", gap: 22, fontSize: 13 }}>
             <a href="https://x.com" style={{ color: "#5a646e", textDecoration: "none" }}>X</a>
             <a href="https://linkedin.com" style={{ color: "#5a646e", textDecoration: "none" }}>LinkedIn</a>

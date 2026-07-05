@@ -21,7 +21,7 @@ export default function Home() {
           }}
         >
           <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#0E7C8A", animation: "nadirBlink 2.4s infinite" }} />
-          OPERATIONAL INTELLIGENCE &amp; COMPLIANCE FUSION
+          MEET NADIR · THE OPERATIONAL AI
         </div>
         <h1
           style={{
@@ -29,11 +29,11 @@ export default function Home() {
             margin: "0 auto 26px", maxWidth: 900, letterSpacing: "-0.015em", textWrap: "balance",
           }}
         >
-          We map the floor.<br />
-          <em style={{ color: "#0E7C8A", fontStyle: "italic" }}>AI tells you what it means.</em>
+          One AI that understands<br />
+          <em style={{ color: "#0E7C8A", fontStyle: "italic" }}>your entire company.</em>
         </h1>
-        <p style={{ fontSize: 19, lineHeight: 1.6, color: "#4a545e", maxWidth: 640, margin: "0 auto 40px", textWrap: "pretty" }}>
-          Nadir connects to the databases your business already runs on — however messy — builds a live model of how everything actually moves, and tells you what breaks next and what to do about it.
+        <p style={{ fontSize: 19, lineHeight: 1.6, color: "#4a545e", maxWidth: 660, margin: "0 auto 40px", textWrap: "pretty" }}>
+          Nadir is an AI that learns how your business actually runs. Point it at the systems you already use — it samples them, works out how everything connects on its own, watches it all live, and tells you what needs you. One place, your whole operation, finally under your control.
         </p>
         <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
           <Link
@@ -60,7 +60,7 @@ export default function Home() {
             <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(20,24,28,0.14)" }} />
             <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(20,24,28,0.14)" }} />
             <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(20,24,28,0.14)" }} />
-            <div style={{ marginLeft: 12, fontFamily: MONO, fontSize: 11.5, color: "#7a848e" }}>nadir · live operational graph</div>
+            <div style={{ marginLeft: 12, fontFamily: MONO, fontSize: 11.5, color: "#7a848e" }}>nadir · your operation, understood by AI</div>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1, background: "rgba(20,24,28,0.08)" }}>
             {heroKpis.map((k) => (
@@ -115,7 +115,7 @@ export default function Home() {
         <div style={{ maxWidth: 1240, margin: "0 auto", padding: "92px 48px" }}>
           <div style={{ fontFamily: MONO, fontSize: 12.5, letterSpacing: "0.14em", color: "#0E7C8A", marginBottom: 18 }}>THE PLATFORM</div>
           <h2 style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 42, lineHeight: 1.15, margin: "0 0 56px", maxWidth: 700, letterSpacing: "-0.01em" }}>
-            Not a wrapper on a chatbot. A fusion engine with a brain on top.
+            Not a chatbot bolted onto your data. An AI that reasons over how your business runs.
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
             {PLATFORM_LAYERS.map((l) => (
@@ -129,7 +129,7 @@ export default function Home() {
           <div style={{ marginTop: 44, padding: "26px 30px", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 12, display: "flex", gap: 20, alignItems: "baseline", background: "rgba(14,124,138,0.05)" }}>
             <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.12em", color: "#0E7C8A", flex: "none" }}>THE MOAT</div>
             <p style={{ fontSize: 15.5, lineHeight: 1.6, color: "#2a333c", margin: 0 }}>
-              Every new client — and every weird ERP variant — makes the fusion layer harder to replicate. The system compounds on <em>your</em> company the longer it runs. That&apos;s why they can&apos;t rip it out.
+              The AI is the moat. Every correction you make and every issue it resolves teaches Nadir <em>your</em> company specifically — so month six is sharper than week one. A competitor can copy the screens; they start from zero on your operation. You&apos;re already a year in.
             </p>
           </div>
           <div style={{ marginTop: 30 }}>
