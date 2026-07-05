@@ -10,11 +10,11 @@ export const RETICLE_CURSOR =
 export const SCREENS = [
   { id: "chat", label: "Nadir" },
   { id: "map", label: "Layout" },
-  { id: "graph", label: "Flow" },
+  { id: "graph", label: "Workflow" },
   { id: "tickets", label: "Assignments" },
   { id: "plan", label: "Plan" },
   { id: "inbox", label: "Inbox" },
-  { id: "depts", label: "Org" },
+  { id: "depts", label: "Departments" },
   { id: "comp", label: "Compliance" },
   { id: "sources", label: "Connections" },
   { id: "dash", label: "Dashboard" },

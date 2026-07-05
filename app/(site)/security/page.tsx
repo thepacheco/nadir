@@ -126,13 +126,19 @@ export default function SecurityPage() {
             </ul>
           </div>
           <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, padding: "32px 28px" }}>
-            <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 20 }}>DATA OWNERSHIP</div>
-            <div style={{ fontFamily: MONO, fontSize: 13, color: "#5a646e", lineHeight: 2.2, background: "#FAFAF8", border: "1px solid rgba(20,24,28,0.06)", borderRadius: 8, padding: "16px 18px" }}>
-              <div><span style={{ color: "#7a848e" }}>owner:</span> <span style={{ color: "#14181C" }}>customer</span></div>
-              <div><span style={{ color: "#7a848e" }}>ontology_maps:</span> <span style={{ color: "#14181C" }}>customer</span></div>
-              <div><span style={{ color: "#7a848e" }}>operational_graph:</span> <span style={{ color: "#14181C" }}>customer</span></div>
-              <div><span style={{ color: "#7a848e" }}>audit_logs:</span> <span style={{ color: "#14181C" }}>customer</span></div>
-              <div><span style={{ color: "#7a848e" }}>on_termination:</span> <span style={{ color: "#C7452F" }}>cryptographic_wipe_30d</span></div>
+            <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 20 }}>YOU OWN IT — ALL OF IT</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {[
+                { k: "Your data", v: "Yours. We only read it." },
+                { k: "The map Nadir builds of you", v: "Yours to keep or export." },
+                { k: "Every audit record", v: "Yours, and untouchable by us." },
+                { k: "If you leave", v: "We wipe everything within 30 days." },
+              ].map((row) => (
+                <div key={row.k} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 14, borderBottom: "1px solid rgba(20,24,28,0.06)", paddingBottom: 12 }}>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: "#14181C" }}>{row.k}</span>
+                  <span style={{ fontSize: 13.5, color: row.k === "If you leave" ? "#C7452F" : "#5a646e", textAlign: "right" }}>{row.v}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>

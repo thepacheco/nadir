@@ -48,8 +48,8 @@ export default function SiteFooter() {
               <Logo size={22} dot={5.5} />
               <span style={{ fontWeight: 700, fontSize: 17, letterSpacing: "0.06em" }}>NADIR</span>
             </div>
-            <div style={{ fontSize: 14, lineHeight: 1.6, color: "#5a646e", maxWidth: 240, marginBottom: 18 }}>
-              The operational AI for your entire company.
+            <div style={{ fontSize: 14, lineHeight: 1.6, color: "#5a646e", maxWidth: 250, marginBottom: 18 }}>
+              The nadir is the lowest point — where you start the climb. The AI that takes a company from the ground up.
             </div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#15854F", border: "1px solid rgba(21,133,79,0.3)", padding: "5px 12px", borderRadius: 100, background: "rgba(255,255,255,0.6)" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#15854F" }} />

@@ -123,7 +123,7 @@ export default function DashboardScreen() {
                   <div style={{ fontSize: 13, fontWeight: 600, color: "#14181C" }}>{t.description}</div>
                   <div style={{ fontSize: 11, color: "#7a848e", marginTop: 4 }}>{t.department} · {t.owner}</div>
                 </div>
-                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: "#9aa2ab" }}>{t.created_at.split('T')[0]}</div>
+                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: "#9aa2ab" }}>{t.ticket_id}</div>
               </div>
             ))}
           </div>

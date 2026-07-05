@@ -51,7 +51,7 @@ export default function GraphScreen() {
 
   const viewTabs = (
     <div style={{ display: "flex", gap: 2, padding: "8px 24px 0", background: "#F6F4EF", borderBottom: "1px solid rgba(20,24,28,0.08)", flex: "none" }}>
-      {([["web", "Flow"], ["model", "Objects"], ["process", "Timeline"]] as const).map(([id, label]) => (
+      {([["web", "Workflow"], ["model", "Map"], ["process", "Timeline"]] as const).map(([id, label]) => (
         <button
           key={id}
           onClick={() => setView(id)}

@@ -18,8 +18,8 @@ const MENU_ITEMS = [
           <Link href="/platform" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
             <LayoutGrid size={18} style={{ color: "#0E7C8A", flex: "none", marginTop: 2 }} />
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Overview</div>
-              <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>How the platform works end-to-end.</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Nadir AI</div>
+              <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>The AI at the center of it all.</div>
             </div>
           </Link>
           <Link href="/platform/ontology-engine" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>

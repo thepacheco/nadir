@@ -32,8 +32,8 @@ export default function Home() {
           One AI that understands<br />
           <em style={{ color: "#0E7C8A", fontStyle: "italic" }}>your entire company.</em>
         </h1>
-        <p style={{ fontSize: 19, lineHeight: 1.6, color: "#4a545e", maxWidth: 560, margin: "0 auto 40px", textWrap: "pretty" }}>
-          Point Nadir at the systems you already use. It works out how everything connects, watches it live, and tells you what needs you.
+        <p style={{ fontSize: 19, lineHeight: 1.6, color: "#4a545e", maxWidth: 540, margin: "0 auto 40px", textWrap: "pretty" }}>
+          Give Nadir your data. It maps how your company runs and watches it around the clock — so you stay in control of the whole floor.
         </p>
         <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
           <Link
@@ -126,13 +126,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <div style={{ marginTop: 44, padding: "26px 30px", border: "1px solid rgba(14,124,138,0.3)", borderRadius: 12, display: "flex", gap: 20, alignItems: "baseline", background: "rgba(14,124,138,0.05)" }}>
-            <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.12em", color: "#0E7C8A", flex: "none" }}>THE MOAT</div>
-            <p style={{ fontSize: 15.5, lineHeight: 1.6, color: "#2a333c", margin: 0 }}>
-              The AI is the moat. Every correction you make and every issue it resolves teaches Nadir <em>your</em> company specifically — so month six is sharper than week one. A competitor can copy the screens; they start from zero on your operation. You&apos;re already a year in.
-            </p>
-          </div>
-          <div style={{ marginTop: 30 }}>
+          <div style={{ marginTop: 44 }}>
             <Link href="/platform" style={{ fontSize: 15, fontWeight: 600, color: "#0E7C8A", textDecoration: "none" }}>
               Explore the full platform →
             </Link>
@@ -178,9 +172,9 @@ export default function Home() {
       <div style={{ background: "#F3F1EC", borderTop: "1px solid rgba(20,24,28,0.1)" }}>
         <div style={{ maxWidth: 1240, margin: "0 auto", padding: "84px 48px", textAlign: "center" }}>
           <h2 style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 46, margin: "0 0 18px", letterSpacing: "-0.01em" }}>
-            &quot;We found this in your data in two weeks.&quot;
+            See Nadir run a real operation.
           </h2>
-          <p style={{ fontSize: 17, color: "#4a545e", margin: "0 0 36px" }}>That sentence is the pitch. See it run on a real operation right now.</p>
+          <p style={{ fontSize: 17, color: "#4a545e", margin: "0 0 36px" }}>Step into a live company and watch the AI map it, watch it, and tell you what needs you.</p>
           <Link
             href="/workspace"
             className={styles.btnDark}

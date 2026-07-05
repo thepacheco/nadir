@@ -108,9 +108,9 @@ function NotificationsBell() {
       <button
         onClick={() => { setOpen((o) => !o); if (!open) markNotifsSeen(); }}
         title="Notifications"
-        style={{ fontFamily: "inherit", position: "relative", width: 32, height: 32, borderRadius: 8, border: "1px solid rgba(20,24,28,0.14)", background: open ? "rgba(14,124,138,0.08)" : "transparent", cursor: "pointer", fontSize: 14, color: "#5a646e" }}
+        style={{ fontFamily: "inherit", position: "relative", width: 32, height: 32, borderRadius: 8, border: "1px solid rgba(20,24,28,0.14)", background: open ? "rgba(14,124,138,0.08)" : "transparent", cursor: "pointer", color: open ? "#0E7C8A" : "#5a646e", display: "flex", alignItems: "center", justifyContent: "center" }}
       >
-        ◔
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M8 1.6a3.4 3.4 0 0 0-3.4 3.4v2.2c0 .5-.2 1-.5 1.4l-.8 1a.6.6 0 0 0 .5 1h8.4a.6.6 0 0 0 .5-1l-.8-1a2.3 2.3 0 0 1-.5-1.4V5A3.4 3.4 0 0 0 8 1.6Z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/><path d="M6.5 12.4a1.5 1.5 0 0 0 3 0" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
         {unseenCount > 0 && (
           <span style={{ position: "absolute", top: -6, right: -6, minWidth: 16, height: 16, padding: "0 4px", borderRadius: 10, background: "#C7452F", color: "#fff", fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>
             {unseenCount}
