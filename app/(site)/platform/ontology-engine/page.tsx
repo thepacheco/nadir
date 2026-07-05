@@ -1,43 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero, Section } from "@/components/site/PageShell";
-import { Database, GitMerge, CheckCircle, Network, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Reveal from "@/components/site/Reveal";
+import FeatureShowcase from "@/components/site/FeatureShowcase";
+import { GraphVisual, PipelineVisual, IsoVisual } from "@/components/site/Visuals";
 import styles from "@/components/nadir/nadir.module.css";
 
 export const metadata: Metadata = { title: "Ontology Engine — Nadir" };
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
 const SERIF = "var(--font-newsreader), serif";
-
-const CAPABILITIES = [
-  {
-    title: "Legacy Schema Ingestion",
-    desc: "Connect directly to the databases your business already runs on. We require only read-only SQL access. Our engine automatically scans tables, columns, and foreign key constraints.",
-    bullets: [
-      "No data migration or pipelines to build",
-      "Compatible with Oracle, SAP HANA, MSSQL, PostgreSQL, and DB2",
-      "Maintains zero write permissions — completely safe for production databases",
-    ],
-  },
-  {
-    title: "AI-Assisted Semantic Mapping",
-    desc: "Raw column names are rarely clear. Our Large Language Models analyze column patterns, sample data, and schema metadata to infer the real-world concept they represent.",
-    bullets: [
-      "Translates 'EMP_ID_V2' to 'Employee.id' and 'TBL_WRK_ORD' to 'WorkOrder'",
-      "Infers complex relationships such as employee certifications and machine schedules",
-      "Confidence scoring flags uncertain mappings for human review",
-    ],
-  },
-  {
-    title: "Zero Data Replication Moat",
-    desc: "We do not copy your database into a centralized warehouse. The Ontology Engine operates as a semantic virtualization layer, reading data on demand.",
-    bullets: [
-      "Eliminates security risks of copying sensitive operational data",
-      "Queries run directly against the source database via optimized read paths",
-      "Self-healing mappings adapt automatically when source schemas change",
-    ],
-  },
-];
 
 const METRICS = [
   { val: "99.8%", label: "Mapping accuracy on standard ERP schemas" },
@@ -75,8 +48,8 @@ export default function OntologyEnginePage() {
 
       <PageHero
         eyebrow="PLATFORM / ONTOLOGY ENGINE"
-        title="The semantic core of industrial data."
-        sub="Turn raw database columns and messy ERP tables into connected, real-world objects. The Ontology Engine automatically maps the reality of your operation, not just your schema."
+        title="It turns your data into a map of your company."
+        sub="Nadir reads your messy tables and builds the real thing they describe — your sites, your machines, your people, and how they all connect. You see your operation, not a schema."
       />
 
       <div style={{ maxWidth: 1040, margin: "0 auto", padding: "0 48px 60px" }}>
@@ -90,53 +63,25 @@ export default function OntologyEnginePage() {
         </div>
       </div>
 
-      {/* CODE VISUAL */}
-      <div style={{ maxWidth: 1040, margin: "0 auto", padding: "0 48px 80px" }}>
-        <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, overflow: "hidden" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 18px", borderBottom: "1px solid rgba(20,24,28,0.08)" }}>
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(20,24,28,0.14)" }} />
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(20,24,28,0.14)" }} />
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(20,24,28,0.14)" }} />
-            <div style={{ marginLeft: 12, fontFamily: MONO, fontSize: 11.5, color: "#7a848e" }}>nadir · ontology mapping configuration</div>
-          </div>
-          <div style={{ fontFamily: MONO, fontSize: 13, color: "#5a646e", lineHeight: 2.2, padding: "24px 28px" }}>
-            <div><span style={{ color: "#7a848e" }}>source:</span> <span style={{ color: "#0E7C8A" }}>oracle_erp_prod</span></div>
-            <div><span style={{ color: "#7a848e" }}>table:</span> TBL_WRK_ORD_99</div>
-            <div><span style={{ color: "#7a848e" }}>schema_mapping:</span></div>
-            <div>&nbsp;&nbsp;EMP_ID_V2 &nbsp;&nbsp;&nbsp;&nbsp;→ <span style={{ color: "#15854F" }}>Employee.id</span> <span style={{ color: "#7a848e" }}>(inferred, confidence=0.98)</span></div>
-            <div>&nbsp;&nbsp;WRK_DESC &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <span style={{ color: "#15854F" }}>WorkOrder.description</span> <span style={{ color: "#7a848e" }}>(inferred, confidence=0.96)</span></div>
-            <div>&nbsp;&nbsp;MACH_SER_NUM &nbsp;→ <span style={{ color: "#15854F" }}>Machine.serial</span> <span style={{ color: "#7a848e" }}>(inferred, confidence=0.99)</span></div>
-            <div>&nbsp;&nbsp;SHIFT_CD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <span style={{ color: "#15854F" }}>Shift.code</span> <span style={{ color: "#7a848e" }}>(inferred, confidence=0.91)</span></div>
-            <div><span style={{ color: "#15854F" }}>status: mapped and verified ✓</span></div>
-          </div>
+      {/* ISOMETRIC HERO VISUAL */}
+      <Reveal>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 48px 80px" }}>
+          <IsoVisual label="nadir · your operation, built from your data" />
         </div>
-      </div>
+      </Reveal>
 
-      {/* FEATURE PILLARS */}
-      <Section alt>
-        <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>CAPABILITIES</div>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 40px", letterSpacing: "-0.01em", color: "#14181C" }}>Extract key semantic structures at scale.</h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
-          {CAPABILITIES.map((cap, i) => (
-            <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr", gap: 48, borderTop: "1px solid rgba(20,24,28,0.1)", paddingTop: 32 }}>
-              <div>
-                <h3 style={{ fontWeight: 700, fontSize: 19, color: "#14181C", margin: "0 0 12px" }}>{cap.title}</h3>
-                <p style={{ fontSize: 15, lineHeight: 1.65, color: "#4a545e", margin: 0 }}>{cap.desc}</p>
-              </div>
-              <div>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
-                  {cap.bullets.map((b) => (
-                    <li key={b} style={{ display: "flex", gap: 10, fontSize: 14.5, color: "#3d4750", lineHeight: 1.5 }}>
-                      <CheckCircle size={16} style={{ color: "#15854F", flex: "none", marginTop: 3 }} />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Section>
+      {/* INTERACTIVE CAPABILITIES */}
+      <div style={{ background: "#F6F5F3", borderTop: "1px solid rgba(20,24,28,0.08)" }}>
+        <FeatureShowcase
+          eyebrow="HOW IT MAPS YOU"
+          title="From raw tables to a map you recognize."
+          features={[
+            { label: "It reads what you already have", blurb: "Read-only access to the systems you run on — Oracle, SAP, SQL Server, spreadsheets. Nothing to migrate, nothing to rebuild.", visual: <PipelineVisual label="nadir · read-only, sampled" /> },
+            { label: "It works out what everything is", blurb: "\"EMP_ID_V2\" becomes an employee, \"TBL_WRK_ORD\" becomes a work order. Nadir figures it out and flags anything it's unsure about for you to confirm.", visual: <GraphVisual label="nadir · figuring out your data" /> },
+            { label: "It builds your operation", blurb: "The confirmed pieces become one live map of your company — sites, machines, people, and how they connect, with the trouble spots lit up.", visual: <IsoVisual label="nadir · the map it builds" /> },
+          ]}
+        />
+      </div>
 
       {/* BY THE NUMBERS */}
       <Section>

@@ -1,43 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero, Section } from "@/components/site/PageShell";
-import { CheckCircle, Network, Cpu, Shield, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import Reveal from "@/components/site/Reveal";
+import FeatureShowcase from "@/components/site/FeatureShowcase";
+import { GraphVisual, PipelineVisual, AlertVisual } from "@/components/site/Visuals";
 import styles from "@/components/nadir/nadir.module.css";
 
 export const metadata: Metadata = { title: "Operational Graph — Nadir" };
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
 const SERIF = "var(--font-newsreader), serif";
-
-const CAPABILITIES = [
-  {
-    title: "Continuous Event Integration",
-    desc: "The Operational Graph is not a batch-processed report. As updates occur in your source databases, the graph resolves links and updates states in milliseconds.",
-    bullets: [
-      "Sub-second latency from source table updates to graph nodes",
-      "Event-driven architecture connects streaming logs directly into the model",
-      "Maintains complete relationship tracking over time",
-    ],
-  },
-  {
-    title: "Identity & Match Resolution",
-    desc: "Unify records that represent the same physical entity across different database systems without creating manual translation tables.",
-    bullets: [
-      "Links badge scan IDs with HR employee directories and safety training logs",
-      "Connects material batch codes from supplier shipping notes to internal inventory counts",
-      "Discovers and resolves cross-database identity conflicts automatically",
-    ],
-  },
-  {
-    title: "Unified Query API",
-    desc: "Query the status of your business using real-world vocabulary instead of joining a dozen legacy tables with hundreds of lines of SQL.",
-    bullets: [
-      "GraphQL and standard SQL access to the operational model",
-      "Trace downstream dependencies automatically (e.g. Find all orders impacted by a broken machine)",
-      "Sync graph outputs directly to ERP systems or dashboards via webhooks",
-    ],
-  },
-];
 
 const METRICS = [
   { val: "< 50ms", label: "Query latency for complex cross-entity lookups" },
@@ -86,51 +59,25 @@ export default function OperationalGraphPage() {
         </div>
       </div>
 
-      {/* CODE VISUAL */}
-      <div style={{ maxWidth: 1040, margin: "0 auto", padding: "0 48px 80px" }}>
-        <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, overflow: "hidden" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 18px", borderBottom: "1px solid rgba(20,24,28,0.08)" }}>
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(20,24,28,0.14)" }} />
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(20,24,28,0.14)" }} />
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "rgba(20,24,28,0.14)" }} />
-            <div style={{ marginLeft: 12, fontFamily: MONO, fontSize: 11.5, color: "#7a848e" }}>nadir · operational graph relationship lookup</div>
-          </div>
-          <div style={{ fontFamily: MONO, fontSize: 13, color: "#5a646e", lineHeight: 2.2, padding: "24px 28px" }}>
-            <div><span style={{ color: "#7a848e" }}>graph_query</span> = Machine[T-114]</div>
-            <div>&nbsp;&nbsp;→ connected_to: <span style={{ color: "#0E7C8A" }}>MaintenanceLog[3 records]</span></div>
-            <div>&nbsp;&nbsp;→ running_shift: <span style={{ color: "#0E7C8A" }}>Shift[Code: SFT-A]</span></div>
-            <div>&nbsp;&nbsp;→ assigned_operator: <span style={{ color: "#0E7C8A" }}>Operator[Name: Jose Torres]</span></div>
-            <div>&nbsp;&nbsp;&nbsp;&nbsp;→ certified_for_machine: <span style={{ color: "#C7452F" }}>False (Certification Expired: 2026-06-15)</span></div>
-            <div><span style={{ color: "#C7452F" }}>alert triggered: certification_mismatch → routed to plant manager ✓</span></div>
-          </div>
+      {/* LIVE VISUAL */}
+      <Reveal>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 48px 80px" }}>
+          <GraphVisual label="nadir · everything connected through the AI" />
         </div>
-      </div>
+      </Reveal>
 
-      {/* FEATURE PILLARS */}
-      <Section alt>
-        <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>CAPABILITIES</div>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 40px", letterSpacing: "-0.01em", color: "#14181C" }}>Trace relationships across systems.</h2>
-        <div style={{ display: "flex", flexDirection: "column", gap: 40 }}>
-          {CAPABILITIES.map((cap, i) => (
-            <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 48, borderTop: "1px solid rgba(20,24,28,0.1)", paddingTop: 32 }}>
-              <div>
-                <h3 style={{ fontWeight: 700, fontSize: 19, color: "#14181C", margin: "0 0 12px" }}>{cap.title}</h3>
-                <p style={{ fontSize: 15, lineHeight: 1.65, color: "#4a545e", margin: 0 }}>{cap.desc}</p>
-              </div>
-              <div>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
-                  {cap.bullets.map((b) => (
-                    <li key={b} style={{ display: "flex", gap: 10, fontSize: 14.5, color: "#3d4750", lineHeight: 1.5 }}>
-                      <CheckCircle size={16} style={{ color: "#15854F", flex: "none", marginTop: 3 }} />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Section>
+      {/* INTERACTIVE CAPABILITIES */}
+      <div style={{ background: "#F6F5F3", borderTop: "1px solid rgba(20,24,28,0.08)" }}>
+        <FeatureShowcase
+          eyebrow="CAPABILITIES"
+          title="One live model, traced across every system."
+          features={[
+            { label: "It connects in real time", blurb: "As your systems change, the model updates in milliseconds — not a nightly report you read the next morning.", visual: <GraphVisual label="nadir · live, sub-second" /> },
+            { label: "It knows the same thing across systems", blurb: "A badge scan, an HR record, a training log — Nadir figures out they're the same person, with no translation tables.", visual: <PipelineVisual label="nadir · one identity, many systems" /> },
+            { label: "It answers in plain language", blurb: "Ask \"who's clocked in without the right certification\" and get the answer — no SQL, no joining a dozen tables.", visual: <AlertVisual label="nadir · ask in plain English" /> },
+          ]}
+        />
+      </div>
 
       {/* BY THE NUMBERS */}
       <Section>

@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { COMPANIES } from "@/lib/data";
-import { PLATFORM_LAYERS, PRICING_TIERS } from "@/lib/marketing";
+import { PRICING_TIERS } from "@/lib/marketing";
 import InteractiveHow from "@/components/site/InteractiveHow";
 import ROICalculator from "@/components/site/ROICalculator";
+import Reveal from "@/components/site/Reveal";
+import FeatureShowcase from "@/components/site/FeatureShowcase";
+import { GraphVisual, PipelineVisual, IsoVisual, AlertVisual } from "@/components/site/Visuals";
 import styles from "@/components/nadir/nadir.module.css";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -110,31 +113,29 @@ export default function Home() {
       {/* INTERACTIVE HOW IT WORKS */}
       <InteractiveHow />
 
-      {/* PLATFORM PREVIEW */}
+      {/* PLATFORM PREVIEW — interactive, show-don't-tell */}
       <div style={{ background: "#F3F1EC", borderTop: "1px solid rgba(20,24,28,0.1)" }}>
-        <div style={{ maxWidth: 1240, margin: "0 auto", padding: "92px 48px" }}>
-          <div style={{ fontFamily: MONO, fontSize: 12.5, letterSpacing: "0.14em", color: "#0E7C8A", marginBottom: 18 }}>THE PLATFORM</div>
-          <h2 style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 42, lineHeight: 1.15, margin: "0 0 56px", maxWidth: 700, letterSpacing: "-0.01em" }}>
-            Not a chatbot bolted onto your data. An AI that reasons over how your business runs.
-          </h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-            {PLATFORM_LAYERS.map((l) => (
-              <div key={l.n} className={styles.layerCard} style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, padding: "30px 28px" }}>
-                <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.12em", color: "#0E7C8A", marginBottom: 16 }}>{l.n}</div>
-                <div style={{ fontWeight: 700, fontSize: 20, marginBottom: 12 }}>{l.title}</div>
-                <p style={{ fontSize: 14.5, lineHeight: 1.65, color: "#5a646e", margin: 0 }}>{l.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div style={{ marginTop: 44 }}>
+        <Reveal>
+          <FeatureShowcase
+            eyebrow="WHAT NADIR DOES"
+            title="Point it at your business. Watch it take over the hard part."
+            features={[
+              { label: "It understands your company", blurb: "Give it your systems — or just your website and a description. Nadir figures out what everything is and how it connects.", visual: <GraphVisual /> },
+              { label: "It maps your data", blurb: "It samples your databases and spreadsheets — a few rows, never the whole thing — and turns raw tables into the real things you run on.", visual: <PipelineVisual /> },
+              { label: "It shows you your floor", blurb: "Your whole operation, from above — every site, every zone, who's on shift, what's breaking, live.", visual: <IsoVisual /> },
+              { label: "It tells you what needs you", blurb: "Not another red light. Nadir catches the problem, explains it in plain English, and routes it to the person who can fix it.", visual: <AlertVisual /> },
+            ]}
+          />
+          <div style={{ maxWidth: 1040, margin: "0 auto", padding: "0 48px 60px" }}>
             <Link href="/platform" style={{ fontSize: 15, fontWeight: 600, color: "#0E7C8A", textDecoration: "none" }}>
               Explore the full platform →
             </Link>
           </div>
-        </div>
+        </Reveal>
       </div>
 
       {/* ROI CALCULATOR */}
+      <Reveal>
       <div style={{ maxWidth: 1240, margin: "0 auto", padding: "92px 48px" }}>
         <div style={{ fontFamily: MONO, fontSize: 12.5, letterSpacing: "0.14em", color: "#0E7C8A", marginBottom: 18, textAlign: "center" }}>THE BUSINESS CASE</div>
         <h2 style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 42, lineHeight: 1.15, margin: "0 auto 40px", textAlign: "center", letterSpacing: "-0.01em" }}>
@@ -142,8 +143,10 @@ export default function Home() {
         </h2>
         <ROICalculator />
       </div>
+      </Reveal>
 
       {/* PRICING PREVIEW */}
+      <Reveal>
       <div style={{ maxWidth: 1240, margin: "0 auto", padding: "92px 48px" }}>
         <div style={{ fontFamily: MONO, fontSize: 12.5, letterSpacing: "0.14em", color: "#0E7C8A", marginBottom: 18 }}>PRICING</div>
         <h2 style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 42, lineHeight: 1.15, margin: "0 0 40px", letterSpacing: "-0.01em" }}>
@@ -167,6 +170,7 @@ export default function Home() {
           </Link>
         </div>
       </div>
+      </Reveal>
 
       {/* CLOSING CTA */}
       <div style={{ background: "#F3F1EC", borderTop: "1px solid rgba(20,24,28,0.1)" }}>
