@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useNadir } from "./context";
+import NadirOrb from "../NadirOrb";
 import styles from "./nadir.module.css";
 
 // Nadir's replies type themselves out on arrival — the Tony-Stark feel. Runs
@@ -29,6 +30,8 @@ export default function ChatScreen() {
 
   const [briefOpen, setBriefOpen] = useState(false);
   const [dropOpen, setDropOpen] = useState(false);
+  const [actionPopup, setActionPopup] = useState<null | "email" | "message">(null);
+  const topAlert = co.alerts[0];
   const snapshotStyles = {
     none: { label: "Send for approval →", bg: "#0E7C8A", fg: "#FFFFFF", bd: "none" },
     pending: { label: `Sent to ${approver.name.split(" · ")[0]} — awaiting approval…`, bg: "rgba(180,118,20,0.12)", fg: "#8a5a10", bd: "1px solid rgba(180,118,20,0.4)" },
@@ -38,6 +41,15 @@ export default function ChatScreen() {
   return (
     <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", minHeight: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 36px", borderBottom: "1px solid rgba(20,24,28,0.08)", background: "#FCFBF9", flex: "none" }}>
+          <NadirOrb size={38} thinking={typing} />
+          <div>
+            <div style={{ fontSize: 15, fontWeight: 700, letterSpacing: "0.01em" }}>Nadir</div>
+            <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10.5, color: typing ? "#0E7C8A" : "#7a848e" }}>
+              {typing ? "thinking…" : `watching ${co.name} · ${co.sources.length} systems`}
+            </div>
+          </div>
+        </div>
         <div ref={chatScrollRef} style={{ flex: 1, overflowY: "auto", padding: "28px 36px 12px", display: "flex", flexDirection: "column", gap: 18 }}>
           {messages.map((m, i) => {
             const user = m.role === "user";
@@ -178,9 +190,48 @@ export default function ChatScreen() {
             {approval !== "none" && (
               <div style={{ fontSize: 10.5, color: "#9aa2ab", marginTop: 6, textAlign: "center" }}>click to open the briefing</div>
             )}
+            {/* action items — Nadir drafts them for you, right here */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
+              <button onClick={() => setActionPopup("email")} style={{ fontFamily: "inherit", fontSize: 11.5, fontWeight: 600, padding: "6px 10px", background: "#FFFFFF", color: "#0E7C8A", border: "1px solid rgba(14,124,138,0.35)", borderRadius: 100, cursor: "pointer" }}>✉ Draft the email</button>
+              <button onClick={() => setActionPopup("message")} style={{ fontFamily: "inherit", fontSize: 11.5, fontWeight: 600, padding: "6px 10px", background: "#FFFFFF", color: "#0E7C8A", border: "1px solid rgba(14,124,138,0.35)", borderRadius: 100, cursor: "pointer" }}>◷ Message the owner</button>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* action popup — the drafted email / message pops up in place */}
+      {actionPopup && (
+        <>
+          <div style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(20,24,28,0.4)" }} onClick={() => setActionPopup(null)} />
+          <div style={{ position: "fixed", top: "50%", left: "50%", transform: "translate(-50%,-50%)", zIndex: 61, width: 560, maxHeight: "80vh", overflowY: "auto", background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.14)", borderRadius: 14, boxShadow: "0 40px 90px -30px rgba(20,30,40,0.5)", padding: "22px 26px", animation: "nadirFadeUp 0.22s ease" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+              <NadirOrb size={30} />
+              <div>
+                <div style={{ fontSize: 14.5, fontWeight: 700 }}>{actionPopup === "email" ? "Nadir drafted this email" : "Nadir drafted this message"}</div>
+                <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 10, color: "#9aa2ab" }}>Review, then send — nothing goes out until you say so.</div>
+              </div>
+              <button onClick={() => setActionPopup(null)} style={{ marginLeft: "auto", background: "transparent", border: "none", color: "#9aa2ab", fontSize: 20, cursor: "pointer", lineHeight: 1 }}>×</button>
+            </div>
+            <div style={{ background: "#FCFBF9", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 10, padding: "16px 18px", fontSize: 13.5, lineHeight: 1.6, color: "#2a333c" }}>
+              {actionPopup === "email" ? (
+                <>
+                  <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, color: "#7a848e", marginBottom: 10 }}>To: {approver.name.split(" · ")[0]} &nbsp;·&nbsp; Subject: {topAlert?.title ?? actionTitle}</div>
+                  <p style={{ margin: "0 0 10px" }}>Hi {approver.name.split(" ")[0]},</p>
+                  <p style={{ margin: "0 0 10px" }}>{topAlert?.plain || topAlert?.detail || actionDesc}</p>
+                  <p style={{ margin: "0 0 10px" }}>I&apos;ve drafted the fix and it&apos;s ready for your sign-off. It takes about five minutes and clears the highest-risk item on the board today.</p>
+                  <p style={{ margin: 0 }}>— Sent by Nadir on your behalf</p>
+                </>
+              ) : (
+                <p style={{ margin: 0 }}>Heads up — {topAlert?.plain || topAlert?.title}. Nadir has the fix ready; want me to route it for approval? (Reply here and I&apos;ll handle the rest.)</p>
+              )}
+            </div>
+            <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+              <button onClick={() => setActionPopup(null)} style={{ flex: 1, fontFamily: "inherit", fontSize: 13, fontWeight: 700, padding: "10px 0", borderRadius: 8, border: "none", background: "#0E7C8A", color: "#fff", cursor: "pointer" }}>Send it →</button>
+              <button onClick={() => setActionPopup(null)} style={{ fontFamily: "inherit", fontSize: 13, fontWeight: 600, padding: "10px 18px", borderRadius: 8, border: "1px solid rgba(20,24,28,0.16)", background: "#fff", color: "#5a646e", cursor: "pointer" }}>Edit first</button>
+            </div>
+          </div>
+        </>
+      )}
 
       {dropOpen && (
         <>

@@ -110,3 +110,12 @@ body {
 @media (max-width: 760px) {
   .showcaseGrid { grid-template-columns: 1fr !important; }
 }
+
+@keyframes nadirOrbRing {
+  0% { transform: scale(0.7); opacity: 0.7; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+@keyframes nadirOrbCore {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}

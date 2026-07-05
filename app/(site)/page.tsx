@@ -6,6 +6,7 @@ import ROICalculator from "@/components/site/ROICalculator";
 import Reveal from "@/components/site/Reveal";
 import FeatureShowcase from "@/components/site/FeatureShowcase";
 import { GraphVisual, PipelineVisual, IsoVisual, AlertVisual } from "@/components/site/Visuals";
+import NadirOrb from "@/components/NadirOrb";
 import styles from "@/components/nadir/nadir.module.css";
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
@@ -15,12 +16,15 @@ export default function Home() {
   return (
     <>
       {/* HERO */}
-      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "84px 48px 64px", textAlign: "center" }}>
+      <div style={{ maxWidth: 1240, margin: "0 auto", padding: "72px 48px 64px", textAlign: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+          <NadirOrb size={92} />
+        </div>
         <div
           style={{
             display: "inline-flex", alignItems: "center", gap: 8, fontFamily: MONO,
             fontSize: 12.5, letterSpacing: "0.12em", color: "#0E7C8A", border: "1px solid rgba(14,124,138,0.3)",
-            padding: "7px 16px", borderRadius: 100, marginBottom: 34, background: "rgba(255,255,255,0.7)",
+            padding: "7px 16px", borderRadius: 100, marginBottom: 28, background: "rgba(255,255,255,0.7)",
           }}
         >
           <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#0E7C8A", animation: "nadirBlink 2.4s infinite" }} />
