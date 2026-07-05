@@ -137,6 +137,138 @@ export function PipelineVisual({ label = "nadir · mapping your data" }: { label
   );
 }
 
+// Cryptic column names on the left becoming plain, recognizable things on the
+// right — with one still waiting on a human's yes. The heart of schema mapping.
+export function MappingVisual({ label = "nadir · naming your data" }: { label?: string }) {
+  const SANS = "var(--font-ibm-plex-sans), sans-serif", MONO = "var(--font-ibm-plex-mono), monospace";
+  const rows = [
+    { raw: "EMP_ID_V2", plain: "Employee", ok: true },
+    { raw: "TBL_WRK_ORD", plain: "Work order", ok: true },
+    { raw: "LOC_CD", plain: "Site", ok: false },
+    { raw: "DT_STAMP", plain: "Timestamp", ok: true },
+  ];
+  const lx = 34, lw = 120, rx = 246, rw = 120, top = 66, gap = 42, h = 28;
+  return (
+    <Frame label={label}>
+      <svg viewBox="0 0 400 250" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+        <text x={lx + lw / 2} y={50} textAnchor="middle" style={{ fontSize: 9, letterSpacing: "0.1em", fill: "#7a848e", fontFamily: MONO }}>YOUR COLUMNS</text>
+        <text x={rx + rw / 2} y={50} textAnchor="middle" style={{ fontSize: 9, letterSpacing: "0.1em", fill: "#7a848e", fontFamily: MONO }}>WHAT THEY ARE</text>
+        {rows.map((r, i) => {
+          const y = top + i * gap, cy = y + h / 2;
+          const col = r.ok ? GREEN : AMBER;
+          return (
+            <g key={i}>
+              <path d={`M ${lx + lw} ${cy} C 200 ${cy}, 200 ${cy}, ${rx} ${cy}`} fill="none" stroke={col} strokeWidth={1.5} strokeDasharray={r.ok ? "0" : "4 3"} opacity={r.ok ? 0.55 : 0.8} />
+              {r.ok && <circle r={3} fill={GREEN}><animateMotion dur={`${2 + i * 0.3}s`} repeatCount="indefinite" path={`M ${lx + lw} ${cy} L ${rx} ${cy}`} /></circle>}
+              {/* left card */}
+              <rect x={lx} y={y} width={lw} height={h} rx={6} fill="#FFFFFF" stroke="rgba(20,24,28,0.16)" />
+              <text x={lx + 12} y={cy + 4} style={{ fontSize: 11, fill: "#5a646e", fontFamily: MONO }}>{r.raw}</text>
+              {/* right card */}
+              <rect x={rx} y={y} width={rw} height={h} rx={6} fill="#FFFFFF" stroke={r.ok ? "rgba(20,24,28,0.16)" : AMBER} strokeWidth={r.ok ? 1 : 1.5} />
+              <circle cx={rx + 13} cy={cy} r={3.5} fill={col} />
+              <text x={rx + 24} y={cy + 4} style={{ fontSize: 11.5, fontWeight: 600, fill: INK, fontFamily: SANS }}>{r.plain}</text>
+              {!r.ok && <text x={rx + rw - 10} y={cy + 4} textAnchor="end" style={{ fontSize: 9, fontWeight: 700, fill: AMBER, fontFamily: MONO }}>CONFIRM?</text>}
+            </g>
+          );
+        })}
+      </svg>
+    </Frame>
+  );
+}
+
+// A tamper-evident chain of sealed records — every action locked to the last.
+export function LedgerVisual({ label = "nadir · every action, sealed" }: { label?: string }) {
+  const blocks = [
+    { t: "login", h: "0e82c1" },
+    { t: "query", h: "84a7e2" },
+    { t: "rule change", h: "f109b4" },
+    { t: "alert cleared", h: "b7c3d9" },
+  ];
+  const bw = 70, gap = 20, y = 88, total = blocks.length * bw + (blocks.length - 1) * gap;
+  const startX = (400 - total) / 2, linkY = y + 28;
+  const SANS = "var(--font-ibm-plex-sans), sans-serif", MONO = "var(--font-ibm-plex-mono), monospace";
+  return (
+    <Frame label={label}>
+      <svg viewBox="0 0 400 250" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+        <line x1={startX} y1={linkY} x2={startX + total} y2={linkY} stroke="rgba(14,124,138,0.25)" strokeWidth={2} strokeDasharray="4 3">
+          <animate attributeName="stroke-dashoffset" values="7;0" dur="1s" repeatCount="indefinite" />
+        </line>
+        {blocks.map((b, i) => {
+          const x = startX + i * (bw + gap);
+          return (
+            <g key={i}>
+              <rect x={x} y={y} width={bw} height={56} rx={8} fill="#FFFFFF" stroke="rgba(20,24,28,0.16)" />
+              <rect x={x} y={y} width={bw} height={56} rx={8} fill="rgba(14,124,138,0.05)" />
+              <text x={x + bw / 2} y={y + 22} textAnchor="middle" style={{ fontSize: 9.5, fontWeight: 700, fill: INK, fontFamily: SANS }}>{b.t}</text>
+              <text x={x + bw / 2} y={y + 38} textAnchor="middle" style={{ fontSize: 8.5, fill: "#7a848e", fontFamily: MONO }}>{b.h}…</text>
+              <circle cx={x + bw / 2} cy={y + 48} r={2.6} fill={GREEN} />
+            </g>
+          );
+        })}
+        <circle r={4} fill={GREEN}>
+          <animateMotion dur="3s" repeatCount="indefinite" path={`M ${startX} ${linkY} L ${startX + total} ${linkY}`} />
+        </circle>
+        <g transform="translate(200, 182)">
+          <rect x={-84} y={-15} width={168} height={30} rx={15} fill="rgba(21,133,79,0.1)" stroke="rgba(21,133,79,0.35)" />
+          <circle cx={-64} cy={0} r={4} fill={GREEN}><animate attributeName="opacity" values="1;0.4;1" dur="1.6s" repeatCount="indefinite" /></circle>
+          <text x={6} y={4} textAnchor="middle" style={{ fontSize: 11, fontWeight: 700, fill: GREEN, fontFamily: MONO, letterSpacing: "0.04em" }}>CHAIN VERIFIED · 0 TAMPERING</text>
+        </g>
+      </svg>
+    </Frame>
+  );
+}
+
+// A live, append-only activity log — who did what, when.
+export function ActivityLogVisual({ label = "nadir · the record" }: { label?: string }) {
+  const rows = [
+    { c: TEAL, who: "m.voss", act: "ran query · crews on Feeder 12", t: "06:31:04" },
+    { c: AMBER, who: "system", act: "rule changed · overtime cap → 8h", t: "06:28:55" },
+    { c: GREEN, who: "j.reyes", act: "cleared alert · T-114 acknowledged", t: "06:24:12" },
+    { c: "#9aa2ab", who: "a.khan", act: "login · 10.2.1.44 · desktop", t: "06:19:47" },
+  ];
+  const MONO = "var(--font-ibm-plex-mono), monospace";
+  return (
+    <Frame label={label}>
+      <div style={{ position: "absolute", inset: 0, padding: "22px 26px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 9 }}>
+        {rows.map((r, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.09)", borderRadius: 8, padding: "9px 12px" }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: r.c, flex: "none", animation: `nadirBlink ${1.5 + i * 0.25}s infinite` }} />
+            <span style={{ fontFamily: MONO, fontSize: 11, color: "#14181C", fontWeight: 600, flex: "none", width: 52 }}>{r.who}</span>
+            <span style={{ fontSize: 12.5, color: "#3a444e", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.act}</span>
+            <span style={{ marginLeft: "auto", fontFamily: MONO, fontSize: 10.5, color: "#9aa4ae", flex: "none" }}>{r.t}</span>
+          </div>
+        ))}
+      </div>
+    </Frame>
+  );
+}
+
+// A finished, verified export handed to an auditor.
+export function ExportVisual({ label = "nadir · ready for your auditor" }: { label?: string }) {
+  const MONO = "var(--font-ibm-plex-mono), monospace";
+  return (
+    <Frame label={label}>
+      <svg viewBox="0 0 400 250" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+        <g transform="translate(148, 44)">
+          <rect x={0} y={0} width={104} height={132} rx={8} fill="#FFFFFF" stroke="rgba(20,24,28,0.18)" />
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <rect key={i} x={16} y={20 + i * 15} width={i === 5 ? 44 : 72} height={5} rx={2.5} fill="rgba(20,24,28,0.12)" />
+          ))}
+          <g transform="translate(74, 96)">
+            <circle r={22} fill="rgba(21,133,79,0.12)" stroke={GREEN} strokeWidth={1.5} />
+            <path d="M -9 1 L -3 8 L 10 -7" fill="none" stroke={GREEN} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
+            <circle r={22} fill="none" stroke={GREEN} strokeWidth={1.5} opacity={0.5}>
+              <animate attributeName="r" values="20;28;20" dur="2.4s" repeatCount="indefinite" />
+              <animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite" />
+            </circle>
+          </g>
+        </g>
+        <text x={200} y={206} textAnchor="middle" style={{ fontSize: 11, fontWeight: 700, fill: GREEN, fontFamily: MONO, letterSpacing: "0.04em" }}>SOC 2 · HIPAA · SIGNED</text>
+      </svg>
+    </Frame>
+  );
+}
+
 // A stack of live alerts turning into a routed action — "it tells you what to do."
 export function AlertVisual({ label = "nadir · what needs you" }: { label?: string }) {
   const rows = [
