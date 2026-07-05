@@ -83,6 +83,22 @@ ok(flow.deviationSentences.length > 0 && flow.deviationSentences[0].includes("bo
 const flowNoAssign = computeFlow(log1, ["Open", "Submitted", "Dispositioned", "Closed"]);
 ok(flowNoAssign.transitions.find((t) => t.from === "Submitted" && t.to === "Assigned")?.expected === false, "changing the expected path reclassifies edges");
 
+console.log("— procedural facility generator (3D site) —");
+const { generateFacility, facilityChecksum, FLOOR } = await import("../lib/facilityGen.ts");
+const { floorFor } = await import("../lib/floor.ts");
+const utilZones = floorFor("utility");
+const f1 = generateFacility("utility", utilZones);
+const f2 = generateFacility("utility", utilZones);
+const f3 = generateFacility("utility", utilZones);
+ok(facilityChecksum(f1) === facilityChecksum(f2) && facilityChecksum(f2) === facilityChecksum(f3), "same company → identical facility across 3 runs (deterministic)");
+ok(generateFacility("restaurant", floorFor("restaurant")) && facilityChecksum(f1) !== facilityChecksum(generateFacility("restaurant", floorFor("restaurant"))), "different company → different facility");
+ok(f1.stats.reachablePct >= 0.999, `flood-fill reaches 100% of floor (${Math.round(f1.stats.reachablePct * 100)}%)`);
+ok(f1.rooms.length === utilZones.length && f1.rooms.every((r, i) => r.label === utilZones[i].label), "every real zone survives as a room");
+ok(f1.rooms.some((r) => r.type === "entrance") && f1.rooms.some((r) => r.type === "critical"), "entrance + critical rooms tagged");
+ok(f1.edges.length >= f1.rooms.length - 1, "connectivity graph spans all rooms (MST + loops)");
+ok(f1.people.length > 0 && f1.people.every((p) => f1.grid[p.y * f1.W + p.x] === FLOOR), "people are placed only on floor cells");
+ok(f1.stats.genMs < 50, `generation under 50ms (${f1.stats.genMs}ms)`);
+
 console.log("— BOM / micro-costing engine (runs on a scratch copy of prisma/dev.db) —");
 const scratch = path.resolve("prisma/.harness.db");
 copyFileSync(path.resolve("prisma/dev.db"), scratch);

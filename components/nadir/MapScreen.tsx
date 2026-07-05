@@ -7,10 +7,11 @@ import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 
 import SiteMapper from "./SiteMapper";
-import Nadir3D from "./Nadir3D";
 import PipelineMapper from "./PipelineMapper";
 import IsoZoneMap from "./IsoZoneMap";
 import PrioritiesTicker from "./PrioritiesTicker";
+
+const FacilityScene = dynamic(() => import("./FacilityScene"), { ssr: false });
 
 export default function MapScreen() {
   const { co, alertsFull, activeCount, clockLabel } = useNadir();
@@ -125,7 +126,7 @@ export default function MapScreen() {
           ) : viewMode === "2D" ? (
             <SiteMapper onBuildingClick={handleBuildingClick} />
           ) : (
-            <Nadir3D onBuildingClick={handleBuildingClick} clickedBuilding={clickedBuilding} />
+            <FacilityScene onZoneClick={(z) => handleBuildingClick(z ? 0 : null)} />
           )}
           
           {!isPanelOpen && (
