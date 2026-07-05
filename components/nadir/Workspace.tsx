@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { alertKey, fmtClock, initialToast, sevAnim } from "@/lib/derive";
 import { PHASE2 } from "@/lib/phase2";
 import { GUIDE_STEPS, WIRES, type Wire } from "@/lib/phase3";
+import { ticketsFor } from "@/lib/tickets";
 import { NadirContext, type DecoratedAlert, type NadirCtxValue, type NotifItem, type ThreadItemView } from "./context";
 import AppShell from "./AppShell";
 
@@ -87,18 +88,9 @@ export default function Workspace() {
 
   // phase 2 runtime state
   const [evidenceIdx, setEvidenceIdx] = useState<number | null>(null);
-  const [ingestedData, setIngestedData] = useState<Record<string, string>[]>([]);
-
-  useEffect(() => {
-    fetch('/api/ingest')
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === 'success') {
-          setIngestedData(data.data);
-        }
-      })
-      .catch(err => console.error("Failed to ingest data:", err));
-  }, []);
+  // Tickets are per-company and industry-specific — never a shared global set,
+  // so a staffing firm never sees a caterer's checklist.
+  const ingestedData = ticketsFor(COMPANIES[cidx].id) as unknown as Record<string, string>[];
 
   const [approvals, setApprovals] = useState<Record<string, "none" | "pending" | "approved">>({});
   const [escalations, setEscalations] = useState<Record<string, boolean>>({});

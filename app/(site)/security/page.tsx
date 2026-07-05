@@ -18,9 +18,9 @@ const PILLARS = [
   },
   {
     icon: <Eye size={24} />,
-    title: "Zero AI Training",
-    summary: "Your data is never used to train or improve AI models.",
-    detail: "We use LLMs strictly as stateless translation layers. Data is processed in memory and purged immediately after inference. We have strict DPAs with all sub-processors prohibiting any data retention for model development.",
+    title: "Learns your business — only yours",
+    summary: "Nadir learns from your data to run your operation, inside your own instance. It's never used to improve a model anyone else touches.",
+    detail: "Getting smarter about your company is the point — but that learning stays in your tenant. Your data is never co-mingled with another customer's and never used to train a shared or foundation model. Strict DPAs with every sub-processor prohibit retention for outside model development.",
   },
   {
     icon: <Lock size={24} />,
@@ -113,7 +113,7 @@ export default function SecurityPage() {
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 16 }}>
               {[
                 "Sell, share, or monetize your operational data",
-                "Train AI models on your data",
+                "Use your data to train models for other customers",
                 "Co-mingle your data with another customer's",
                 "Prevent you from exporting or deleting your data",
                 "Modify audit logs for any reason",

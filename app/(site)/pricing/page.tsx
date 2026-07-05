@@ -18,12 +18,15 @@ export default function PricingPage() {
 
       {/* THE TIERS — same numbers as the home page preview, in full */}
       <div style={{ maxWidth: 1240, margin: "0 auto", padding: "24px 48px 72px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, alignItems: "stretch" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 16, alignItems: "stretch" }}>
           {PRICING_TIERS.map((t) => (
-            <div key={t.name} style={{ color: t.fg, border: t.border, borderRadius: 14, padding: "30px 30px 26px", background: t.bg, display: "flex", flexDirection: "column" }}>
+            <div key={t.name} style={{ position: "relative", color: t.fg, border: t.border, borderRadius: 14, padding: "26px 22px 22px", background: t.bg, display: "flex", flexDirection: "column" }}>
+              {"badge" in t && t.badge && (
+                <div style={{ position: "absolute", top: -10, left: 22, fontFamily: MONO, fontSize: 9.5, letterSpacing: "0.1em", fontWeight: 700, color: "#FFFFFF", background: "#0E7C8A", padding: "3px 9px", borderRadius: 100 }}>{t.badge}</div>
+              )}
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: t.dot }} />
-                <span style={{ fontWeight: 700, fontSize: 17 }}>{t.name}</span>
+                <span style={{ fontWeight: 700, fontSize: 16.5 }}>{t.name}</span>
               </div>
               <div style={{ fontSize: 13.5, opacity: 0.65, marginBottom: 18 }}>{t.who}</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 6 }}>

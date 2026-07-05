@@ -32,8 +32,8 @@ export default function Home() {
           One AI that understands<br />
           <em style={{ color: "#0E7C8A", fontStyle: "italic" }}>your entire company.</em>
         </h1>
-        <p style={{ fontSize: 19, lineHeight: 1.6, color: "#4a545e", maxWidth: 660, margin: "0 auto 40px", textWrap: "pretty" }}>
-          Nadir is an AI that learns how your business actually runs. Point it at the systems you already use — it samples them, works out how everything connects on its own, watches it all live, and tells you what needs you. One place, your whole operation, finally under your control.
+        <p style={{ fontSize: 19, lineHeight: 1.6, color: "#4a545e", maxWidth: 560, margin: "0 auto 40px", textWrap: "pretty" }}>
+          Point Nadir at the systems you already use. It works out how everything connects, watches it live, and tells you what needs you.
         </p>
         <div style={{ display: "flex", gap: 14, justifyContent: "center" }}>
           <Link
@@ -155,14 +155,14 @@ export default function Home() {
         <h2 style={{ fontFamily: "var(--font-newsreader), serif", fontWeight: 400, fontSize: 42, lineHeight: 1.15, margin: "0 0 40px", letterSpacing: "-0.01em" }}>
           Starts where you are. Scales with the floor.
         </h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))", gap: 14 }}>
           {PRICING_TIERS.map((t) => (
-            <Link key={t.name} href="/pricing" style={{ textDecoration: "none", color: t.fg, border: t.border, borderRadius: 14, padding: "26px 28px", background: t.bg, display: "block" }}>
-              <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 4 }}>{t.name}</div>
-              <div style={{ fontSize: 13.5, opacity: 0.65, marginBottom: 16 }}>{t.who}</div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-                <span style={{ fontFamily: "var(--font-newsreader), serif", fontSize: 36, fontWeight: 500 }}>{t.price}</span>
-                <span style={{ fontSize: 13.5, opacity: 0.6 }}>{t.per}</span>
+            <Link key={t.name} href="/pricing" style={{ textDecoration: "none", color: t.fg, border: t.border, borderRadius: 14, padding: "22px 22px", background: t.bg, display: "block" }}>
+              <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>{t.name}</div>
+              <div style={{ fontSize: 12.5, opacity: 0.65, marginBottom: 14, minHeight: 34 }}>{t.who}</div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+                <span style={{ fontFamily: "var(--font-newsreader), serif", fontSize: 30, fontWeight: 500 }}>{t.price}</span>
+                <span style={{ fontSize: 12.5, opacity: 0.6 }}>{t.per}</span>
               </div>
             </Link>
           ))}

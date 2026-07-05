@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { SCREENS } from "@/lib/constants";
+import { NAV_SCREENS } from "@/lib/constants";
 import { useNadir } from "./context";
 import styles from "./nadir.module.css";
 import ChatScreen from "./ChatScreen";
@@ -244,6 +244,13 @@ export default function AppShell() {
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#15854F", animation: "nadirBlink 2.4s infinite" }} />
             {co.sources.length} live
           </div>
+          <button
+            onClick={() => setScreen("dash")}
+            title="Dashboard"
+            style={{ fontFamily: "inherit", width: 32, height: 32, borderRadius: 8, border: "1px solid rgba(20,24,28,0.14)", background: screen === "dash" ? "rgba(14,124,138,0.08)" : "transparent", cursor: "pointer", color: screen === "dash" ? "#0E7C8A" : "#5a646e", display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="5.5" height="6.5" rx="1" stroke="currentColor" strokeWidth="1.4"/><rect x="9" y="1.5" width="5.5" height="4" rx="1" stroke="currentColor" strokeWidth="1.4"/><rect x="1.5" y="10" width="5.5" height="4.5" rx="1" stroke="currentColor" strokeWidth="1.4"/><rect x="9" y="7.5" width="5.5" height="7" rx="1" stroke="currentColor" strokeWidth="1.4"/></svg>
+          </button>
           <GuideButton />
           <NotificationsBell />
           <button
@@ -259,7 +266,7 @@ export default function AppShell() {
       <div className={styles.mobileStack} style={{ display: "flex", flex: 1, minHeight: 0 }}>
         {/* NAV */}
         <div className={styles.mobileFullWidth} style={{ width: 214, flex: "none", borderRight: "1px solid rgba(20,24,28,0.1)", padding: "14px 10px", display: "flex", flexDirection: "column", gap: 3, background: "#FFFFFF" }}>
-          {SCREENS.map((sc) => {
+          {NAV_SCREENS.map((sc) => {
             const active = screen === sc.id;
             let badge: string | false = false;
             let badgeBg = "rgba(199,69,47,0.12)";

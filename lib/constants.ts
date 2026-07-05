@@ -4,19 +4,25 @@ export const RETICLE_CURSOR =
   "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"26\" height=\"26\" viewBox=\"0 0 26 26\"><path d=\"M5 2l16 9.5-7.2 1.4L18.5 22l-3.4 1.6-4.6-8.7L5 20z\" fill=\"%23FAF9F7\" stroke=\"%230E7C8A\" stroke-width=\"1.8\" stroke-linejoin=\"round\"/></svg>') 5 2, default";
 
 // One-word, "one and done" names. Keys stay stable so nothing downstream breaks.
+// Order follows the operator's mental model: talk to Nadir, see the place,
+// see how it flows, then act (assignments/plan), communicate, structure,
+// govern, and connect more data. Dashboard is a header icon, not a nav row.
 export const SCREENS = [
   { id: "chat", label: "Nadir" },
   { id: "map", label: "Layout" },
   { id: "graph", label: "Flow" },
-  { id: "inbox", label: "Inbox" },
   { id: "tickets", label: "Assignments" },
-  { id: "depts", label: "Org" },
   { id: "plan", label: "Plan" },
+  { id: "inbox", label: "Inbox" },
+  { id: "depts", label: "Org" },
   { id: "comp", label: "Compliance" },
   { id: "sources", label: "Connections" },
   { id: "dash", label: "Dashboard" },
   { id: "settings", label: "Settings" },
 ] as const;
+
+// Screens shown in the left nav (Dashboard is promoted to a header icon).
+export const NAV_SCREENS = SCREENS.filter((s) => s.id !== "dash");
 
 export type ScreenId = (typeof SCREENS)[number]["id"];
 

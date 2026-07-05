@@ -15,18 +15,18 @@ const FEATURES = [
   {
     id: "ontology",
     eyebrow: "LAYER 01",
-    title: "Schema-Agnostic Ingestion",
-    desc: "We connect directly to the databases your business already runs on — however old, customized, or messy. We require only read-only SQL access. Our engine automatically maps idiosyncratic table structures into clean, standardized digital objects.",
-    bullets: ["Read-only access, no migration required", "Supports Oracle, SAP, Postgres, MSSQL, and custom ERPs", "Handles decades-old schemas with inconsistent naming"],
+    title: "It reads what you already have",
+    desc: "Nadir connects to the systems your business already runs on — however old or messy — with read-only access. It figures out what's in them on its own, so there's no cleanup project and nothing to migrate.",
+    bullets: ["Read-only, no migration required", "Works with Oracle, SAP, Postgres, SQL Server, and custom systems", "Handles decades-old data with inconsistent naming"],
     icon: <Database size={24} />,
     color: "#0E7C8A",
   },
   {
     id: "mapper",
     eyebrow: "LAYER 02",
-    title: "Ontology Engine & Schema Mapper",
-    desc: "Our AI translates raw columns and rows into real-world objects — Work Orders, Turbines, Employees, Shifts. You confirm the mapping once through a visual drag-and-drop interface, and the system remembers.",
-    bullets: ["Visual column-to-object matching with mismatch warnings", "AI-suggested mappings confirmed by your team", "Cross-database identity resolution (e.g. EmpID ↔ BadgeNumber)"],
+    title: "It works out how it connects",
+    desc: "Nadir turns raw rows into the real things you care about — work orders, machines, employees, shifts — and links them. You confirm once; it remembers. The same person or part in two systems becomes one.",
+    bullets: ["Suggests the mapping, flags what looks wrong", "You confirm once, it remembers", "Matches the same thing across systems (EmpID ↔ BadgeNumber)"],
     icon: <GitMerge size={24} />,
     color: "#15854F",
   },
@@ -79,8 +79,8 @@ export default function PlatformPage() {
       {/* HERO */}
       <PageHero
         eyebrow="THE PLATFORM"
-        title="A fusion engine with a brain on top."
-        sub="Nadir connects to the databases your business already runs on — however messy — builds a live model of how everything actually moves, and tells you what breaks next."
+        title="One AI, wired into everything you run."
+        sub="Nadir reads the systems you already use, works out how your business fits together, and tells you what needs you — before it becomes a problem."
       />
 
       {/* REQUEST A DEMO */}

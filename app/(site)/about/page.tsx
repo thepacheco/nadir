@@ -17,13 +17,6 @@ const PRINCIPLES = [
   { icon: <Users size={22} />, title: "Forward-Deployed Engineering", desc: "We sit directly on the floor with operations managers and plant engineers to build, verify, and launch the ontology mappings." },
 ];
 
-const STACK = [
-  { tech: "Rust & WASM", desc: "High-performance processing engines for sub-second database schema parsing and event execution on the edge." },
-  { tech: "Postgres & pgvector", desc: "Structured semantic mappings storage and matching indices to power schema-to-object conversions." },
-  { tech: "Next.js & React Flow", desc: "State-of-the-art interactive workspace dashboard and column-to-object schema mapper UI." },
-  { tech: "GraphQL & Webhooks", desc: "API interfaces designed to query the operational twin and dispatch alert triggers directly to ERP handlers." },
-];
-
 const ENGAGEMENT_STEPS = [
   { step: "01", label: "Initial Integration & Scope", desc: "We connect to your ERP or SQL databases via read-only paths. No write access required, ensuring absolute safety for your operational systems." },
   { step: "02", label: "Semantic Mapping Approval", desc: "Our forward-deployed engineers guide your domain experts through validating and confirming the ontology mappings via the Schema Mapper UI." },
@@ -31,12 +24,6 @@ const ENGAGEMENT_STEPS = [
   { step: "04", label: "Operational Launch", desc: "Alert routings, SMS notification schedules, and tamper-proof ledgers are deployed. Your team begins monitoring live activities." },
 ];
 
-const TIMELINE = [
-  { year: "2025", event: "Founded in Atlanta. Built our first read-only SQL ingestion connector for a regional power utility." },
-  { year: "2025", event: "Released the Ontology Engine, automating columns-to-entities translation using local LLM parsers." },
-  { year: "2026", event: "Hardened platform security: added isolated VPC tenant setups and cryptographically signed append-only ledgers." },
-  { year: "2026", event: "Launched the interactive workspace demo featuring 5 simulated high-risk, regulated industries." },
-];
 
 export default function AboutPage() {
   return (
@@ -47,10 +34,10 @@ export default function AboutPage() {
           <div>
             <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#5a646e", marginBottom: 24 }}>THE COMPANY</div>
             <h1 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 52, lineHeight: 1.1, margin: 0, letterSpacing: "-0.015em", color: "#14181C" }}>
-              We build the central nervous system for physical industry.
+              We connect the physical world to AI, and give it back to the people who run it.
             </h1>
             <p style={{ fontSize: 16.5, lineHeight: 1.65, color: "#4a545e", margin: "24px 0 0" }}>
-              Nadir exists because mid-market companies in regulated, operationally complex industries run on fragmented systems — and no one has a single live picture of what's actually happening.
+              Our whole goal is control: to let a company see and steer how it actually operates. Most businesses run on a dozen disconnected systems and nobody has the full picture. Nadir is the AI that puts it back together — so the people running the place are the ones in charge of it.
             </p>
           </div>
           <div style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, padding: 12, boxShadow: "0 20px 40px -20px rgba(0,0,0,0.06)" }}>
@@ -95,23 +82,6 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* DETAILED ENGINEERING STACK */}
-      <Section>
-        <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>ENGINEERING & INFRASTRUCTURE</div>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 32px", letterSpacing: "-0.01em", color: "#14181C" }}>Built for scale.</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 20 }}>
-          {STACK.map((s, i) => (
-            <div key={i} style={{ background: "#FAFAF8", border: "1px solid rgba(20,24,28,0.08)", borderRadius: 10, padding: "24px 20px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#0E7C8A" }} />
-                <div style={{ fontWeight: 700, fontSize: 15, color: "#14181C" }}>{s.tech}</div>
-              </div>
-              <p style={{ fontSize: 13.5, lineHeight: 1.6, color: "#5a646e", margin: 0 }}>{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
       {/* GUIDING PRINCIPLES */}
       <Section alt>
         <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>PHILOSOPHY</div>
@@ -146,18 +116,21 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* TIMELINE */}
+      {/* WHERE WE START */}
       <Section alt>
-        <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>TIMELINE</div>
-        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 32px", letterSpacing: "-0.01em", color: "#14181C" }}>Nadir's milestones.</h2>
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {TIMELINE.map((t, i) => (
-            <div key={i} style={{ display: "grid", gridTemplateColumns: "80px 1fr", gap: 24, padding: "24px 0", borderTop: "1px solid rgba(20,24,28,0.1)" }}>
-              <div style={{ fontFamily: MONO, fontSize: 13, color: "#0E7C8A", letterSpacing: "0.04em", fontWeight: 700 }}>{t.year}</div>
-              <div style={{ fontSize: 15, lineHeight: 1.6, color: "#3d4750" }}>{t.event}</div>
+        <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>WHERE WE START</div>
+        <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 20px", letterSpacing: "-0.01em", color: "#14181C" }}>Georgia first. Real operators first.</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          {[
+            { t: "Built with operators, not for them", d: "We work alongside people who run utilities, plants, kitchens, and staffing floors — because the ones who know the work are the ones who should shape the tool." },
+            { t: "US-based, starting in Georgia", d: "We're beginning close to home with a handful of design partners, so every industry we support, we support to the depth an insider would expect." },
+            { t: "Depth before breadth", d: "One vertical understood cold beats ten understood shallowly. We earn each industry before we claim it." },
+          ].map((c, i) => (
+            <div key={i} style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, padding: "26px 24px" }}>
+              <div style={{ fontWeight: 700, fontSize: 16.5, marginBottom: 10, color: "#14181C" }}>{c.t}</div>
+              <p style={{ fontSize: 14.5, lineHeight: 1.65, color: "#5a646e", margin: 0 }}>{c.d}</p>
             </div>
           ))}
-          <div style={{ borderTop: "1px solid rgba(20,24,28,0.1)" }} />
         </div>
       </Section>
 

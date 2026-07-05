@@ -131,7 +131,7 @@ export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
               borderRadius: 6, cursor: "pointer", boxShadow: "0 2px 4px rgba(0,0,0,0.02)", textAlign: "center"
             }}
           >
-            + Author Sign-off Form
+            + New checklist
           </button>
         </div>
       </div>
@@ -437,27 +437,28 @@ export default function TeamScreen({ mode }: { mode: "inbox" | "tickets" }) {
         <div style={{ position: "fixed", inset: 0, background: "rgba(20,24,28,0.6)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ width: 500, background: "#FFFFFF", borderRadius: 12, overflow: "hidden", boxShadow: "0 12px 32px rgba(0,0,0,0.15)" }}>
             <div style={{ padding: "16px 20px", borderBottom: "1px solid rgba(20,24,28,0.1)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#FCFBF9" }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#14181C" }}>Author Sign-off Form</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#14181C" }}>New checklist</div>
               <button onClick={() => setShowChecklistBuilder(false)} style={{ background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#9aa2ab" }}>×</button>
             </div>
             <div style={{ padding: 24, fontSize: 13, color: "#14181C" }}>
+              <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.5, marginBottom: 16 }}>
+                A required checklist a step can&apos;t pass without. Nadir attaches it to the stage you choose and records every sign-off in the audit trail.
+              </div>
               <div style={{ marginBottom: 16 }}>
-                <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#7a848e", marginBottom: 6 }}>FORM NAME</label>
-                <input type="text" placeholder="e.g. Pre-Flight Catering Checklist" style={{ width: "100%", padding: "8px 12px", border: "1px solid rgba(20,24,28,0.2)", borderRadius: 6, fontSize: 13, fontFamily: "inherit" }} />
+                <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#7a848e", marginBottom: 6 }}>CHECKLIST NAME</label>
+                <input type="text" placeholder="e.g. Shift-start safety checklist" style={{ width: "100%", padding: "8px 12px", border: "1px solid rgba(20,24,28,0.2)", borderRadius: 6, fontSize: 13, fontFamily: "inherit" }} />
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#7a848e", marginBottom: 6 }}>TARGET DEPARTMENT</label>
                 <select style={{ width: "100%", padding: "8px 12px", border: "1px solid rgba(20,24,28,0.2)", borderRadius: 6, fontSize: 13, fontFamily: "inherit", background: "#FFF" }}>
-                  <option>Field Ops</option>
-                  <option>Kitchen</option>
-                  <option>Maintenance</option>
+                  {(departments.length ? departments : ["Operations"]).map((d) => <option key={d}>{d}</option>)}
                 </select>
               </div>
               <div>
                 <label style={{ display: "block", fontSize: 11, fontWeight: 700, color: "#7a848e", marginBottom: 6 }}>ITEMS</label>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <input type="checkbox" disabled />
-                  <input type="text" value="Verify seal genealogy matches SN-04" readOnly style={{ flex: 1, padding: "6px 10px", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 4, fontSize: 13, color: "#5a646e", background: "#FCFBF9" }} />
+                  <input type="text" placeholder="First required step…" style={{ flex: 1, padding: "6px 10px", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 4, fontSize: 13, color: "#5a646e", background: "#FCFBF9" }} />
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <input type="checkbox" disabled />
