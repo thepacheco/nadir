@@ -5,13 +5,12 @@ import { PageHero, Section } from "@/components/site/PageShell";
 export const metadata: Metadata = { title: "Subprocessors Directory — Nadir" };
 
 const MONO = "var(--font-ibm-plex-mono), monospace";
-const SERIF = "var(--font-newsreader), serif";
 
 const SUBPROCESSORS = [
-  { name: "Amazon Web Services (AWS)", purpose: "Primary cloud infrastructure provider, isolated tenant VPC hosting, encrypted database storage.", location: "United States (East / West regions)", standard: "SOC-2 Type II, ISO 27001, FedRAMP High" },
-  { name: "Google Cloud Platform (GCP)", purpose: "Backup cloud infrastructure, isolated virtual environment orchestration, KMS key escrow management.", location: "United States (Central / East regions)", standard: "SOC-2 Type II, ISO 27001, FedRAMP High" },
-  { name: "SendGrid (Twilio)", purpose: "Transactional system alerts routing (operational notification emails to registered customer supervisors).", location: "United States", standard: "SOC-2 Type II" },
-  { name: "Twilio", purpose: "SMS alert routing and prioritization dispatch notifications for critical compliance flags.", location: "United States", standard: "SOC-2 Type II" },
+  { name: "Amazon Web Services (AWS)", purpose: "Primary cloud infrastructure — isolated tenant hosting and encrypted database storage.", location: "United States (East / West regions)", standard: "SOC 2 Type II, ISO 27001" },
+  { name: "Google Cloud Platform (GCP)", purpose: "Backup cloud infrastructure and key management.", location: "United States (Central / East regions)", standard: "SOC 2 Type II, ISO 27001" },
+  { name: "SendGrid (Twilio)", purpose: "Sends the notification emails Nadir routes to your team.", location: "United States", standard: "SOC 2 Type II" },
+  { name: "Twilio", purpose: "Sends the SMS alerts Nadir routes for time-sensitive issues.", location: "United States", standard: "SOC 2 Type II" },
 ];
 
 export default function SubprocessorsPage() {
@@ -23,11 +22,11 @@ export default function SubprocessorsPage() {
         sub="Last Updated: July 3, 2026. Authorized third-party sub-processors utilized by Nadir to deploy, support, and host enterprise systems."
       />
 
-      <div style={{ maxWidth: 1040, margin: "0 auto", padding: "0 48px" }}>
+      <div style={{ maxWidth: 1040, margin: "0 auto", padding: "0 48px 48px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 280px", gap: 64 }}>
           <div>
             <p style={{ fontSize: 15.5, lineHeight: 1.7, color: "#4a545e", marginBottom: 32 }}>
-              Nadir Intelligence, Inc. maintains strict data protection agreements (DPAs) with all subprocessors listed below. Each subprocessor is vetted annually to ensure compliance with SOC-2 Type II, ISO 27001, and federal data privacy standards.
+              We sign a data processing agreement (DPA) with every subprocessor below, and we choose vendors that hold their own independent security certifications like SOC 2 Type II and ISO 27001. We keep this list current as our vendors change.
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
@@ -56,9 +55,9 @@ export default function SubprocessorsPage() {
           {/* SIDEBAR */}
           <div style={{ position: "sticky", top: 100, alignSelf: "start" }}>
             <div style={{ background: "#F6F5F3", border: "1px solid rgba(20,24,28,0.08)", borderRadius: 12, padding: "24px 20px" }}>
-              <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 12 }}>SECURITY LOGS</div>
+              <div style={{ fontFamily: MONO, fontSize: 12, color: "#7a848e", letterSpacing: "0.06em", marginBottom: 12 }}>HOW WE CHOOSE THEM</div>
               <div style={{ fontSize: 13, color: "#5a646e", lineHeight: 1.6, marginBottom: 16 }}>
-                Nadir only routes data to subprocessors that maintain isolated tenant capabilities and strict cryptographic wipe agreements.
+                We only route data to vendors that keep tenants isolated and will delete data on request. Your data is never used to train anyone else&rsquo;s model.
               </div>
               <div style={{ height: 1, background: "rgba(20,24,28,0.1)", margin: "16px 0" }} />
               <Link href="/privacy" style={{ fontSize: 13.5, color: "#0E7C8A", textDecoration: "none", fontWeight: 600 }}>View Privacy Policy →</Link>

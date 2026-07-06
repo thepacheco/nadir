@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero, Section } from "@/components/site/PageShell";
-import { Shield, Lock, Eye, Server, CheckCircle } from "lucide-react";
+import { Shield, Lock, Eye, Server } from "lucide-react";
+import Reveal from "@/components/site/Reveal";
 import styles from "@/components/nadir/nadir.module.css";
 
 export const metadata: Metadata = { title: "Security & Trust — Nadir" };
@@ -36,7 +37,7 @@ const PILLARS = [
   },
 ];
 
-const BADGES = ["SOC-2 Type II", "HIPAA", "NERC CIP", "ISO 27001", "GDPR", "DoD IL4"];
+const BADGES = ["SOC 2 Type II", "HIPAA", "GDPR", "ISO 27001", "NERC CIP"];
 
 export default function SecurityPage() {
   return (
@@ -47,8 +48,9 @@ export default function SecurityPage() {
         sub="Nadir connects directly to your most sensitive operational and financial systems. Our security model was architected from day one assuming a zero-trust environment."
       />
 
-      {/* COMPLIANCE BADGES */}
+      {/* STANDARDS WE BUILD TO */}
       <div style={{ maxWidth: 1040, margin: "0 auto", padding: "0 48px 60px" }}>
+        <div style={{ fontFamily: MONO, fontSize: 11, letterSpacing: "0.12em", color: "#7a848e", marginBottom: 14 }}>BUILT TO THESE STANDARDS</div>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           {BADGES.map((b) => (
             <div key={b} style={{
@@ -57,14 +59,18 @@ export default function SecurityPage() {
               border: "1px solid rgba(20,24,28,0.12)", background: "#FFFFFF",
               fontFamily: MONO, fontSize: 12, letterSpacing: "0.06em", color: "#3d4750",
             }}>
-              <CheckCircle size={14} style={{ color: "#15854F" }} />
+              <Shield size={13} style={{ color: "#0E7C8A" }} />
               {b}
             </div>
           ))}
         </div>
+        <div style={{ fontSize: 12.5, color: "#9aa4ae", marginTop: 12, lineHeight: 1.5, maxWidth: 640 }}>
+          The frameworks our architecture is designed around. We pursue formal certification as we bring on customers who require it.
+        </div>
       </div>
 
       {/* PILLAR CARDS */}
+      <Reveal>
       <Section>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           {PILLARS.map((p) => (
@@ -83,8 +89,10 @@ export default function SecurityPage() {
           ))}
         </div>
       </Section>
+      </Reveal>
 
       {/* DEEP DIVE: DATA FLOW */}
+      <Reveal>
       <Section alt>
         <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>DATA FLOW</div>
         <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 40px", letterSpacing: "-0.01em", color: "#14181C" }}>How your data moves through Nadir.</h2>
@@ -103,8 +111,10 @@ export default function SecurityPage() {
           ))}
         </div>
       </Section>
+      </Reveal>
 
       {/* COMMITMENTS */}
+      <Reveal>
       <Section>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
           <div>
@@ -143,6 +153,7 @@ export default function SecurityPage() {
           </div>
         </div>
       </Section>
+      </Reveal>
 
       {/* CTA */}
       <Section alt>
