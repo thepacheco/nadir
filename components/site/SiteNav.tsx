@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ArrowRight, LayoutGrid, Zap, Factory, Shield, BookOpen, Terminal, Plane, FileText, Phone, Building2, Users, Database, GitMerge, Activity, Lock } from "lucide-react";
+import { ChevronDown, ArrowRight, Zap, Factory, Shield, BookOpen, Terminal, Plane, FileText, Phone, Building2, Users, Database, GitMerge, Activity, Lock, Sparkles, TrendingUp } from "lucide-react";
 import Logo from "./Logo";
 import styles from "../nadir/nadir.module.css";
 
@@ -15,10 +15,13 @@ const MENU_ITEMS = [
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 0, minWidth: 680 }}>
         <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 6 }}>
           <div style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 11, letterSpacing: "0.1em", color: "#7a848e", marginBottom: 8 }}>PLATFORM</div>
-          <Link href="/platform" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "10px 12px", margin: "0 -12px", borderRadius: 8, transition: "background 0.2s" }} className={styles.navHover}>
-            <LayoutGrid size={18} style={{ color: "#0E7C8A", flex: "none", marginTop: 2 }} />
+          <Link href="/platform" style={{ display: "flex", gap: 12, textDecoration: "none", color: "inherit", padding: "12px 14px", margin: "0 -6px 4px", borderRadius: 10, background: "rgba(14,124,138,0.07)", border: "1px solid rgba(14,124,138,0.22)", transition: "background 0.2s" }} className={styles.navHover}>
+            <Sparkles size={18} style={{ color: "#0E7C8A", flex: "none", marginTop: 2 }} />
             <div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#14181C", marginBottom: 2 }}>Nadir AI</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                <span style={{ fontSize: 14, fontWeight: 700, color: "#14181C" }}>Nadir AI</span>
+                <span style={{ fontFamily: "var(--font-ibm-plex-mono), monospace", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em", color: "#0E7C8A", background: "rgba(14,124,138,0.12)", padding: "2px 6px", borderRadius: 100 }}>THE PRODUCT</span>
+              </div>
               <div style={{ fontSize: 12.5, color: "#5a646e", lineHeight: 1.4 }}>The AI at the center of it all.</div>
             </div>
           </Link>
@@ -126,6 +129,7 @@ const MENU_ITEMS = [
       <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: 20, width: 220 }}>
         <Link href="/about" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#3d4750", fontSize: 14, fontWeight: 500 }}><Building2 size={16} /> About Us</Link>
         <Link href="/careers" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#3d4750", fontSize: 14, fontWeight: 500 }}><Users size={16} /> Careers</Link>
+        <Link href="/investors" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#3d4750", fontSize: 14, fontWeight: 500 }}><TrendingUp size={16} /> Investors</Link>
         <Link href="/contact" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#3d4750", fontSize: 14, fontWeight: 500 }}><Phone size={16} /> Contact Sales</Link>
       </div>
     )
