@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero, Section } from "@/components/site/PageShell";
+import Reveal from "@/components/site/Reveal";
 import { ROLES } from "@/lib/roles";
 import { MapPin, ArrowRight, Code, Rocket, Palette } from "lucide-react";
 import styles from "@/components/nadir/nadir.module.css";
@@ -16,36 +17,18 @@ const ROLE_ICONS = [
   <Palette key="2" size={22} />,
 ];
 
-const CULTURE = [
-  { title: "Engineers talk to customers", desc: "There are no layers between you and the people using your work. You'll talk directly to plant managers, compliance officers, and line workers." },
-  { title: "Legacy is the job", desc: "Our customers run on Oracle databases from 1998 and bespoke ERPs that nobody documented. That mess is where the value lives." },
-  { title: "Ship fast, verify hard", desc: "We deploy to enterprise customers in under two weeks. But in regulated industries, every output must be deterministically correct." },
-];
-
 export default function CareersPage() {
   return (
     <>
       <PageHero
         eyebrow="CAREERS"
-        title="Help companies see their own floor."
-        sub="We're a small team building the nervous system for physical industry. We move fast, and our customers see real results in days."
+        title="Teach an AI how real companies run."
+        sub="Most software makes people fit the tool. We're building the opposite — an AI that learns how a business actually works and hands its operators control. Come build the thing that finally lets them see the whole board."
       />
 
-      {/* CULTURE CARDS */}
-      <Section>
-        <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>HOW WE WORK</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-          {CULTURE.map((c) => (
-            <div key={c.title} style={{ background: "#FFFFFF", border: "1px solid rgba(20,24,28,0.1)", borderRadius: 12, padding: "28px 24px" }}>
-              <div style={{ fontWeight: 700, fontSize: 17, marginBottom: 10, color: "#14181C" }}>{c.title}</div>
-              <p style={{ fontSize: 14.5, lineHeight: 1.65, color: "#5a646e", margin: 0 }}>{c.desc}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
       {/* OPEN ROLES */}
-      <Section alt>
+      <Reveal>
+      <Section>
         <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>OPEN POSITIONS</div>
         <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 32px", letterSpacing: "-0.01em", color: "#14181C" }}>Current openings.</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -79,9 +62,11 @@ export default function CareersPage() {
           ))}
         </div>
       </Section>
+      </Reveal>
 
       {/* LOCATION */}
-      <Section>
+      <Reveal>
+      <Section alt>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
           <div>
             <div style={{ fontFamily: MONO, fontSize: 11.5, letterSpacing: "0.14em", color: "#7a848e", marginBottom: 16 }}>LOCATIONS</div>
@@ -91,7 +76,7 @@ export default function CareersPage() {
             </p>
             <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 28, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Remote (US)</h2>
             <p style={{ fontSize: 15, lineHeight: 1.7, color: "#4a545e", margin: 0 }}>
-              For roles that don't require regular on-site presence, we support fully remote work within the United States.
+              For roles that don&rsquo;t require regular on-site presence, we support fully remote work within the United States.
             </p>
           </div>
           <div style={{ background: "#F6F5F3", border: "1px solid rgba(20,24,28,0.08)", borderRadius: 12, padding: "32px 28px" }}>
@@ -113,13 +98,14 @@ export default function CareersPage() {
           </div>
         </div>
       </Section>
+      </Reveal>
 
       {/* BOTTOM CTA */}
-      <Section alt>
+      <Section>
         <div style={{ textAlign: "center", padding: "40px 0" }}>
-          <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Don't see your role?</h2>
+          <h2 style={{ fontFamily: SERIF, fontWeight: 400, fontSize: 34, margin: "0 0 16px", letterSpacing: "-0.01em", color: "#14181C" }}>Don&rsquo;t see your role?</h2>
           <p style={{ fontSize: 16, color: "#4a545e", margin: "0 auto 32px", maxWidth: 500 }}>
-            We're always looking for people who are excited about turning messy data into operational clarity. Reach out anyway.
+            We&rsquo;re always looking for people who are excited about turning messy data into operational clarity. Reach out anyway.
           </p>
           <Link href="/contact" className={styles.btnDark} style={{ fontSize: 15, fontWeight: 600, padding: "14px 32px", background: "#14181C", color: "#FFFFFF", borderRadius: 8, textDecoration: "none" }}>
             Get in touch
